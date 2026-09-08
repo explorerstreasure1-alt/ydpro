@@ -1,7 +1,7 @@
 {
   "name": "7DİL — Her Dilde Her Dil | A1–C1",
   "short_name": "7DİL",
-  "description": "10 günde dil öğren, 14 dilde konuş. 18 ortam, A1'den C1'e AI kişilikli sohbet. Ana dil → hedef dil evrensel.",
+  "description": "18 ortamda 14 dilde A1'den C1'e AI kişilikli sohbet. Her dilde her dil. Telefona yükle, offline çalış.",
   "start_url": "/",
   "display": "standalone",
   "display_override": ["standalone", "window-controls-overlay"],
@@ -16,18 +16,30 @@
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "/logo.svg",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
       "purpose": "any"
     }
   ],

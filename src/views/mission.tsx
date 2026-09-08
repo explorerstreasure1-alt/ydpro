@@ -55,15 +55,33 @@ export function Mission({
   const [persona, setPersona] = useState(() => aiPersonaForDay(day));
   const [aiLoading, setAiLoading] = useState(true);
   const staticBase = staticSteps(day);
-  const steps = aiSteps || staticBase;
-
   // HER DİLDE HER DİL — hedef dilde sahne, ana dilde çeviri
   const cefr = cefrForXp(store.user?.xp || 0);
   const nativeLang = (store as any).nativeLang as string || "tr";
   const targetLang = (store as any).targetLang as string || "en";
+  // Her dilde her dil: hedef en değilse İngilizce static gösterme, AI bekleniyor
+  const steps = aiSteps || (targetLang === "en" ? staticBase : null);
   const targetTts = LANGS.find(l=>l.code===targetLang)?.tts || "en-GB";
+  const nativeTts = LANGS.find(l=>l.code===nativeLang)?.tts || "tr-TR";
   const nativeDef = LANGS.find(l=>l.code===nativeLang);
   const targetDef = LANGS.find(l=>l.code===targetLang);
+
+  // TTS: doğru aksan için ses seçimi — tüm diller
+  const speak = (text: string, lang = targetTts) => {
+    try {
+      if (!synth) return;
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      // Tüm dillerde doğru aksan: lang kodunu doğrudan kullan
+      u.lang = lang;
+      u.rate = 0.95;
+      // Mevcut sesler içinde en uygun olanı seç (varsa)
+      const voices = synth.getVoices?.() || [];
+      const best = voices.find(v => v.lang.toLowerCase() === lang.toLowerCase()) || voices.find(v => v.lang.toLowerCase().startsWith(lang.split("-")[0].toLowerCase()));
+      if (best) u.voice = best;
+      synth.speak(u);
+    } catch {}
+  };
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -116,6 +134,21 @@ export function Mission({
     typeof window !== "undefined" &&
     (Boolean((window as any).SpeechRecognition) || Boolean((window as any).webkitSpeechRecognition));
 
+  // Her dilde her dil: hedef en değilse AI bekleniyor — İngilizce static gösterme
+  if (!steps) {
+    return (
+      <div className="relative flex min-h-dvh flex-col items-center justify-center px-6 text-center">
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${dayBg(day)}')` }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#03111d]/80 to-[#03111d]" />
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="animate-pulse text-4xl">🧠</div>
+          <div className="mt-3 text-sm font-black text-white">{targetDef?.flag} {targetDef?.spoken} hazırlanıyor…</div>
+          <div className="mt-1 text-xs text-slate-400">{nativeDef?.flag} {nativeDef?.spoken} → {targetDef?.flag} {targetDef?.spoken} • {cefr.level}</div>
+          <div className="mt-1 text-[11px] text-slate-500">{persona.name} ({persona.role})</div>
+        </div>
+      </div>
+    );
+  }
   const idx = Math.min(step, steps.length - 1);
   const cur = steps[idx];
   const isMap = !!content.map && !!cur?.prompt?.includes("clothing");
@@ -128,18 +161,7 @@ export function Mission({
   };
   const completed = solved.length >= steps.length;
 
-  const speak = (text: string, lang = targetTts) => {
-    try {
-      if (!synth) return;
-      synth.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = lang;
-      u.rate = 0.96;
-      synth.speak(u);
-    } catch {}
-  };
-
-  // NPC speaks prompt on step change — kişiliğin sesiyle, hedef dilde
+  // NPC speaks prompt on step change — kişiliğin sesiyle, hedef dilde (doğru aksan)
   useEffect(() => {
     if (cur && status === "idle" && !aiLoading) speak(cur.prompt, targetTts);
     // eslint-disable-next-line
@@ -209,29 +231,32 @@ export function Mission({
       setStatus("correct");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Mükemmel! Doğru söyledin. +${cur.xp} XP`);
       solve(idx);
-      speak(personaReply || cur.answer);
+      // Hızlı pratik: doğruysa native övgüyü native aksanla, yoksa hedef cümleyi hedef aksanla
+      if (personaReply) speak(personaReply, nativeTts);
+      else speak(cur.answer, targetTts);
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Yaklaştın! Doğrusu: “${cur.answer}” — bir daha dene.`);
-      speak(r.personaReply || cur.answer);
+      if (personaReply) speak(personaReply, nativeTts);
+      else speak(cur.answer, targetTts);
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Hayır öyle değil, şöyle diyeceksin: “${cur.answer}” — dinle, tekrar et.`);
-      speak(r.personaReply || cur.answer);
+      if (personaReply) speak(personaReply, nativeTts);
+      else speak(cur.answer, targetTts);
     }
     if (r.personaReply) setUserTr(null);
   }
 
   function skip() {
-    // Safe path: never let the learner get stuck — listen to the correct form, then continue
     sfx.tap();
     store.post({ type: "learn-words", gainedXp: 5 });
     store.addXpFlash(5);
     setStatus("correct");
     setMsg(`Doğrusunu dinledin ✓  +5 XP`);
-    speak(cur.answer);
+    speak(cur.answer, targetTts);
     solve(idx);
     setTimeout(next, 1400);
   }

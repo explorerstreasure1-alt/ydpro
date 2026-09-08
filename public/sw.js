@@ -1,6 +1,6 @@
-// 7DİL — Telefon uygulama altyapısı (PWA) — offline cache
-const CACHE = "7dil-v1";
-const CORE = ["/", "/manifest.json", "/logo.svg", "/icons/icon-192.png", "/icons/icon-512.png"];
+// 7DİL — Telefon uygulama altyapısı (PWA) — offline cache v2 (ikon + dil düzeltmesi)
+const CACHE = "7dil-v2";
+const CORE = ["/", "/manifest.json", "/logo.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));

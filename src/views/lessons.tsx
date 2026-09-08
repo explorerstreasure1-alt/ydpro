@@ -66,6 +66,9 @@ export function Lessons({ back }: { back: () => void }) {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = lang2;
       u.rate = 0.95;
+      const voices = (synth as any).getVoices?.() || [];
+      const best = voices.find((v:any) => v.lang.toLowerCase() === lang2.toLowerCase()) || voices.find((v:any) => v.lang.toLowerCase().startsWith(lang2.split("-")[0].toLowerCase()));
+      if (best) (u as any).voice = best;
       synth.speak(u);
     } catch {}
   };
