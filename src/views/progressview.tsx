@@ -38,10 +38,10 @@ export function Progress({ goHome }: { goHome: () => void }) {
           </div>
         </div>
 
-        {/* stat cards */}
+        {/* stat cards — mantık düzeltildi */}
         <div className="mt-3 grid grid-cols-2 gap-2.5">
           <Stat emoji="🧠" value={u.wordsLearned} label="Kelime" />
-          <Stat emoji="💬" value={u.patterns || u.sentences * 0} label="Ses Bilgisi" />
+          <Stat emoji="💬" value={u.patterns} label="Kalıp" />
           <Stat emoji="🎯" value={u.missionsDone} label="Görev" />
           <Stat emoji="📝" value={u.sentences} label="Cümle" />
           <Stat emoji="⏱️" value={`${u.talkMinutes} dk`} label="Konuşma" />

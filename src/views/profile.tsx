@@ -5,17 +5,13 @@ import { BottomNav } from "@/components/nav";
 import { IMG, LANG_PHOTO } from "@/lib/img";
 import { LevelPill } from "@/lib/ui";
 import { LANGS } from "@/lib/levels";
+import { useLangPair } from "@/lib/useLangPair";
 
 export function Profile({ goProgress, goHome }: { goProgress: () => void; goHome: () => void }) {
   const store = useStore();
   const u = store.user;
   const [name, setName] = useState(u?.name || "Yolcu");
-  const nativeLang = (store as any).nativeLang as string;
-  const targetLang = (store as any).targetLang as string;
-  const setNativeLang = (store as any).setNativeLang as (c:string)=>void;
-  const setTargetLang = (store as any).setTargetLang as (c:string)=>void;
-  const nativeDef = LANGS.find(l=>l.code===nativeLang) || LANGS.find(l=>l.code==="tr")!;
-  const targetDef = LANGS.find(l=>l.code===targetLang) || LANGS.find(l=>l.code==="en")!;
+  const { nativeLang, targetLang, nativeDef, targetDef, setNativeLang, setTargetLang } = useLangPair();
 
   async function save() {
     await store.post({ type: "onboard", input: `${name || "Yolcu"}\n${u?.goal || "Seyahat"}\n${u?.dailyMinutes || "10 dakika"}\n${targetDef.name}` });

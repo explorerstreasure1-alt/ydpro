@@ -2,7 +2,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import { DAYS } from "@/lib/content";
-import { cefrForXp, LANGS } from "@/lib/levels";
+import { cefrForXp } from "@/lib/levels";
+import { useLangPair } from "@/lib/useLangPair";
+import { speakText } from "@/lib/tts";
 import { sfx } from "@/lib/sfx";
 import { dayBg, npcPortrait, NPC_FALLBACK } from "@/lib/img";
 
@@ -55,33 +57,10 @@ export function Mission({
   const [persona, setPersona] = useState(() => aiPersonaForDay(day));
   const [aiLoading, setAiLoading] = useState(true);
   const staticBase = staticSteps(day);
-  // HER DİLDE HER DİL — hedef dilde sahne, ana dilde çeviri
+  const { nativeLang, targetLang, nativeDef, targetDef, targetTts, nativeTts } = useLangPair();
   const cefr = cefrForXp(store.user?.xp || 0);
-  const nativeLang = (store as any).nativeLang as string || "tr";
-  const targetLang = (store as any).targetLang as string || "en";
-  // Her dilde her dil: hedef en değilse İngilizce static gösterme, AI bekleniyor
   const steps = aiSteps || (targetLang === "en" ? staticBase : null);
-  const targetTts = LANGS.find(l=>l.code===targetLang)?.tts || "en-GB";
-  const nativeTts = LANGS.find(l=>l.code===nativeLang)?.tts || "tr-TR";
-  const nativeDef = LANGS.find(l=>l.code===nativeLang);
-  const targetDef = LANGS.find(l=>l.code===targetLang);
-
-  // TTS: doğru aksan için ses seçimi — tüm diller
-  const speak = (text: string, lang = targetTts) => {
-    try {
-      if (!synth) return;
-      synth.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      // Tüm dillerde doğru aksan: lang kodunu doğrudan kullan
-      u.lang = lang;
-      u.rate = 0.95;
-      // Mevcut sesler içinde en uygun olanı seç (varsa)
-      const voices = synth.getVoices?.() || [];
-      const best = voices.find(v => v.lang.toLowerCase() === lang.toLowerCase()) || voices.find(v => v.lang.toLowerCase().startsWith(lang.split("-")[0].toLowerCase()));
-      if (best) u.voice = best;
-      synth.speak(u);
-    } catch {}
-  };
+  const speak = (text: string, lang = targetTts) => speakText(text, lang);
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -134,38 +113,8 @@ export function Mission({
     typeof window !== "undefined" &&
     (Boolean((window as any).SpeechRecognition) || Boolean((window as any).webkitSpeechRecognition));
 
-  // Her dilde her dil: hedef en değilse AI bekleniyor — İngilizce static gösterme
-  if (!steps) {
-    return (
-      <div className="relative flex min-h-dvh flex-col items-center justify-center px-6 text-center">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${dayBg(day)}')` }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#03111d]/80 to-[#03111d]" />
-        <div className="relative z-10 flex flex-col items-center">
-          <div className="animate-pulse text-4xl">🧠</div>
-          <div className="mt-3 text-sm font-black text-white">{targetDef?.flag} {targetDef?.spoken} hazırlanıyor…</div>
-          <div className="mt-1 text-xs text-slate-400">{nativeDef?.flag} {nativeDef?.spoken} → {targetDef?.flag} {targetDef?.spoken} • {cefr.level}</div>
-          <div className="mt-1 text-[11px] text-slate-500">{persona.name} ({persona.role})</div>
-        </div>
-      </div>
-    );
-  }
-  const idx = Math.min(step, steps.length - 1);
-  const cur = steps[idx];
-  const isMap = !!content.map && !!cur?.prompt?.includes("clothing");
-  // sahneye göre o anki konuşmacı: polis ise polis, anne ise anne, garson/sevgili dönüşümlü
-  const curPersona = {
-    name: cur?.speakerName || persona.name,
-    role: cur?.speakerRole || persona.role,
-    emoji: cur?.speakerEmoji || persona.emoji,
-    dayTitle: persona.dayTitle,
-  };
-  const completed = solved.length >= steps.length;
-
-  // NPC speaks prompt on step change — kişiliğin sesiyle, hedef dilde (doğru aksan)
-  useEffect(() => {
-    if (cur && status === "idle" && !aiLoading) speak(cur.prompt, targetTts);
-    // eslint-disable-next-line
-  }, [step, aiLoading, cur?.prompt, targetTts]);
+  // NPC speaks prompt — tüm hooklar early return'den ÖNCE (Rules of Hooks)
+  // cur henüz tanımlı değil, o yüzden effect içinde guard ile kontrol edilecek
 
   useEffect(() => {
     return () => {
@@ -175,9 +124,10 @@ export function Mission({
     };
   }, []);
 
-  // completion (only once, brief pause to show final success)
+  // completion (only once) — steps null ise çalışmaz (hooks öncesi, completed guard'lı)
+  const _completed = steps ? solved.length >= steps.length : false;
   useEffect(() => {
-    if (completed && !learning && !started.current) {
+    if (_completed && !learning && !started.current) {
       started.current = true;
       (async () => {
         await store.post({ type: "complete-scene", day });
@@ -190,7 +140,20 @@ export function Mission({
         setTimeout(() => setLearning(true), 1500);
       })();
     }
-  }, [completed, day, store, learning]);
+  }, [_completed, day, store, learning]);
+
+  // Her dilde her dil: hedef en değilse AI bekleniyor — Hooks SONRASI early return
+  const idx = steps ? Math.min(step, steps.length - 1) : 0;
+  const cur = (steps ? steps[idx] : null) as RStep | null;
+  const isMap = !!content.map && !!cur?.prompt?.includes("clothing");
+  const curPersona = cur ? { name: cur.speakerName || persona.name, role: cur.speakerRole || persona.role, emoji: cur.speakerEmoji || persona.emoji, dayTitle: persona.dayTitle } : persona;
+  const completed = _completed;
+
+  // NPC speaks prompt — cur geldikten sonra, ama hook zaten yukarıda tanımlı değil, o yüzden burada useEffect ile tekrar
+  useEffect(() => {
+    if (cur && status === "idle" && !aiLoading) speak(cur.prompt, targetTts);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step, aiLoading, cur?.prompt, targetTts, status]);
 
   function solve(i: number) {
     setSolved((p) => (p.includes(i) ? p : [...p, i]));
@@ -211,7 +174,7 @@ export function Mission({
   }
 
   async function evalText(text: string) {
-    if (!text.trim()) return;
+    if (!text.trim() || !cur) return;
     setLoading(true);
     const native = (store as any).nativeLang as string || "tr";
     // Persona ile değerlendir — AI o anki karaktere bürünür: memur→memur, anne→anne, sevgili→sevgili, patron→patron, ana dile göre feedback
@@ -251,6 +214,7 @@ export function Mission({
   }
 
   function skip() {
+    if (!cur) return;
     sfx.tap();
     store.post({ type: "learn-words", gainedXp: 5 });
     store.addXpFlash(5);
@@ -304,20 +268,21 @@ export function Mission({
   }
 
   function choose(opt: { text: string; isCorrect: boolean }) {
+    if (!cur) return;
     if (opt.isCorrect) {
       sfx.correct();
       store.post({ type: "choice", correct: true, gainedXp: cur.xp });
       store.addXpFlash(cur.xp);
       setStatus("correct");
       setMsg(`Mükemmel! +${cur.xp} XP`);
-      speak(opt.text);
+      speak(opt.text, targetTts);
       solve(idx);
       translate(opt.text).then((t) => t && setUserTr(t));
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(`Doğru cevap en doğal olandır: “${cur.answer}”`);
-      speak(cur.answer);
+      speak(cur.answer, targetTts);
     }
   }
 
@@ -332,8 +297,24 @@ export function Mission({
     setStep((s) => s + 1);
   }
 
+  // Her dilde her dil: AI bekleniyor — Hooks sonrası early return (Rules of Hooks uyumlu)
+  if (!steps) {
+    return (
+      <div className="relative flex min-h-dvh flex-col items-center justify-center px-6 text-center">
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${dayBg(day)}')` }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#03111d]/80 to-[#03111d]" />
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="animate-pulse text-4xl">🧠</div>
+          <div className="mt-3 text-sm font-black text-white">{targetDef?.flag} {targetDef?.spoken} hazırlanıyor…</div>
+          <div className="mt-1 text-xs text-slate-400">{nativeDef?.flag} {nativeDef?.spoken} → {targetDef?.flag} {targetDef?.spoken} • {cefr.level}</div>
+          <div className="mt-1 text-[11px] text-slate-500">{persona.name} ({persona.role})</div>
+        </div>
+      </div>
+    );
+  }
+
   if (learning) {
-    return <Review day={day} content={content} onFinish={() => onComplete(day)} onSpeak={(t) => speak(t)} />;
+    return <Review day={day} content={content} onFinish={() => onComplete(day)} onSpeak={(t) => speak(t, targetTts)} />;
   }
 
   const correct = status === "correct";
@@ -377,16 +358,16 @@ export function Mission({
         {aiLoading && <div className="text-[11px] text-cyan-200 animate-pulse">🧠 {persona.role} hazırlanıyor...</div>}
         {!aiLoading && curPersona.role !== persona.role && <div className="text-[10px] text-[#ffd52f] animate-pulse">↔ Şimdi {curPersona.emoji} {curPersona.name} ({curPersona.role}) konuşuyor</div>}
 
-        {/* speech bubble */}
-        {!correct && (
+        {/* speech bubble — hızlı pratik */}
+        {!correct && cur && (
           <div className="relative -mt-1 max-w-sm rounded-2xl bg-white px-4 py-2.5 text-left text-slate-900 shadow-xl">
             <span className="absolute -top-1.5 left-8 h-3 w-3 rotate-45 bg-white" />
             <div className="flex items-start gap-2">
               <span className="mt-0.5 text-[10px] text-slate-400">{curPersona.role} • {curPersona.emoji}</span>
-              <p className="text-sm font-semibold leading-snug">{cur.prompt}</p>
+              <p className="text-sm font-semibold leading-snug">{cur!.prompt}</p>
             </div>
-            {cur.turkish && <p className="mt-1 text-[11px] text-slate-500">🇹 {cur.turkish}</p>}
-            <button onClick={() => speak(cur.prompt)} className="mt-1 text-[10px] font-bold text-slate-500">🔊 Tekrar dinle</button>
+            {cur!.turkish && <p className="mt-1 text-[11px] text-slate-500">🇹 {cur!.turkish}</p>}
+            <button onClick={() => speak(cur!.prompt, targetTts)} className="mt-1 text-[10px] font-bold text-slate-500">🔊 Tekrar dinle</button>
           </div>
         )}
 
@@ -404,9 +385,9 @@ export function Mission({
           <div className="w-full max-w-sm">
             {isMap && <MiniMap target={content.map!.target} />}
 
-            {cur.options ? (
+            {cur && cur.options ? (
               <div className="space-y-2">
-                {cur.options.map((o) => (
+                {cur.options.map((o: { text: string; isCorrect: boolean }) => (
                   <button
                     key={o.text}
                     onClick={() => choose(o)}
@@ -427,7 +408,7 @@ export function Mission({
                 >
                   <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xl ${speaking ? "animate-glowpulse" : "glow-cyan"}`}>🎙</span>
                   <span className="flex-1 text-left text-base font-semibold text-white">
-                    {speaking ? "Dinliyorum..." : typed || cur.answer}
+                    {speaking ? "Dinliyorum..." : typed || cur!.answer}
                   </span>
                 </button>
 
@@ -441,8 +422,8 @@ export function Mission({
                   >
                     {useTyped ? "✍️ Yazılı mod" : "🎤 Sesli mod"}
                   </button>
-                  <button onClick={() => speak(cur.answer)} className="ghost-btn rounded-xl px-3 py-2 text-xs font-semibold text-slate-200">🔊</button>
-                  <button onClick={() => translate(cur.answer).then((t) => t && setSentenceTr(t))} className="ghost-btn rounded-xl px-3 py-2 text-xs font-semibold text-slate-200">🔁</button>
+                  <button onClick={() => speak(cur!.answer, targetTts)} className="ghost-btn rounded-xl px-3 py-2 text-xs font-semibold text-slate-200">🔊</button>
+                  <button onClick={() => translate(cur!.answer).then((t) => t && setSentenceTr(t))} className="ghost-btn rounded-xl px-3 py-2 text-xs font-semibold text-slate-200">🔁</button>
                 </div>
 
                 {sentenceTr && <div className="mt-1.5 text-center text-xs text-cyan-200">🇹 {sentenceTr}</div>}
@@ -473,22 +454,22 @@ export function Mission({
             {/* safe path after a miss: hear the correct form and continue */}
             {(status === "wrong" || status === "almost") && (
               <div className="mt-2 flex gap-2">
-                <button onClick={() => speak(cur.answer)} className="ghost-btn flex-1 rounded-xl py-2.5 text-xs font-semibold text-cyan-100">🔊 Doğrusunu dinle</button>
+                <button onClick={() => speak(cur!.answer, targetTts)} className="ghost-btn flex-1 rounded-xl py-2.5 text-xs font-semibold text-cyan-100">🔊 Doğrusunu dinle</button>
                 <button onClick={skip} className="rounded-xl border border-[#ffd52f]/50 bg-[#ffd52f]/10 py-2.5 text-xs font-bold text-[#ffd52f]">→ Dinle ve devam et</button>
               </div>
             )}
           </div>
         )}
 
-        {/* chips */}
-        {cur.chips && cur.chips.length > 0 && (
+        {/* chips — hızlı pratik */}
+        {cur && cur!.chips && cur!.chips.length > 0 && (
           <div className="w-full max-w-sm">
             <div className="mb-1 flex items-center justify-between">
               <span className="text-[11px] font-bold text-slate-300">Yeni kelimeler — dokun, hızlı ekle:</span>
               <span className="text-[10px] text-slate-500">Hızlı pratik</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {cur.chips.map((c) => (
+              {cur!.chips.map((c: string) => (
                 <button
                   key={c}
                   onClick={() => {

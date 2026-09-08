@@ -5,7 +5,7 @@ import type { Tab } from "@/components/nav";
 import { IMG } from "@/lib/img";
 import { daysMeta } from "@/lib/meta";
 import { LevelPill } from "@/lib/ui";
-import { LANGS } from "@/lib/levels";
+import { useLangPair } from "@/lib/useLangPair";
 import { PWAInstall } from "@/components/pwa-install";
 
 export function Home({
@@ -19,10 +19,7 @@ export function Home({
 }) {
   const store = useStore() as any;
   const { user, scenes } = store as { user: any; scenes: any[] };
-  const nativeLang = (store.nativeLang as string) || "tr";
-  const targetLang = (store.targetLang as string) || "en";
-  const nativeDef = LANGS.find(l=>l.code===nativeLang) || LANGS[12];
-  const targetDef = LANGS.find(l=>l.code===targetLang) || LANGS[0];
+  const { nativeLang, targetLang, nativeDef, targetDef } = useLangPair();
   const open = scenes.find((s) => s.status === "open");
   const doneCount = scenes.filter((s) => s.status === "done").length;
   const order = scenes.slice().sort((a, b) => a.day - b.day);
@@ -159,7 +156,7 @@ export function Home({
                       onClick={() => goMission(s.day)}
                       className="glass group flex w-full items-center gap-3 rounded-2xl px-3 py-3 transition disabled:opacity-70 min-h-[64px] active:scale-[0.99] touch-manipulation select-none disabled:pointer-events-none"
                       style={{
-                        borderColor: isDone ? "rgba(22,199,132,0.4)" : isDone ? "" : "",
+                        borderColor: isDone ? "rgba(22,199,132,0.4)" : undefined,
                       }}
                     >
                       <div

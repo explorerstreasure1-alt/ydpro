@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import { LANGS, CEFR, TOPICS } from "@/lib/levels";
 import { sfx } from "@/lib/sfx";
+import { speakText } from "@/lib/tts";
+import { useLangPair } from "@/lib/useLangPair";
 import { NPC_FALLBACK, LANG_PHOTO, TOPIC_PHOTO } from "@/lib/img";
 import { IMG } from "@/lib/img";
 
@@ -17,16 +19,15 @@ type Phase = "select" | "loading" | "play" | "done";
 
 export function Lessons({ back }: { back: () => void }) {
   const store = useStore();
-  const storeNative = (store as any).nativeLang as string || "tr";
-  const storeTarget = (store as any).targetLang as string || "en";
-  const setStoreNative = (store as any).setNativeLang as (c:string)=>void;
-  const setStoreTarget = (store as any).setTargetLang as (c:string)=>void;
+  const { nativeLang: storeNative, targetLang: storeTarget, setNativeLang: setStoreNative, setTargetLang: setStoreTarget } = useLangPair();
   const [lang, setLang] = useState(storeTarget);
   const [native, setNative] = useState(storeNative);
   const [level, setLevel] = useState("A1");
   const [topic, setTopic] = useState("daily");
-  // sync with global pair
+  // sync with global pair — eslint-disable for intentional sync
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(()=>{ setLang(storeTarget); }, [storeTarget]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(()=>{ setNative(storeNative); }, [storeNative]);
   const [phase, setPhase] = useState<Phase>("select");
   const [steps, setSteps] = useState<Step[] | null>(null);
