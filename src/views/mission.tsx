@@ -4,7 +4,7 @@ import { useStore } from "@/lib/store";
 import { DAYS } from "@/lib/content";
 import { cefrForXp } from "@/lib/levels";
 import { useLangPair } from "@/lib/useLangPair";
-import { speakText } from "@/lib/tts";
+import { speakText, speakMixed } from "@/lib/tts";
 import { sfx } from "@/lib/sfx";
 import { dayBg, npcPortrait, NPC_FALLBACK } from "@/lib/img";
 
@@ -194,21 +194,21 @@ export function Mission({
       setStatus("correct");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Mükemmel! Doğru söyledin. +${cur.xp} XP`);
       solve(idx);
-      // Hızlı pratik: doğruysa native övgüyü native aksanla, yoksa hedef cümleyi hedef aksanla
-      if (personaReply) speak(personaReply, nativeTts);
-      else speak(cur.answer, targetTts);
+      // Telaffuz: Türkçe kısım ana dil aksanı, tırnak içi yabancı orijinal telafuz
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
+      else speakText(cur.answer, targetTts);
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Yaklaştın! Doğrusu: “${cur.answer}” — bir daha dene.`);
-      if (personaReply) speak(personaReply, nativeTts);
-      else speak(cur.answer, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
+      else speakText(cur.answer, targetTts);
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Hayır öyle değil, şöyle diyeceksin: “${cur.answer}” — dinle, tekrar et.`);
-      if (personaReply) speak(personaReply, nativeTts);
-      else speak(cur.answer, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
+      else speakText(cur.answer, targetTts);
     }
     if (r.personaReply) setUserTr(null);
   }
