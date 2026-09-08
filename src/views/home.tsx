@@ -31,23 +31,38 @@ export function Home({
     <>
       <div className="relative mx-auto flex min-h-dvh max-w-md flex-col">
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center pointer-events-none"
           style={{ backgroundImage: `url('${IMG.cityBgWide}')` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#03111d]/60 via-[#03111d]/55 to-[#03111d]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#03111d]/60 via-[#03111d]/55 to-[#03111d] pointer-events-none" />
 
         <div className="relative z-10 flex flex-1 flex-col px-4 pt-5">
-          {/* top */}
-          <div className="flex items-center justify-between">
+          {/* top — parmakla rahat tıklama + indirme ikonu */}
+          <div className="flex items-center justify-between gap-2">
             <button
               onClick={() => gotoTab("profile")}
-              className="glass flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold text-cyan-100"
+              className="glass flex items-center gap-2 rounded-full px-3 py-2.5 text-xs font-bold text-cyan-100 min-h-[44px] active:scale-[0.98] touch-manipulation select-none"
             >
               {user?.name || "Yolcu"} · {nativeDef.flag}→{targetDef.flag} {targetDef.name}
             </button>
-            <button onClick={() => gotoTab("profile")} className="glass h-9 w-9 rounded-full text-xl">
-              👤
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  // @ts-ignore
+                  const ev = (window as any)._deferredPrompt;
+                  if (ev) ev.prompt();
+                  else alert("Chrome: Menü → Uygulamayı yükle\nSafari: Paylaş → Ana Ekrana Ekle");
+                }}
+                className="glass flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-base min-h-[44px] min-w-[44px] active:scale-95 touch-manipulation select-none bg-gradient-to-br from-[#ffd52f]/20 to-[#ffb020]/10 border-[#ffd52f]/30"
+                aria-label="Telefona Yükle"
+                title="Telefona Yükle"
+              >
+                ⬇️
+              </button>
+              <button onClick={() => gotoTab("profile")} className="glass flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xl min-h-[44px] min-w-[44px] active:scale-95 touch-manipulation select-none" aria-label="Profil">
+                👤
+              </button>
+            </div>
           </div>
 
           {/* brand */}
@@ -64,7 +79,7 @@ export function Home({
             </div>
           </div>
 
-          <div className="mt-5 space-y-3 overflow-y-auto pb-32">
+          <div className="mt-5 space-y-3 overflow-y-auto pb-40 scroll-smooth">
             {/* Today's mission hero */}
             <div className="glass relative overflow-hidden rounded-3xl p-0.5">
               <div className="rounded-2xl bg-gradient-to-br from-[#0b2940] to-[#092235] p-4">
@@ -88,9 +103,9 @@ export function Home({
                     </div>
                     <button
                       onClick={() => goMission(open.day)}
-                      className="gold-btn mt-3 w-full rounded-2xl py-3.5 text-base"
+                      className="gold-btn mt-3 w-full rounded-2xl py-4 text-base min-h-[52px] active:scale-[0.98] touch-manipulation select-none shadow-[0_0_20px_rgba(255,211,47,0.25)]"
                     >
-                      GÖREVE BAŞLA
+                      GÖREVE BAŞLA →
                     </button>
                   </>
                 ) : (
@@ -105,10 +120,10 @@ export function Home({
               </div>
             </div>
 
-            {/* AI Curriculum card */}
+            {/* AI Curriculum card — geniş dokunma alanı */}
             <button
               onClick={goLessons}
-              className="glass group flex w-full items-center gap-3 rounded-3xl p-3.5 text-left transition hover:border-cyan-300/50"
+              className="glass group flex w-full items-center gap-3 rounded-3xl p-4 text-left transition hover:border-cyan-300/50 active:scale-[0.99] min-h-[72px] touch-manipulation select-none"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0e3048] to-[#0b2940] text-2xl ring-1 ring-cyan-300/30">
                 📚
@@ -117,7 +132,7 @@ export function Home({
                 <div className="text-sm font-black">Seviyeler · A1 – C1</div>
                 <div className="truncate text-[11px] text-slate-400">14 dil · 18 konu · Her dil çiftinde AI</div>
               </div>
-              <span className="text-cyan-300">›</span>
+              <span className="text-cyan-300 text-lg">›</span>
             </button>
 
             {/* Adventure list — 10 günlük kapsamlı A1-C1 */}
@@ -142,13 +157,13 @@ export function Home({
                       key={s.id}
                       disabled={locked}
                       onClick={() => goMission(s.day)}
-                      className="glass group flex w-full items-center gap-3 rounded-2xl px-2.5 py-2 transition disabled:opacity-70"
+                      className="glass group flex w-full items-center gap-3 rounded-2xl px-3 py-3 transition disabled:opacity-70 min-h-[64px] active:scale-[0.99] touch-manipulation select-none disabled:pointer-events-none"
                       style={{
                         borderColor: isDone ? "rgba(22,199,132,0.4)" : isDone ? "" : "",
                       }}
                     >
                       <div
-                        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-xl ${
+                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-xl ${
                           isDone ? "bg-emerald-500/15" : locked ? "bg-white/5 opacity-60" : "bg-cyan-400/10"
                         }`}
                       >
@@ -160,12 +175,12 @@ export function Home({
                         </div>
                         <div className="truncate text-[11px] text-slate-400">{s.short}</div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right shrink-0 pl-2">
                         <div className="text-[11px] font-bold text-[#ffd52f]">+{s.xpReward}</div>
                         <div className="text-[9px] text-slate-500">XP</div>
                       </div>
-                      {isDone && <span className="text-emerald-400">✓</span>}
-                      {!locked && !isDone && <span className="text-slate-400">›</span>}
+                      {isDone && <span className="text-emerald-400 text-lg shrink-0">✓</span>}
+                      {!locked && !isDone && <span className="text-slate-400 text-lg shrink-0">›</span>}
                     </button>
                   );
                 })}
