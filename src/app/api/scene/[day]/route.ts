@@ -1,0 +1,88 @@
+import { db, hasDb } from "@/db";
+import { asc, eq, and } from "drizzle-orm";
+import {
+  scenes as scenesT,
+  answerOptions,
+  vocabulary as vocabT,
+  userScenes,
+} from "@/db/schema";
+import { DAYS } from "@/lib/content";
+import { getPrimaryUser } from "@/lib/data";
+import { generatePersonaScene } from "@/lib/ai";
+import { NextRequest } from "next/server";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(req: NextRequest, { params }: { params: Promise<{ day: string }> }) {
+  const { day } = await params;
+  const raw = DAYS[Number(day) - 1];
+  if (!raw) return Response.json({ error: "no scene" }, { status: 404 });
+  const url = new URL(req.url);
+  const level = url.searchParams.get("level") || "A1";
+  const targetCode = url.searchParams.get("target") || url.searchParams.get("lang") || "en";
+  const nativeCode = url.searchParams.get("native") || "tr";
+  const { LANGS } = await import("@/lib/levels");
+  const targetName = LANGS.find(l=>l.code===targetCode)?.spoken || "English";
+  const nativeName = LANGS.find(l=>l.code===nativeCode)?.spoken || "Turkish";
+
+  // FIX: demo mode — HER DİLDE HER DİL AI persona sahnesi (her hedef dilde aynı kalite)
+  if (!hasDb || !db) {
+    const vocab = raw.vocabulary.map((v, i) => ({ ...v, id: i + 1, learned: false }));
+    let personaScene: any = null;
+    let aiSteps: any = null;
+    try {
+      personaScene = await generatePersonaScene(Number(day), raw as any, level, targetName, nativeName);
+      if (personaScene?.steps) aiSteps = personaScene.steps;
+    } catch {}
+    return Response.json({
+      scene: raw,
+      status: Number(day) <= 2 ? "open" : "locked",
+      dbOptions: [],
+      vocabulary: vocab,
+      npcLine: raw.dialog[0].line,
+      npcName: personaScene?.npcName || raw.npcName,
+      npcRole: personaScene?.npcRole || raw.npcRole,
+      npcEmoji: personaScene?.npcEmoji || raw.npcEmoji,
+      heading: `${day}. Gün — ${raw.title}`,
+      aiSteps,
+      personaScene,
+      aiOrchestrator: true,
+    });
+  }
+
+  const user = await getPrimaryUser();
+  const scene = await db
+    .select()
+    .from(scenesT)
+    .where(eq(scenesT.day, Number(day)))
+    .limit(1);
+  const s = scene[0];
+  if (!s) return Response.json({ error: "missing scene" }, { status: 404 });
+
+  const prog = await db
+    .select()
+    .from(userScenes)
+    .where(and(eq(userScenes.userId, user.id), eq(userScenes.sceneId, s.id)))
+    .limit(1);
+
+  const dbVocab = await db.select().from(vocabT).where(eq(vocabT.sceneId, s.id));
+  const opts = await db.select().from(answerOptions).where(eq(answerOptions.sceneId, s.id));
+
+  const vocab = raw.vocabulary.map((v) => ({
+    ...v,
+    id: dbVocab.find((d) => d.word === v.word)?.id ?? -1,
+    learned: false,
+  }));
+
+  return Response.json({
+    scene: raw, // full structured content for the dialog player
+    status: prog[0]?.status ?? "locked",
+    dbOptions: opts,
+    vocabulary: vocab,
+    npcLine: raw.dialog[0].line,
+    npcName: raw.npcName,
+    npcRole: raw.npcRole,
+    npcEmoji: raw.npcEmoji,
+    heading: `${day}. Gün — ${raw.title}`,
+  });
+}

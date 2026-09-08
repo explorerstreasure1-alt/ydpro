@@ -1,0 +1,21 @@
+// Day label metadata for adventure list — 18 ortam kapsamlı
+export const daysMeta = [
+  { emoji: "✈️", label: "Havaalanı" },
+  { emoji: "🏨", label: "Otel" },
+  { emoji: "🍽️", label: "Restoran" },
+  { emoji: "🛍️", label: "Alışveriş" },
+  { emoji: "🌆", label: "Şehir" },
+  { emoji: "👥", label: "Sosyal Hayat" },
+  { emoji: "🏆", label: "Macera" },
+  { emoji: "🏠", label: "Ev" },
+  { emoji: "💼", label: "İş Yeri" },
+  { emoji: "❤️", label: "Randevu" },
+  { emoji: "🏥", label: "Hastane" },
+  { emoji: "🏦", label: "Banka" },
+  { emoji: "🎓", label: "Üniversite" },
+  { emoji: "🏋️", label: "Spor Salonu" },
+  { emoji: "🌳", label: "Park" },
+  { emoji: "🎬", label: "Sinema" },
+  { emoji: "🛒", label: "Süpermarket" },
+  { emoji: "📚", label: "Kütüphane" },
+];
