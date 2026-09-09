@@ -334,7 +334,7 @@ export async function generatePersonaScene(
   targetLangName: string = "English",
   nativeLangName: string = "Turkish"
 ): Promise<{ npcName: string; npcRole: string; npcEmoji: string; steps: (AiStep & {speakerName?:string; speakerRole?:string; speakerEmoji?:string})[]; secondaryNpc?: any } | null> {
-  const cacheKey = `scene:v3:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
+  const cacheKey = `scene:v4:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
   if (sceneCache.has(cacheKey)) return sceneCache.get(cacheKey);
   if (!client) return null;
   try {
@@ -366,8 +366,10 @@ Rules:
 - Each step: NPC prompt in ${targetLangName} (${level} level, in-character), NPC prompt's ${nativeLangName} translation ("promptTr"), ideal learner answer in ${targetLangName} (${level} level), answer's ${nativeLangName} translation ("turkish"), chips (1-3 vocab in ${targetLangName}, ${level} appropriate).
 - Hızlı pratik, insan gibi: kısa, doğal, günlük hayatta anında kullanılabilir.
 
-Return STRICT JSON:
-{"npcName":"${content.npcName}","npcRole":"${content.npcRole}","npcEmoji":"${content.npcEmoji}","steps":[{"prompt":"...","promptTr":"...","answer":"...","turkish":"...","chips":["..."],"speakerName":"...","speakerRole":"...","speakerEmoji":"..."}]} — "promptTr" ve "turkish" her ikisi de ${nativeLangName} dilinde.`
+Return STRICT JSON with EXAMPLE (if target is Portuguese, native Turkish):
+{"npcName":"Anne Ayşe","npcRole":"Anne","npcEmoji":"👩‍🍳","steps":[{"prompt":"Pode me passar o garfo?","promptTr":"Çatalı uzatır mısın?","answer":"Claro, aqui está.","turkish":"Tabii, işte.","chips":["garfo"],"speakerName":"Anne Ayşe","speakerRole":"Anne","speakerEmoji":"👩‍🍳"}]}
+Now generate for ${targetLangName} (prompt/answer in ${targetLangName}, promptTr/turkish in ${nativeLangName}):
+{"npcName":"${content.npcName}","npcRole":"${content.npcRole}","npcEmoji":"${content.npcEmoji}","steps":[{"prompt":"...","promptTr":"...","answer":"...","turkish":"...","chips":["..."],"speakerName":"...","speakerRole":"...","speakerEmoji":"..."}]}`
         },
         { role: "user", content: `Generate fresh Day ${day} dialog, keep ${hasSecondary ? "both characters alternating" : content.npcRole + " personality"}.` }
       ],
