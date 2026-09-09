@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import { cefrForXp } from "@/lib/levels";
 import { useLangPair } from "@/lib/useLangPair";
@@ -93,7 +93,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
       }
     })();
     return () => { cancelled = true; };
-  }, [scene.id, cefr.level, targetLang, nativeLang, scene.npc.name, scene.npc.role, scene.npc.emoji, scene.title, scene.location]);
+  }, [scene.id, scene.examples, cefr.level, targetLang, nativeLang, scene.npc.name, scene.npc.role, scene.npc.emoji, scene.title, scene.location]);
 
   const steps = aiSteps;
   const [step, setStep] = useState(0);
@@ -108,7 +108,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
   const micSupport = typeof window !== "undefined" && (Boolean((window as any).SpeechRecognition) || Boolean((window as any).webkitSpeechRecognition));
 
-  const speak = (text: string, lang = targetTts) => speakText(text, lang);
+  const speak = useCallback((text: string, lang = targetTts) => speakText(text, lang), [targetTts]);
 
   const idx = steps ? Math.min(step, steps.length - 1) : 0;
   const cur = (steps ? steps[idx] : null) as RStep | null;
@@ -117,7 +117,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
 
   useEffect(() => {
     if (cur && status === "idle") speak(cur.prompt, targetTts);
-  }, [step, cur?.prompt, targetTts, status]);
+  }, [step, cur, cur?.prompt, targetTts, status, speak]);
 
   useEffect(() => {
     return () => { try { rec.current?.abort?.(); } catch {} };

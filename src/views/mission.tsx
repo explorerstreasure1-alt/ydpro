@@ -99,7 +99,7 @@ export function Mission({
       finally { if (!cancelled) setAiLoading(false); }
     })();
     return () => { cancelled = true; };
-  }, [day, content.title, content.location, cefr.level, nativeLang, targetLang]);
+  }, [day, content.title, content.location, cefr.level, nativeLang, targetLang, staticBase]);
   const [step, setStep] = useState(0);
   const [status, setStatus] = useState<StepDone>("idle");
   const [msg, setMsg] = useState("");

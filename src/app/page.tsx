@@ -50,10 +50,8 @@ function Shell() {
     return () => clearTimeout(splash);
   }, []);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (route.t === "splash" && onboarding !== null) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRoute(onboarding ? { t: "onboard" } : { t: "app", tab: "home" });
     }
   }, [onboarding, route.t]);

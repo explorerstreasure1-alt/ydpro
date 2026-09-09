@@ -24,10 +24,7 @@ export function Lessons({ back }: { back: () => void }) {
   const [native, setNative] = useState(storeNative);
   const [level, setLevel] = useState("A1");
   const [topic, setTopic] = useState("daily");
-  // sync with global pair — eslint-disable for intentional sync
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(()=>{ setLang(storeTarget); }, [storeTarget]);
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(()=>{ setNative(storeNative); }, [storeNative]);
   const [phase, setPhase] = useState<Phase>("select");
   const [steps, setSteps] = useState<Step[] | null>(null);
