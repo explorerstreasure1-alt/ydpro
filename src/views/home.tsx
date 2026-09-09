@@ -12,10 +12,12 @@ export function Home({
   gotoTab,
   goMission,
   goLessons,
+  goExplore,
 }: {
   gotoTab: (t: Tab) => void;
   goMission: (d: number) => void;
   goLessons: () => void;
+  goExplore: () => void;
 }) {
   const store = useStore() as any;
   const { user, scenes } = store as { user: any; scenes: any[] };
@@ -130,6 +132,21 @@ export function Home({
                 <div className="truncate text-[11px] text-slate-400">14 dil · 18 konu · Her dil çiftinde AI</div>
               </div>
               <span className="text-cyan-300 text-lg">›</span>
+            </button>
+
+            {/* Tüm Ortamlar — 12 kategori, 60+ sahne */}
+            <button
+              onClick={goExplore}
+              className="glass group flex w-full items-center gap-3 rounded-3xl p-4 text-left transition hover:border-[#ffd52f]/50 active:scale-[0.99] min-h-[72px] touch-manipulation select-none border-[#ffd52f]/20"
+            >
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#ffd52f]/20 to-[#ffb020]/10 text-2xl ring-1 ring-[#ffd52f]/30">
+                🗺️
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-black">Tüm Ortamlar — 60+ Sahne</div>
+                <div className="truncate text-[11px] text-slate-400">12 kategori • Mutfakta çatal ver, yumurta çıkar • Her olasılık</div>
+              </div>
+              <span className="text-[#ffd52f] text-lg">›</span>
             </button>
 
             {/* Adventure list — 10 günlük kapsamlı A1-C1 */}

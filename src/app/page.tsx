@@ -6,11 +6,14 @@ import { Splash } from "@/views/Splash";
 import { Onboarding } from "@/views/Onboarding";
 import { Home } from "@/views/home";
 import { Mission } from "@/views/mission";
+import { SceneMission } from "@/views/sceneMission";
+import { Explore } from "@/views/explore";
 import { Memory } from "@/views/memory";
 import { RealLife } from "@/views/realife";
 import { Progress } from "@/views/progressview";
 import { Profile } from "@/views/profile";
 import { Lessons } from "@/views/lessons";
+import { SceneDef } from "@/lib/scenes";
 
 export type Tab =
   | "home"
@@ -21,6 +24,8 @@ export type Tab =
 export type Route =
   | { t: "app"; tab: Tab }
   | { t: "mission"; day: number }
+  | { t: "scene"; scene: SceneDef }
+  | { t: "explore" }
   | { t: "lessons" }
   | { t: "completion" }
   | { t: "splash" }
@@ -64,7 +69,11 @@ function Shell() {
           />
         );
       case "app":
-        return <Tabbed tab={route.tab} navigate={gotoTab} openMission={(d) => setRoute({ t: "mission", day: d })} openLessons={() => setRoute({ t: "lessons" })} />;
+        return <Tabbed tab={route.tab} navigate={gotoTab} openMission={(d) => setRoute({ t: "mission", day: d })} openExplore={() => setRoute({ t: "explore" })} openScene={(s) => setRoute({ t: "scene", scene: s })} openLessons={() => setRoute({ t: "lessons" })} />;
+      case "explore":
+        return <Explore onBack={() => setRoute({ t: "app", tab: "home" })} onStartScene={(s) => setRoute({ t: "scene", scene: s })} />;
+      case "scene":
+        return <SceneMission scene={route.scene} back={() => setRoute({ t: "explore" })} onComplete={() => { store.reload().catch(()=>{}); setRoute({ t: "explore" }); }} />;
       case "lessons":
         return <Lessons back={() => setRoute({ t: "app", tab: "home" })} />;
       case "mission":
@@ -126,21 +135,25 @@ function Tabbed({
   navigate,
   openMission,
   openLessons,
+  openExplore,
+  openScene,
 }: {
   tab: Tab;
   navigate: (t: Tab) => void;
   openMission: (d: number) => void;
   openLessons: () => void;
+  openExplore: () => void;
+  openScene: (s: SceneDef) => void;
 }) {
   if (tab === "home")
-    return <Home gotoTab={navigate} goMission={openMission} goLessons={openLessons} />;
+    return <Home gotoTab={navigate} goMission={openMission} goLessons={openLessons} goExplore={openExplore} />;
   if (tab === "memory")
     return <Memory goStart={(d) => openMission(d)} />;
   if (tab === "talk")
     return <RealLife back={() => navigate("home")} />;
   if (tab === "progress") return <Progress goHome={() => navigate("home")} />;
   if (tab === "profile") return <Profile goProgress={() => navigate("progress")} goHome={() => navigate("home")} />;
-  return <Home gotoTab={navigate} goMission={openMission} goLessons={openLessons} />;
+  return <Home gotoTab={navigate} goMission={openMission} goLessons={openLessons} goExplore={openExplore} />;
 }
 
 function Screen({ children }: { children: ReactNode }) {
