@@ -355,7 +355,7 @@ export function Mission({
         {aiLoading && <div className="text-[11px] text-cyan-200 animate-pulse">🧠 {persona.role} hazırlanıyor...</div>}
         {!aiLoading && curPersona.role !== persona.role && <div className="text-[10px] text-[#ffd52f] animate-pulse">↔ Şimdi {curPersona.emoji} {curPersona.name} ({curPersona.role}) konuşuyor</div>}
 
-        {/* speech bubble — hızlı ve aktif, insan gibi — yabancı soru + altında Türkçesi */}
+        {/* speech bubble — hızlı ve aktif, insan gibi — yabancı soru + altında anadil anlamı (her dilde) */}
         {!correct && cur && (
           <div className="relative -mt-1 max-w-sm rounded-2xl bg-white px-4 py-2.5 text-left text-slate-900 shadow-xl">
             <span className="absolute -top-1.5 left-8 h-3 w-3 rotate-45 bg-white" />
@@ -364,11 +364,14 @@ export function Mission({
               <p className="text-sm font-semibold leading-snug">{cur!.prompt}</p>
             </div>
             {cur!.promptTr ? (
-              <p className="mt-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1">🇹 {cur!.promptTr}</p>
+              <div className="mt-1 flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1">
+                <span className="flex-1">🇹 {cur!.promptTr}</span>
+                <button onClick={() => speakText(cur!.promptTr!, targetTts)} className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-white border border-slate-200 text-[10px] hover:bg-slate-50" title="Anadili hedef aksanla dinle">🔊</button>
+              </div>
             ) : cur!.turkish ? (
               <p className="mt-1 text-[11px] text-slate-500">🇹 {cur!.turkish}</p>
             ) : null}
-            <button onClick={() => speak(cur!.prompt, targetTts)} className="mt-1 flex items-center gap-1 text-[10px] font-bold text-slate-500 hover:text-slate-700">🔊 Hızlı dinle — pratik</button>
+            <button onClick={() => speak(cur!.prompt, targetTts)} className="mt-1 flex items-center gap-1 text-[10px] font-bold text-slate-500 hover:text-slate-700">🔊 Hızlı dinle — {targetDef.spoken} orijinal</button>
           </div>
         )}
 
@@ -412,10 +415,11 @@ export function Mission({
                     {speaking ? "Dinliyorum..." : typed || cur!.answer}
                   </span>
                 </button>
-                {/* Cevabın altında anlamı — görünür */}
+                {/* Cevabın altında anlamı — her dilde, hedef aksanla okunur */}
                 {cur!.turkish && (
-                  <div className="mt-1.5 text-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20">
-                    🇹 Cevap: {cur!.turkish}
+                  <div className="mt-1.5 flex items-center gap-1.5 justify-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20">
+                    <span className="flex-1 text-center">🇹 Cevap: {cur!.turkish}</span>
+                    <button onClick={() => speakText(cur!.turkish!, targetTts)} className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-[10px] hover:bg-white/20" title="Anadili hedef aksanla dinle">🔊</button>
                   </div>
                 )}
 

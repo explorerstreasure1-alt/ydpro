@@ -247,8 +247,8 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
               <span className="text-[10px] text-slate-400">{curPersona.role}</span>
               <p className="text-sm font-semibold">{cur.prompt}</p>
             </div>
-            {cur.promptTr && <p className="mt-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1">🇹 {cur.promptTr}</p>}
-            <button onClick={() => speakText(cur.prompt, targetTts)} className="mt-1 text-[10px] font-bold text-slate-500">🔊 Hızlı dinle</button>
+            {cur.promptTr && <div className="mt-1 flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1"><span className="flex-1">🇹 {cur.promptTr}</span><button onClick={() => speakText(cur.promptTr!, targetTts)} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white border text-[10px]">🔊</button></div>}
+            <button onClick={() => speakText(cur.prompt, targetTts)} className="mt-1 flex items-center gap-1 text-[10px] font-bold text-slate-500">🔊 Hızlı dinle — {targetDef.spoken} orijinal</button>
           </div>
         )}
         {correct && <div className="animate-pop w-full max-w-sm rounded-2xl bg-emerald-500 px-4 py-3 text-white font-bold">⭐ {msg}</div>}
@@ -260,7 +260,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
               <span className={`h-12 w-12 rounded-full bg-[#00bfff] flex items-center justify-center text-xl ${speaking ? "animate-glowpulse":""}`}>🎙</span>
               <span className="flex-1 text-left text-white font-semibold">{speaking ? "Dinliyorum..." : typed || cur.answer}</span>
             </button>
-            {cur.turkish && <div className="mt-1.5 text-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20">🇹 Cevap: {cur.turkish}</div>}
+            {cur.turkish && <div className="mt-1.5 flex items-center gap-1.5 justify-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20"><span className="flex-1 text-center">🇹 Cevap: {cur.turkish}</span><button onClick={() => speakText(cur.turkish!, targetTts)} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white/10 text-[10px]">🔊</button></div>}
             <div className="mt-2 flex gap-2">
               <button onClick={()=>setUseTyped(!useTyped)} className={`flex-1 rounded-xl py-2 text-xs font-semibold ${useTyped?"gold-btn":"ghost-btn text-slate-200"}`}>{useTyped?"✍️ Yazılı":"🎤 Sesli"}</button>
               <button onClick={()=>speakText(cur.answer, targetTts)} className="ghost-btn px-3 py-2 text-xs">🔊</button>
