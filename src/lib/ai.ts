@@ -445,8 +445,9 @@ export async function aiHealth(): Promise<{ok:boolean; model:string; maskedKey:s
 
 export interface LessonStep {
   prompt: string;   // NPC says this (in target language)
+  promptTr?: string; // prompt's translation in native
   answer: string;   // learner target answer (in target language)
-  tr: string;       // Turkish translation of the answer
+  tr: string;       // answer's translation in native
   chips: string[];  // key vocab (target language)
 }
 
@@ -460,7 +461,7 @@ export async function generateLesson(
   topicName: string,
   nativeLangName: string = "Turkish",
 ): Promise<{ steps: LessonStep[]; npcName: string; npcEmoji: string } | null> {
-  const cacheKey = `lesson:${langName}:${level}:${topicName}:${nativeLangName}`;
+  const cacheKey = `lesson:v2:${langName}:${level}:${topicName}:${nativeLangName}`;
   if (lessonCache.has(cacheKey)) return lessonCache.get(cacheKey);
   if (!client) return null;
   try {
@@ -478,12 +479,13 @@ Native language for translations: ${nativeLangName}.
 Difficulty guide: A1 = 2-4 word simple phrases; A2 = simple everyday sentences; B1 = 2 sentences, more detail; B2 = fluent with opinion; C1 = rich, natural, nuanced.
 Generate exactly 3 conversational turns. For each turn provide:
 - "prompt": what the NPC says, in ${langName} (a question or greeting).
+- "promptTr": natural ${nativeLangName} translation of prompt
 - "answer": the natural short answer the learner should give, in ${langName}, matched to the ${level} level.
 - "tr": the natural ${nativeLangName} translation of that answer (translate into ${nativeLangName}, not Turkish unless native is Turkish).
 - "chips": 1-3 key vocabulary words from the answer (in ${langName}).
 Also provide a fitting native NPC name and a single emoji for the role.
 Return STRICT JSON only:
-{"npcName":"...","npcEmoji":"...","steps":[{"prompt":"...","answer":"...","tr":"...","chips":["..."]}]}
+{"npcName":"...","npcEmoji":"...","steps":[{"prompt":"...","promptTr":"...","answer":"...","tr":"...","chips":["..."]}]}
 Keep answers appropriate to the ${level} level. Do not add explanations.`,
         },
         { role: "user", content: `Generate the ${topicName} lesson at ${level} in ${langName}.` },
@@ -498,8 +500,9 @@ Keep answers appropriate to the ${level} level. Do not add explanations.`,
         npcEmoji: String(parsed.npcEmoji || "🗣️"),
         steps: parsed.steps.map((s: any) => ({
           prompt: String(s.prompt || ""),
+          promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
           answer: String(s.answer || ""),
-          tr: String(s.tr || ""),
+          tr: String(s.tr || (s as any).translation || ""),
           chips: Array.isArray(s.chips) ? s.chips.map((c: any) => String(c)) : [],
         })),
       };

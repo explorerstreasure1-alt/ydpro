@@ -10,6 +10,7 @@ import { IMG } from "@/lib/img";
 
 interface Step {
   prompt: string;
+  promptTr?: string;
   answer: string;
   tr: string;
   chips: string[];
@@ -388,7 +389,8 @@ export function Lessons({ back }: { back: () => void }) {
           <div className="relative -mt-1 max-w-sm rounded-2xl bg-white px-4 py-2.5 text-left text-slate-900 shadow-xl">
             <span className="absolute -top-1.5 left-8 h-3 w-3 rotate-45 bg-white" />
             <p className="text-base font-semibold leading-snug">{cur?.prompt}</p>
-            <button onClick={() => speak(cur?.prompt || "", tts)} className="mt-1 text-[10px] font-bold text-slate-500">🔊 Tekrar dinle</button>
+            {cur?.promptTr && <p className="mt-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1">🇹 {cur.promptTr}</p>}
+            <button onClick={() => speak(cur?.prompt || "", tts)} className="mt-1 flex items-center gap-1 text-[10px] font-bold text-slate-500 hover:text-slate-700">🔊 Hızlı dinle — {langDef.spoken}</button>
           </div>
         )}
 
