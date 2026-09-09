@@ -88,39 +88,74 @@ export function dayBg(day: number): string {
 }
 
 const PORTRAIT = {
-  officer: "https://images.pexels.com/photos/7709246/pexels-photo-7709246.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560",
-  receptionist: "https://images.pexels.com/photos/7689659/pexels-photo-7689659.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560",
-  waiter: IMG.travelerSmile,
-  shop: "https://images.pexels.com/photos/8101455/pexels-photo-8101455.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560",
-  taxi: "https://images.pexels.com/photos/7681122/pexels-photo-7681122.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560",
-  friend: "https://images.pexels.com/photos/38300039/pexels-photo-38300039.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560",
-  guide: "https://images.pexels.com/photos/29995646/pexels-photo-29995646.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560",
-  fallback: "https://images.pexels.com/photos/8866770/pexels-photo-8866770.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560",
+  officer: "/characters/officer.jpg",
+  receptionist: "/characters/teacher.jpg",
+  waiter: "/characters/waiter.jpg",
+  shop: "/characters/warehouse.jpg",
+  taxi: "/characters/taxidriver.jpg",
+  friend: "/characters/student.jpg",
+  guide: "/characters/guide.jpg",
+  fallback: "/characters/teacher.jpg",
+  // Yerel yüksek kaliteli karakter fotoları — her seri/sahne için zenginleştirildi
+  doctor: "/characters/doctor.jpg",
+  nurse: "/characters/nurse.jpg",
+  banker: "/characters/banker.jpg",
+  barber: "/characters/barber.jpg",
+  tailor: "/characters/tailor.jpg",
+  baker: "/characters/baker.jpg",
+  butcher: "/characters/butcher.jpg",
+  busdriver: "/characters/busdriver.jpg",
+  conductor: "/characters/conductor.jpg",
+  engineer: "/characters/engineer.jpg",
+  dentist: "/characters/dentist.jpg",
+  artist: "/characters/artist.jpg",
+  director: "/characters/director.jpg",
+  mother: "/characters/mother.jpg",
+  father: "/characters/father.jpg",
+  sister: "/characters/sister.jpg",
+  brother: "/characters/brother.jpg",
+  girlfriend: "/characters/girlfriend.jpg",
+  librarian: "/characters/librarian.jpg",
+  ticket: "/characters/ticket.jpg",
 };
 
-/** NPC "facing camera card" portrait mapped by role for dialog stage — tüm ortamlar */
+/** NPC portrait — her seri/sahne için zenginleştirilmiş yerel kaliteli fotolar */
 export function npcPortrait(role: string): string {
   const r = role.toLowerCase();
-  if (/havaalan|officer|memur|polis|pasaport/i.test(r)) return PORTRAIT.officer;
+  if (/havaalan|officer|memur|polis|pasaport|customs/i.test(r)) return PORTRAIT.officer;
   if (/otel|recep/i.test(r)) return PORTRAIT.receptionist;
-  if (/garson|waiter|marco/i.test(r)) return PORTRAIT.waiter;
-  if (/mağaza|shop|asistan/i.test(r)) return PORTRAIT.shop;
-  if (/taksi|şoför|ben/i.test(r)) return PORTRAIT.taxi;
-  if (/anne|mother|ayşe|ev/i.test(r)) return "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/patron|boss|smith|müdür/i.test(r)) return "https://images.pexels.com/photos/937481/pexels-photo-937481.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/iş arkadaş|colleague|lena|coworker/i.test(r)) return "https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/sevgili|girlfriend|elif|aşk|lover/i.test(r)) return "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/doktor|doctor|miller|hemşire|nurse/i.test(r)) return "https://images.pexels.com/photos/5452201/pexels-photo-5452201.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/banka|bank|brown/i.test(r)) return "https://images.pexels.com/photos/936137/pexels-photo-936137.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/profesör|professor|johnson|öğrenci/i.test(r)) return "https://images.pexels.com/photos/5940842/pexels-photo-5940842.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/antrenör|coach|alex|gym|trainer/i.test(r)) return "https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/park|sophie|picnic/i.test(r)) return "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/gişe|clerk|sam|sinema|cinema/i.test(r)) return "https://images.pexels.com/photos/7991585/pexels-photo-7991585.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/kasiyer|cashier|jane|market|supermarket/i.test(r)) return "https://images.pexels.com/photos/4064838/pexels-photo-4064838.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
-  if (/kütüphan|library|green|librarian/i.test(r)) return "https://images.pexels.com/photos/256455/pexels-photo-256455.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=700&w=560";
+  if (/garson|waiter|marco|emre/i.test(r)) return PORTRAIT.waiter;
+  if (/mağaza|shop|asistan|warehouse/i.test(r)) return PORTRAIT.shop;
+  if (/taksi|şoför|ben|taxi/i.test(r)) return PORTRAIT.taxi;
+  if (/anne|mother|ayşe/i.test(r)) return PORTRAIT.mother;
+  if (/baba|father|murat/i.test(r)) return PORTRAIT.father;
+  if (/kız kardeş|sister|elif/i.test(r)) return PORTRAIT.sister;
+  if (/erkek kardeş|brother|can/i.test(r)) return PORTRAIT.brother;
+  if (/patron|boss|smith|müdür|selim/i.test(r)) return PORTRAIT.fallback.replace("teacher.jpg","boss.jpg");
+  if (/iş arkadaş|colleague|lena|coworker/i.test(r)) return "/characters/teacher.jpg";
+  if (/sevgili|girlfriend|elif|aşk|lover/i.test(r)) return PORTRAIT.girlfriend;
+  if (/doktor|doctor|miller/i.test(r)) return PORTRAIT.doctor;
+  if (/hemşire|nurse|lisa/i.test(r)) return PORTRAIT.nurse;
+  if (/banka|bank|brown/i.test(r)) return PORTRAIT.banker;
+  if (/profesör|professor|johnson/i.test(r)) return PORTRAIT.fallback.replace("teacher.jpg","teacher.jpg");
+  if (/öğrenci|student|amy/i.test(r)) return PORTRAIT.fallback.replace("teacher.jpg","student.jpg");
+  if (/antrenör|coach|alex|gym|trainer/i.test(r)) return "/characters/tennis.jpg";
+  if (/berber|barber|murat/i.test(r)) return PORTRAIT.barber;
+  if (/terzi|tailor|ayşe/i.test(r)) return PORTRAIT.tailor;
+  if (/fırın|baker|fırın/i.test(r)) return PORTRAIT.baker;
+  if (/kasap|butcher|ali/i.test(r)) return PORTRAIT.butcher;
+  if (/kuaför|kuafor/i.test(r)) return PORTRAIT.barber;
+  if (/kütüphan|library|green|librarian/i.test(r)) return PORTRAIT.librarian;
+  if (/gişe|clerk|sam|sinema|cinema/i.test(r)) return "/characters/ticket.jpg";
+  if (/kasiyer|cashier|jane|market|supermarket/i.test(r)) return "/characters/warehouse.jpg";
+  if (/otobüs|bus|şoför/i.test(r)) return PORTRAIT.busdriver;
+  if (/kondüktör|conductor/i.test(r)) return PORTRAIT.conductor;
+  if (/şantiye|engineer|kemal/i.test(r)) return PORTRAIT.engineer;
+  if (/dişçi|dentist/i.test(r)) return PORTRAIT.dentist;
+  if (/sanat|artist/i.test(r)) return PORTRAIT.artist;
+  if (/yönetmen|director/i.test(r)) return PORTRAIT.director;
   if (/turist|arkada|mia|social/i.test(r)) return PORTRAIT.friend;
   if (/rehber|guide/i.test(r)) return PORTRAIT.guide;
-  if (/otel/i.test(r)) return PORTRAIT.receptionist;
   return PORTRAIT.fallback;
 }
 export const NPC_FALLBACK = PORTRAIT.fallback;
