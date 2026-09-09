@@ -4,15 +4,18 @@ import { useStore } from "@/lib/store";
 import { BottomNav } from "@/components/nav";
 import { IMG } from "@/lib/img";
 import { TALK_TOPICS } from "@/lib/content";
+import { useLangPair } from "@/lib/useLangPair";
+import { speakText } from "@/lib/tts";
 
 type Msg = { role: "ai" | "user"; text: string };
 
 export function RealLife({ back }: { back: () => void }) {
   const store = useStore();
+  const { targetLang, nativeLang, targetDef, nativeDef, targetTts, nativeTts } = useLangPair();
   const [phase, setPhase] = useState<"topic" | "chat">("topic");
   const [topic, setTopic] = useState<string>("daily");
   const [msgs, setMsgs] = useState<Msg[]>([
-    { role: "ai", text: "Hi! Welcome to the stage. Let's talk in English. I'll help you, and I can switch to Turkish if you get stuck. ✨" },
+    { role: "ai", text: `Hi! Welcome — let's talk in ${targetDef.spoken}. I'll help you, and I can switch to ${nativeDef.spoken} if you get stuck. ✨` },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -25,28 +28,37 @@ export function RealLife({ back }: { back: () => void }) {
     typeof window !== "undefined" &&
     (Boolean((window as any).SpeechRecognition) || Boolean((window as any).webkitSpeechRecognition));
 
-  function record() {
+  async function record() {
     const win: any = window;
     const SR = win.SpeechRecognition || win.webkitSpeechRecognition;
     if (!SR) {
       return;
     }
+    try {
+      if (navigator.mediaDevices?.getUserMedia) {
+        await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(s=> s.getTracks().forEach(t=> t.stop())).catch(()=>{});
+      }
+    } catch {}
     const r = new SR();
-    r.lang = "en-GB";
-    r.interimResults = false;
-    r.maxAlternatives = 1;
+    r.lang = targetTts;
+    r.interimResults = true;
+    r.maxAlternatives = 3;
+    r.continuous = false;
     setSpeaking(true);
+    let timeout: any = setTimeout(()=>{ try{ r.stop(); }catch{}; setSpeaking(false); }, 6500);
     r.onresult = (ev: any) => {
+      const isFinal = ev.results[0]?.isFinal;
       const text = ev.results[0][0].transcript.trim();
-      setInput((p) => (p ? p + " " + text : text));
-      sendRaw(text);
+      if (text) setInput((p) => (p ? p + " " + text : text));
+      if (isFinal && text) { clearTimeout(timeout); sendRaw(text); }
     };
-    r.onerror = () => setSpeaking(false);
-    r.onend = () => setSpeaking(false);
+    r.onerror = () => { clearTimeout(timeout); setSpeaking(false); };
+    r.onend = () => { clearTimeout(timeout); setSpeaking(false); };
     rec.current = r;
     try {
       r.start();
     } catch {
+      clearTimeout(timeout);
       setSpeaking(false);
     }
   }
@@ -62,6 +74,8 @@ export function RealLife({ back }: { back: () => void }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         topic,
+        target: targetLang,
+        native: nativeLang,
         message: clean,
         history: msgs.filter((m) => m.role === "ai" || m.role === "user").map((m) => ({ role: m.role === "user" ? "user" : "assistant", content: m.text })),
       }),
@@ -80,7 +94,7 @@ export function RealLife({ back }: { back: () => void }) {
     const text = msgs[i]?.text || "";
     if (transMap[i]) return;
     try {
-      const r = await fetch("/api/translate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) }).then((x) => x.json());
+      const r = await fetch("/api/translate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, lang: nativeLang }) }).then((x) => x.json());
       if (r.tr) setTransMap((m) => ({ ...m, [i]: r.tr }));
     } catch {}
   }
@@ -93,13 +107,7 @@ export function RealLife({ back }: { back: () => void }) {
   }
 
   function speak(text: string) {
-    try {
-      synth?.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "en-GB";
-      u.rate = 0.95;
-      synth?.speak(u);
-    } catch {}
+    speakText(text, targetTts);
   }
 
   function stopChat() {
@@ -239,7 +247,7 @@ export function RealLife({ back }: { back: () => void }) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
-                placeholder="İngilizce cevap yaz..."
+                placeholder={`${targetDef.spoken} cevap yaz...`}
                 className="glass flex-1 rounded-2xl px-4 py-2.5 text-white outline-none placeholder:text-slate-500"
               />
               <button onClick={send} disabled={!input || busy} className="gold-btn h-11 w-11 shrink-0 rounded-full text-lg disabled:opacity-50">

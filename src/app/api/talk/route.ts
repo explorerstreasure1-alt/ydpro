@@ -13,7 +13,12 @@ export async function POST(req: NextRequest) {
   await ensureContent();
   const topic = body.topic || "daily";
   const history = (body.history || []).slice(-8);
-  const aiReply = await freeTalkReply(topic, body.message || "", history);
+  const targetCode = String(body.target || body.lang || "en");
+  const nativeCode = String(body.native || "tr");
+  const { LANGS } = await import("@/lib/levels");
+  const targetName = LANGS.find((l:any)=>l.code===targetCode)?.spoken || "English";
+  const nativeName = LANGS.find((l:any)=>l.code===nativeCode)?.spoken || "Turkish";
+  const aiReply = await freeTalkReply(topic, body.message || "", history, targetName, nativeName);
   if (!hasDb || !db) return Response.json({ reply: aiReply }); // FIX demo mode
   const user = await getPrimaryUser();
   await db.insert(conversations).values({ userId: user.id, role: "user", message: body.message || "" });

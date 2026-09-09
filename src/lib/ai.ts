@@ -221,11 +221,13 @@ export interface ChosenResult {
   verdict: string;
 }
 
-/** Human-readable free-talk reply builder, GROQ-backed w/ fallback. */
+/** Human-readable free-talk reply builder — her dilde orijinal aksan */
 export async function freeTalkReply(
   topic: string,
   userText: string,
   history: ChatCompletionMessageParam[],
+  targetLangName: string = "English",
+  nativeLangName: string = "Turkish",
 ): Promise<string> {
   if (!client) {
     const replies: Record<string, string> = {
@@ -237,10 +239,7 @@ export async function freeTalkReply(
       daily: `A normal day sounds nice. 🏠 What do you usually do on a free day?`,
       fun: `Sounds fun! 🎬 Do you prefer movies, music or games?`,
     };
-    return (
-      replies[topic] ||
-      `Whoa, great idea! Tell me more about that. I'm learning English, and I appreciate the practice.`
-    );
+    return replies[topic] || `Whoa, great idea! Tell me more about that. I'm learning ${targetLangName}.`;
   }
 
   try {
@@ -251,11 +250,11 @@ export async function freeTalkReply(
       messages: [
         {
           role: "system",
-          content: `You are a friendly native English speaker chatting with a Turkish beginner. Topic: ${topic}.
+          content: `You are a friendly native ${targetLangName} speaker chatting with a ${nativeLangName} beginner. Topic: ${topic}.
 Rules:
-- Speak clear, simple, natural English.
+- Speak clear, simple, natural ${targetLangName}.
 - Ask ONE short follow-up question at the end to keep the conversation going.
-- If the learner seems stuck, briefly add a short Turkish clue in parentheses.
+- If the learner seems stuck, briefly add a short ${nativeLangName} clue in parentheses.
 - Keep the whole reply under 25 words.`,
         },
         ...history,
