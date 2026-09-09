@@ -25,14 +25,35 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ day:
   const targetName = LANGS.find(l=>l.code===targetCode)?.spoken || "English";
   const nativeName = LANGS.find(l=>l.code===nativeCode)?.spoken || "Turkish";
 
-  // FIX: demo mode — HER DİLDE HER DİL AI persona sahnesi (her hedef dilde aynı kalite)
+  // FIX: demo mode — HER DİLDE HER DİL AI persona + kelime kartları otomatik
   if (!hasDb || !db) {
-    const vocab = raw.vocabulary.map((v, i) => ({ ...v, id: i + 1, learned: false }));
+    const { generateVocabulary } = await import("@/lib/ai");
+    let vocab: any = raw.vocabulary.map((v, i) => ({ ...v, id: i + 1, learned: false }));
+    // Hedef dil İngilizce değilse kelimeleri AI ile hedef dilde üret
+    if (targetCode !== "en") {
+      try {
+        const aiVocab = await generateVocabulary(raw.title, targetName, nativeName, level);
+        if (aiVocab && aiVocab.length) {
+          vocab = aiVocab.map((v, i) => ({ ...v, id: i + 1, learned: false }));
+        }
+      } catch {}
+    }
     let personaScene: any = null;
     let aiSteps: any = null;
     try {
       personaScene = await generatePersonaScene(Number(day), raw as any, level, targetName, nativeName);
-      if (personaScene?.steps) aiSteps = personaScene.steps;
+      if (personaScene?.steps) {
+        const { translateTo } = await import("@/lib/ai");
+        for (const s of personaScene.steps as any[]) {
+          if (!s.promptTr || !String(s.promptTr).trim()) {
+            try { s.promptTr = await translateTo(s.prompt, nativeName) || ""; } catch { s.promptTr = ""; }
+          }
+          if (!s.turkish || !String(s.turkish).trim()) {
+            try { s.turkish = await translateTo(s.answer, nativeName) || ""; } catch { s.turkish = ""; }
+          }
+        }
+        aiSteps = personaScene.steps;
+      }
     } catch {}
     return Response.json({
       scene: raw,

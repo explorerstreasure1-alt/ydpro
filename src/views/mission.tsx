@@ -56,6 +56,7 @@ export function Mission({
   const store = useStore();
   const content = DAYS[day - 1];
   const [aiSteps, setAiSteps] = useState<RStep[] | null>(null);
+  const [aiVocab, setAiVocab] = useState<any[] | null>(null);
   const [persona, setPersona] = useState(() => aiPersonaForDay(day));
   const [aiLoading, setAiLoading] = useState(true);
   const staticBase = staticSteps(day);
@@ -70,6 +71,9 @@ export function Mission({
         setAiLoading(true);
         const r = await fetch(`/api/scene/${day}?level=${cefr.level}&target=${targetLang}&native=${nativeLang}`).then(x => x.json());
         if (cancelled) return;
+        if (r?.vocabulary && Array.isArray(r.vocabulary) && r.vocabulary.length) {
+          setAiVocab(r.vocabulary);
+        }
         if (r?.aiSteps && Array.isArray(r.aiSteps) && r.aiSteps.length) {
           const mapped: RStep[] = r.aiSteps.map((s: any) => ({
             prompt: s.prompt,
@@ -356,7 +360,8 @@ export function Mission({
   }
 
   if (learning) {
-    return <Review day={day} content={content} onFinish={() => onComplete(day)} onSpeak={(t, lang) => speakText(t, (lang as string) || targetTts)} />;
+    const vocabForReview = aiVocab || content.vocabulary;
+    return <Review day={day} content={{ ...content, vocabulary: vocabForReview }} onFinish={() => onComplete(day)} onSpeak={(t, lang) => speakText(t, (lang as string) || targetTts)} />;
   }
 
   const correct = status === "correct";

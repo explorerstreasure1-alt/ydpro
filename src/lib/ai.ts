@@ -510,6 +510,58 @@ Keep answers appropriate to the ${level} level. Do not add explanations.`,
   }
 }
 
+// Hafıza kartı kelimeleri — hedef dilde AI otomatik üretir, her dil için
+export async function generateVocabulary(sceneTitle: string, targetLangName: string, nativeLangName: string, level: string = "A1"): Promise<{ word: string; pronunciation: string; translation: string; emoji: string; visual: string; story: string; example: string }[] | null> {
+  if (!client) return null;
+  const cacheKey = `vocab:${sceneTitle}:${targetLangName}:${nativeLangName}:${level}`;
+  // @ts-ignore
+  if ((globalThis as any).__vocabCache?.has(cacheKey)) return (globalThis as any).__vocabCache.get(cacheKey);
+  try {
+    const params: any = {
+      model: MODEL,
+      temperature: 0.7,
+      reasoning_effort: "low",
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content: `Generate 5 vocabulary cards for "${sceneTitle}" in ${targetLangName} for ${nativeLangName} speaker, CEFR ${level}.
+For each word provide:
+- "word": in ${targetLangName} (original)
+- "pronunciation": IPA for ${targetLangName}
+- "translation": in ${nativeLangName}
+- "emoji": single emoji
+- "visual": 3 emojis mnemonic
+- "story": short memory story in ${nativeLangName} (1 sentence)
+- "example": simple example sentence in ${targetLangName} (5-8 words, ${level} level)
+Return STRICT JSON: {"vocab":[{"word":"...","pronunciation":"...","translation":"...","emoji":"...","visual":"...","story":"...","example":"..."}]}`
+        },
+        { role: "user", content: `Vocabulary for ${sceneTitle} in ${targetLangName} for ${nativeLangName} ${level}` }
+      ],
+    };
+    const completion = await callGroq(params);
+    const raw = completion.choices[0]?.message?.content || "{}";
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed.vocab) && parsed.vocab.length > 0) {
+      const out = parsed.vocab.map((v:any)=> ({
+        word: String(v.word||""),
+        pronunciation: String(v.pronunciation||""),
+        translation: String(v.translation||""),
+        emoji: String(v.emoji||"📚"),
+        visual: String(v.visual||""),
+        story: String(v.story||""),
+        example: String(v.example||""),
+      })).slice(0,5);
+      // @ts-ignore
+      if (!(globalThis as any).__vocabCache) (globalThis as any).__vocabCache = new Map();
+      // @ts-ignore
+      (globalThis as any).__vocabCache.set(cacheKey, out);
+      return out;
+    }
+    return null;
+  } catch { return null; }
+}
+
 /** Generic translate to any native language */
 export async function translateTo(text: string, targetLangName: string): Promise<string | null> {
   if (!text || !client) return null;
