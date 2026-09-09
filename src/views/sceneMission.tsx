@@ -129,8 +129,8 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
   const completed = solved.length >= steps.length;
 
   useEffect(() => {
-    if (cur && status === "idle" && !aiLoading) speak(cur.prompt, targetTts);
-  }, [step, aiLoading, cur?.prompt, targetTts, status]);
+    if (cur && status === "idle") speak(cur.prompt, targetTts);
+  }, [step, cur?.prompt, targetTts, status]);
 
   useEffect(() => {
     return () => { try { rec.current?.abort?.(); } catch {} };
@@ -181,28 +181,41 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
     }
   }
 
-  function record() {
+  async function record() {
     const win: any = window;
     const SR = win.SpeechRecognition || win.webkitSpeechRecognition;
     if (!SR) { setUseTyped(true); return; }
+    try {
+      if (navigator.mediaDevices?.getUserMedia) {
+        await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(s=> s.getTracks().forEach(t=> t.stop())).catch(()=>{});
+      }
+    } catch {}
     try { rec.current?.abort?.(); } catch {}
+    try { rec.current?.stop?.(); } catch {}
     const r = new SR();
     r.lang = targetTts;
+    r.interimResults = true;
     r.maxAlternatives = 3;
+    r.continuous = false;
     setSpeaking(true);
-    let timeout: any = setTimeout(() => { try { r.stop(); } catch {}; setSpeaking(false); }, 6000);
+    let timeout: any = null;
+    let gotResult = false;
+    const clear = () => { if (timeout) { clearTimeout(timeout); timeout = null; } };
+    timeout = setTimeout(() => { if (!gotResult) { try { r.stop(); } catch {}; setSpeaking(false); } }, 6500);
     r.onresult = (ev: any) => {
-      clearTimeout(timeout);
+      const isFinal = ev.results[0]?.isFinal;
       const alts = Array.from(ev.results[0] as any) as any[];
       const best = alts.sort((a,b)=>(b.confidence||0)-(a.confidence||0))[0];
       const text = (best?.transcript || ev.results[0][0].transcript || "").trim();
-      if (text) { setTyped(text); evalText(text); }
-      else setSpeaking(false);
+      if (text) setTyped(text);
+      if (isFinal && text) { gotResult = true; clear(); evalText(text); }
+      else if (isFinal) { gotResult = true; clear(); setSpeaking(false); }
     };
-    r.onerror = (e: any) => { clearTimeout(timeout); setSpeaking(false); if (e?.error==="not-allowed") setUseTyped(true); };
-    r.onend = () => { clearTimeout(timeout); setSpeaking(false); };
+    r.onerror = (e: any) => { clear(); setSpeaking(false); const err=e?.error||""; if (err==="not-allowed"||err==="service-not-allowed") { setUseTyped(true); } };
+    r.onend = () => { clear(); setSpeaking(false); if (!gotResult) setSpeaking(false); };
+    r.onspeechend = () => { clear(); try { r.stop(); } catch {} };
     rec.current = r;
-    try { r.start(); } catch { clearTimeout(timeout); setSpeaking(false); }
+    try { r.start(); } catch { clear(); setSpeaking(false); }
   }
 
   function next() {

@@ -152,11 +152,11 @@ export function Mission({
   const curPersona = cur ? { name: cur.speakerName || persona.name, role: cur.speakerRole || persona.role, emoji: cur.speakerEmoji || persona.emoji, dayTitle: persona.dayTitle } : persona;
   const completed = _completed;
 
-  // NPC speaks prompt — cur geldikten sonra, ama hook zaten yukarıda tanımlı değil, o yüzden burada useEffect ile tekrar
+  // NPC speaks prompt — hızlı, aktif, bekletme yok
   useEffect(() => {
-    if (cur && status === "idle" && !aiLoading) speak(cur.prompt, targetTts);
+    if (cur && status === "idle") speak(cur.prompt, targetTts);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, aiLoading, cur?.prompt, targetTts, status]);
+  }, [step, cur?.prompt, targetTts, status]);
 
   function solve(i: number) {
     setSolved((p) => (p.includes(i) ? p : [...p, i]));
@@ -228,7 +228,7 @@ export function Mission({
     setTimeout(next, 1400);
   }
 
-  function record() {
+  async function record() {
     const win: any = window;
     const SR = win.SpeechRecognition || win.webkitSpeechRecognition;
     if (!SR) {
@@ -236,35 +236,46 @@ export function Mission({
       setMicState("error");
       return;
     }
-    // Takılıp kalma önle: önceki kaydı durdur
+    // Mobilde mikrofon izni ve hassasiyet — getUserMedia ile önden aç
+    try {
+      if (navigator.mediaDevices?.getUserMedia) {
+        await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(s=> s.getTracks().forEach(t=> t.stop())).catch(()=>{});
+      }
+    } catch {}
     try { rec.current?.abort?.(); } catch {}
     try { rec.current?.stop?.(); } catch {}
     const r = new SR();
     r.lang = targetTts;
-    r.interimResults = false;
+    r.interimResults = true; // hızlı pratik — ara sonuçları göster, insan gibi
     r.maxAlternatives = 3;
     r.continuous = false;
     setSpeaking(true);
     setMicState("idle");
     let timeout: any = null;
+    let gotResult = false;
     const clear = () => { if (timeout) { clearTimeout(timeout); timeout = null; } };
-    // 6sn içinde sonuç gelmezse takılma olmasın
     timeout = setTimeout(() => {
-      try { r.stop(); } catch {}
-      setSpeaking(false);
-    }, 6000);
+      if (!gotResult) {
+        try { r.stop(); } catch {}
+        setSpeaking(false);
+        if (!gotResult) setMicState("error");
+      }
+    }, 6500);
     r.onresult = (ev: any) => {
-      clear();
-      // En iyi alternatifi al, güvenilir olanı
+      // Interim de olsa göster, finalde değerlendir
+      const isFinal = ev.results[0]?.isFinal;
       const alts = Array.from(ev.results[0] as any) as any[];
       const best = alts.sort((a,b)=> (b.confidence||0)-(a.confidence||0))[0];
       const text = (best?.transcript || ev.results[0][0].transcript || "").trim();
-      if (text) {
-        setTyped(text);
+      if (text) setTyped(text);
+      if (isFinal && text) {
+        gotResult = true;
+        clear();
         evalText(text);
-      } else {
+      } else if (isFinal) {
+        gotResult = true;
+        clear();
         setSpeaking(false);
-        setMicState("error");
       }
     };
     r.onerror = (e: any) => {
@@ -274,15 +285,15 @@ export function Mission({
       if (err === "not-allowed" || err === "service-not-allowed") {
         setMicState("denied");
         setUseTyped(true);
-      } else if (err === "no-speech" || err === "audio-capture") {
+      } else if (err === "no-speech") {
         setMicState("error");
-        // Hızlı pratik: otomatik yazılı moda geçme, tekrar dene butonu göster
       } else {
         setMicState("error");
       }
     };
-    r.onend = () => { clear(); setSpeaking(false); };
+    r.onend = () => { clear(); setSpeaking(false); if (!gotResult && !typed) setMicState("error"); };
     r.onspeechend = () => { clear(); try { r.stop(); } catch {} };
+    r.onaudiostart = () => { clearTimeout(timeout); timeout = setTimeout(()=>{ try{ r.stop(); }catch{}; setSpeaking(false); }, 6500); };
     rec.current = r;
     try {
       r.start();

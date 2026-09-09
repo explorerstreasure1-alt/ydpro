@@ -60,22 +60,10 @@ export function Lessons({ back }: { back: () => void }) {
   const cur: Step | undefined = steps ? steps[idx] : undefined;
   const completed = solved.length >= (steps?.length ?? 0);
 
-  const speak = (text: string, lang2 = tts) => {
-    try {
-      if (!synth) return;
-      synth.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = lang2;
-      u.rate = 0.95;
-      const voices = (synth as any).getVoices?.() || [];
-      const best = voices.find((v:any) => v.lang.toLowerCase() === lang2.toLowerCase()) || voices.find((v:any) => v.lang.toLowerCase().startsWith(lang2.split("-")[0].toLowerCase()));
-      if (best) (u as any).voice = best;
-      synth.speak(u);
-    } catch {}
-  };
+  const speak = (text: string, lang2 = tts) => speakText(text, lang2);
 
   useEffect(() => {
-    if (cur && phase === "play" && status === "idle") speak(cur.prompt, tts);
+    if (cur && phase === "play" && status === "idle") speakText(cur.prompt, tts);
     // eslint-disable-next-line
   }, [step, phase]);
 
@@ -177,28 +165,38 @@ export function Lessons({ back }: { back: () => void }) {
     translate(text).then((t) => t && setUserTr(t));
   }
 
-  function record() {
+  async function record() {
     const win: any = window;
     const SR = win.SpeechRecognition || win.webkitSpeechRecognition;
     if (!SR) {
       setUseTyped(true);
       return;
     }
+    try {
+      if (navigator.mediaDevices?.getUserMedia) {
+        await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(s=> s.getTracks().forEach(t=> t.stop())).catch(()=>{});
+      }
+    } catch {}
+    try { rec.current?.abort?.(); } catch {}
     const r = new SR();
     r.lang = tts;
-    r.interimResults = false;
-    r.maxAlternatives = 1;
+    r.interimResults = true;
+    r.maxAlternatives = 3;
+    r.continuous = false;
     setSpeaking(true);
+    let timeout: any = setTimeout(()=>{ try{ r.stop(); }catch{}; setSpeaking(false); }, 6500);
     r.onresult = (ev: any) => {
-      const text = ev.results[0][0].transcript.trim();
-      setTyped(text);
-      evalText(text);
+      const isFinal = ev.results[0]?.isFinal;
+      const text = (ev.results[0][0].transcript || "").trim();
+      if (text) setTyped(text);
+      if (isFinal && text) { clearTimeout(timeout); evalText(text); }
     };
     r.onerror = (e: any) => {
+      clearTimeout(timeout);
       setSpeaking(false);
       if (e?.error === "not-allowed") setUseTyped(true);
     };
-    r.onend = () => setSpeaking(false);
+    r.onend = () => { clearTimeout(timeout); setSpeaking(false); };
     rec.current = r;
     try {
       r.start();
