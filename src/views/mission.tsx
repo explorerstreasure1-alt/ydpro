@@ -194,20 +194,20 @@ export function Mission({
       setStatus("correct");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Mükemmel! Doğru söyledin. +${cur.xp} XP`);
       solve(idx);
-      // Telaffuz: Türkçe kısım ana dil aksanı, tırnak içi yabancı orijinal telafuz
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
+      // Telaffuz: hatayı düzeltirken TÜRKÇE'yi YABANCI AKSANLA + yabancı cümleyi ORİJİNAL aksanla
+      if (personaReply) speakText(personaReply, targetTts);
       else speakText(cur.answer, targetTts);
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Yaklaştın! Doğrusu: “${cur.answer}” — bir daha dene.`);
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
+      if (personaReply) speakText(personaReply, targetTts);
       else speakText(cur.answer, targetTts);
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Hayır öyle değil, şöyle diyeceksin: “${cur.answer}” — dinle, tekrar et.`);
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
+      if (personaReply) speakText(personaReply, targetTts);
       else speakText(cur.answer, targetTts);
     }
     if (r.personaReply) setUserTr(null);
@@ -233,30 +233,58 @@ export function Mission({
       setMicState("error");
       return;
     }
+    // Takılıp kalma önle: önceki kaydı durdur
+    try { rec.current?.abort?.(); } catch {}
+    try { rec.current?.stop?.(); } catch {}
     const r = new SR();
     r.lang = targetTts;
     r.interimResults = false;
-    r.maxAlternatives = 1;
+    r.maxAlternatives = 3;
+    r.continuous = false;
     setSpeaking(true);
+    setMicState("idle");
+    let timeout: any = null;
+    const clear = () => { if (timeout) { clearTimeout(timeout); timeout = null; } };
+    // 6sn içinde sonuç gelmezse takılma olmasın
+    timeout = setTimeout(() => {
+      try { r.stop(); } catch {}
+      setSpeaking(false);
+    }, 6000);
     r.onresult = (ev: any) => {
-      const text = ev.results[0][0].transcript.trim();
-      setTyped(text);
-      evalText(text);
+      clear();
+      // En iyi alternatifi al, güvenilir olanı
+      const alts = Array.from(ev.results[0] as any) as any[];
+      const best = alts.sort((a,b)=> (b.confidence||0)-(a.confidence||0))[0];
+      const text = (best?.transcript || ev.results[0][0].transcript || "").trim();
+      if (text) {
+        setTyped(text);
+        evalText(text);
+      } else {
+        setSpeaking(false);
+        setMicState("error");
+      }
     };
     r.onerror = (e: any) => {
+      clear();
       setSpeaking(false);
-      if (e?.error === "not-allowed" || e?.error === "service-not-allowed") {
+      const err = e?.error || "";
+      if (err === "not-allowed" || err === "service-not-allowed") {
         setMicState("denied");
         setUseTyped(true);
+      } else if (err === "no-speech" || err === "audio-capture") {
+        setMicState("error");
+        // Hızlı pratik: otomatik yazılı moda geçme, tekrar dene butonu göster
       } else {
         setMicState("error");
       }
     };
-    r.onend = () => setSpeaking(false);
+    r.onend = () => { clear(); setSpeaking(false); };
+    r.onspeechend = () => { clear(); try { r.stop(); } catch {} };
     rec.current = r;
     try {
       r.start();
     } catch {
+      clear();
       setSpeaking(false);
       setMicState("error");
     }
@@ -431,10 +459,11 @@ export function Mission({
                 {useTyped && (
                   <div className="mt-2 flex gap-2">
                     <input
+                      id="mission-input"
                       value={typed}
                       onChange={(e) => setTyped(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && evalText(typed)}
-                      placeholder="Cevabını İngilizce yaz..."
+                      placeholder={`Cevabını ${targetDef?.spoken || "İngilizce"} yaz...`}
                       className="glass flex-1 rounded-xl px-3 py-2.5 text-sm text-white outline-none placeholder:text-slate-500"
                     />
                     <button onClick={() => evalText(typed)} disabled={loading} className="gold-btn rounded-xl px-4 text-sm disabled:opacity-50">
@@ -451,11 +480,19 @@ export function Mission({
               </>
             )}
 
-            {/* safe path after a miss: hear the correct form and continue */}
+            {/* Hızlı pratik retry — takılıp kalma yok */}
             {(status === "wrong" || status === "almost") && (
-              <div className="mt-2 flex gap-2">
-                <button onClick={() => speak(cur!.answer, targetTts)} className="ghost-btn flex-1 rounded-xl py-2.5 text-xs font-semibold text-cyan-100">🔊 Doğrusunu dinle</button>
-                <button onClick={skip} className="rounded-xl border border-[#ffd52f]/50 bg-[#ffd52f]/10 py-2.5 text-xs font-bold text-[#ffd52f]">→ Dinle ve devam et</button>
+              <div className="mt-2 space-y-2">
+                <button
+                  onClick={() => { setStatus("idle"); setMsg(""); setTyped(""); setUserTr(null); sfx.tap(); if (useTyped) { setTimeout(()=>document.getElementById("mission-input")?.focus(), 100); } else record(); }}
+                  className="gold-btn w-full rounded-xl py-3 text-sm font-black flex items-center justify-center gap-2 touch-manipulation active:scale-[0.98]"
+                >
+                  🔄 Tekrar Dene — {targetDef?.flag} {targetDef?.spoken}
+                </button>
+                <div className="flex gap-2">
+                  <button onClick={() => speakText(cur!.answer, targetTts)} className="ghost-btn flex-1 rounded-xl py-2.5 text-xs font-semibold text-cyan-100">🔊 Doğrusunu dinle (orijinal)</button>
+                  <button onClick={skip} className="rounded-xl border border-[#ffd52f]/50 bg-[#ffd52f]/10 px-3 py-2.5 text-xs font-bold text-[#ffd52f]">→ Dinle ve devam et</button>
+                </div>
               </div>
             )}
           </div>
