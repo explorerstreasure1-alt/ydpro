@@ -1,5 +1,6 @@
-// KAPSAMLI ORTAMLAR — 12 kategori, 60+ sahne, her ortam her olasılık
+// KAPSAMLI ORTAMLAR — 13 kategori (12 + Meslekler), 100+ sahne, her ortam her olasılık
 // Her sahne: AI kişiliği + fotoğraf + pratik diyalog (çatal ver, yumurta çıkar vb.)
+import { PROFESSION_SCENES } from "@/lib/professions";
 
 export interface SceneDef {
   id: string;
@@ -29,6 +30,7 @@ export const CATEGORIES = [
   { key: "dini", label: "Dini & Manevi", emoji: "🕌", desc: "Ritüel, sohbet" },
   { key: "dijital", label: "Dijital & Sanal", emoji: "💻", desc: "Yazılı, sesli" },
   { key: "mahalle", label: "Mahalle & Sokak", emoji: "🏘️", desc: "En doğal" },
+  { key: "meslek", label: "Meslekler", emoji: "👔", desc: "Tüm meslekler — güncel ve eski, eksiksiz" },
 ] as const;
 
 export const ALL_SCENES: SceneDef[] = [
@@ -123,4 +125,5 @@ export const ALL_SCENES: SceneDef[] = [
   { id: "mahalle-kirtasiye", category: "mahalle", categoryEmoji: "🏘️", title: "Kırtasiye", emoji: "✏️", location: "Kırtasiye — Raf", description: "Defter al, fotokopi çektir, kalem sor.", npc: { name: "Kırtasiyeci", role: "Esnaf", emoji: "✏️" }, photo: "https://images.pexels.com/photos/kirtasiye/pexels-photo-kirtasiye.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=800".replace("kirtasiye","264509"), xp: 75, examples: ["Defter verir misin?", "Fotokopi çeker misin?", "Kalem ne kadar?"] },
   { id: "mahalle-kapici", category: "mahalle", categoryEmoji: "🏘️", title: "Apartman Görevlisi", emoji: "🧹", location: "Apartman — Giriş", description: "Aidat ver, asansör bozuk de, çöpü ver.", npc: { name: "Kapıcı", role: "Görevli", emoji: "🧹" }, photo: "https://images.pexels.com/photos/kapici/pexels-photo-kapici.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=800".replace("kapici","896106"), xp: 75, examples: ["Aidatı vereyim", "Asansör bozuk", "Çöpü alır mısın?"] },
   { id: "mahalle-park", category: "mahalle", categoryEmoji: "🏘️", title: "Park Bankı", emoji: "🏞️", location: "Park — Bank", description: "Bankta otur, çocukları izle, çekirdek çitle.", npc: { name: "Teyze", role: "Mahalleli", emoji: "👵" }, photo: "https://images.pexels.com/photos/park2/pexels-photo-park2.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=800".replace("park2","1103970"), xp: 75, examples: ["Buraya oturabilir miyim?", "Çocuklar çok tatlı", "Çekirdek yer misin?"] },
+  ...PROFESSION_SCENES,
 ];

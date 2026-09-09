@@ -119,41 +119,40 @@ const PORTRAIT = {
   ticket: "/characters/ticket.jpg",
 };
 
-/** NPC portrait — her seri/sahne için zenginleştirilmiş yerel kaliteli fotolar */
+/** NPC portrait — her seri/sahne için zenginleştirilmiş yerel kaliteli fotolar — 60+ meslek dahil */
 export function npcPortrait(role: string): string {
   const r = role.toLowerCase();
   if (/havaalan|officer|memur|polis|pasaport|customs/i.test(r)) return PORTRAIT.officer;
   if (/otel|recep/i.test(r)) return PORTRAIT.receptionist;
-  if (/garson|waiter|marco|emre/i.test(r)) return PORTRAIT.waiter;
-  if (/mağaza|shop|asistan|warehouse/i.test(r)) return PORTRAIT.shop;
+  if (/garson|waiter|marco|emre|barista/i.test(r)) return PORTRAIT.waiter;
+  if (/mağaza|shop|asistan|warehouse|satış/i.test(r)) return PORTRAIT.shop;
   if (/taksi|şoför|ben|taxi/i.test(r)) return PORTRAIT.taxi;
   if (/anne|mother|ayşe/i.test(r)) return PORTRAIT.mother;
   if (/baba|father|murat/i.test(r)) return PORTRAIT.father;
   if (/kız kardeş|sister|elif/i.test(r)) return PORTRAIT.sister;
   if (/erkek kardeş|brother|can/i.test(r)) return PORTRAIT.brother;
-  if (/patron|boss|smith|müdür|selim/i.test(r)) return PORTRAIT.fallback.replace("teacher.jpg","boss.jpg");
+  if (/patron|boss|smith|müdür|selim|yazılım|veri|tasarım|pazarlama|müdür/i.test(r)) return "/characters/boss.jpg";
   if (/iş arkadaş|colleague|lena|coworker/i.test(r)) return "/characters/teacher.jpg";
   if (/sevgili|girlfriend|elif|aşk|lover/i.test(r)) return PORTRAIT.girlfriend;
-  if (/doktor|doctor|miller/i.test(r)) return PORTRAIT.doctor;
-  if (/hemşire|nurse|lisa/i.test(r)) return PORTRAIT.nurse;
-  if (/banka|bank|brown/i.test(r)) return PORTRAIT.banker;
-  if (/profesör|professor|johnson/i.test(r)) return PORTRAIT.fallback.replace("teacher.jpg","teacher.jpg");
-  if (/öğrenci|student|amy/i.test(r)) return PORTRAIT.fallback.replace("teacher.jpg","student.jpg");
-  if (/antrenör|coach|alex|gym|trainer/i.test(r)) return "/characters/tennis.jpg";
-  if (/berber|barber|murat/i.test(r)) return PORTRAIT.barber;
-  if (/terzi|tailor|ayşe/i.test(r)) return PORTRAIT.tailor;
+  if (/doktor|doctor|miller|hemşire|nurse|diş|psikolog|veteriner|eczacı/i.test(r)) return r.includes("hemşire")||r.includes("nurse") ? PORTRAIT.nurse : r.includes("diş") ? PORTRAIT.dentist : PORTRAIT.doctor;
+  if (/banka|bank|brown|avukat|hakim/i.test(r)) return PORTRAIT.banker;
+  if (/profesör|professor|johnson|öğrenci|student|amy|öğretmen|teacher/i.test(r)) return "/characters/teacher.jpg";
+  if (/antrenör|coach|alex|gym|trainer|spor/i.test(r)) return "/characters/tennis.jpg";
+  if (/berber|barber|murat|kuaför|kuafor/i.test(r)) return PORTRAIT.barber;
+  if (/terzi|tailor|ayşe|kunduracı|terzi/i.test(r)) return PORTRAIT.tailor;
   if (/fırın|baker|fırın/i.test(r)) return PORTRAIT.baker;
-  if (/kasap|butcher|ali/i.test(r)) return PORTRAIT.butcher;
-  if (/kuaför|kuafor/i.test(r)) return PORTRAIT.barber;
+  if (/kasap|butcher|ali|manav/i.test(r)) return PORTRAIT.butcher;
   if (/kütüphan|library|green|librarian/i.test(r)) return PORTRAIT.librarian;
-  if (/gişe|clerk|sam|sinema|cinema/i.test(r)) return "/characters/ticket.jpg";
+  if (/gişe|clerk|sam|sinema|cinema|ticket/i.test(r)) return "/characters/ticket.jpg";
   if (/kasiyer|cashier|jane|market|supermarket/i.test(r)) return "/characters/warehouse.jpg";
-  if (/otobüs|bus|şoför/i.test(r)) return PORTRAIT.busdriver;
-  if (/kondüktör|conductor/i.test(r)) return PORTRAIT.conductor;
-  if (/şantiye|engineer|kemal/i.test(r)) return PORTRAIT.engineer;
+  if (/otobüs|bus|şoför|minibüs/i.test(r)) return PORTRAIT.busdriver;
+  if (/kondüktör|conductor|tren/i.test(r)) return PORTRAIT.conductor;
+  if (/şantiye|engineer|kemal|demirci|çömlek|dokumacı|kundur|bakırcı|semer|saraç|kalay|keçe|marangoz|elektrik|tesisat|boyacı|kaynak/i.test(r)) return PORTRAIT.engineer;
   if (/dişçi|dentist/i.test(r)) return PORTRAIT.dentist;
-  if (/sanat|artist/i.test(r)) return PORTRAIT.artist;
+  if (/sanat|artist|müzisyen|oyuncu|fotoğraf|gazeteci|yazar|çevirmen/i.test(r)) return PORTRAIT.artist;
   if (/yönetmen|director/i.test(r)) return PORTRAIT.director;
+  if (/çiftçi|bahçıvan|balıkçı|tarla/i.test(r)) return "/characters/woodworker.jpg";
+  if (/itfaiyeci|pilot|aşçı/i.test(r)) return PORTRAIT.doctor;
   if (/turist|arkada|mia|social/i.test(r)) return PORTRAIT.friend;
   if (/rehber|guide/i.test(r)) return PORTRAIT.guide;
   return PORTRAIT.fallback;
