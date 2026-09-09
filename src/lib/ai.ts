@@ -273,6 +273,7 @@ Rules:
 
 export interface AiStep {
   prompt: string;
+  promptTr?: string;
   answer: string;
   turkish: string;
   chips: string[];
@@ -363,10 +364,11 @@ Rules:
 - KEEP personality: if police → strict, anne → warm motherly, patron → professional boss, sevgili → affectionate, garson → polite — but speak ${targetLangName}.
 - CEFR ${level} complexity MUST match: ${level==="A1"?"very short 2-4 words":level==="A2"?"simple 5-8 words":level==="B1"?"connected 8-14 words":level==="B2"?"fluent 12-20 words":"rich 15-25 words with idioms"} in ${targetLangName}.
 - ${hasSecondary ? "For this multi-character scene, ALTERNATE speakers: some steps from primary, some from secondary. Include speakerName/speakerRole/speakerEmoji per step." : "Single speaker, all steps from primary NPC."}
-- Each step: NPC prompt in ${targetLangName} (${level} level, in-character), ideal learner answer in ${targetLangName} (${level} level), "${nativeLangName} translation" of answer (in ${nativeLangName}), chips (1-3 vocab in ${targetLangName}, ${level} appropriate).
+- Each step: NPC prompt in ${targetLangName} (${level} level, in-character), NPC prompt's ${nativeLangName} translation ("promptTr"), ideal learner answer in ${targetLangName} (${level} level), answer's ${nativeLangName} translation ("turkish"), chips (1-3 vocab in ${targetLangName}, ${level} appropriate).
+- Hızlı pratik, insan gibi: kısa, doğal, günlük hayatta anında kullanılabilir.
 
 Return STRICT JSON:
-{"npcName":"${content.npcName}","npcRole":"${content.npcRole}","npcEmoji":"${content.npcEmoji}","steps":[{"prompt":"...","answer":"...","turkish":"...","chips":["..."],"speakerName":"...","speakerRole":"...","speakerEmoji":"..."}]} — note "turkish" holds ${nativeLangName} translation.`
+{"npcName":"${content.npcName}","npcRole":"${content.npcRole}","npcEmoji":"${content.npcEmoji}","steps":[{"prompt":"...","promptTr":"...","answer":"...","turkish":"...","chips":["..."],"speakerName":"...","speakerRole":"...","speakerEmoji":"..."}]} — "promptTr" ve "turkish" her ikisi de ${nativeLangName} dilinde.`
         },
         { role: "user", content: `Generate fresh Day ${day} dialog, keep ${hasSecondary ? "both characters alternating" : content.npcRole + " personality"}.` }
       ],
@@ -382,8 +384,9 @@ Return STRICT JSON:
         secondaryNpc: content.secondaryNpc,
         steps: parsed.steps.map((s: any) => ({
           prompt: String(s.prompt || ""),
+          promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
           answer: String(s.answer || ""),
-          turkish: String(s.turkish || ""),
+          turkish: String(s.turkish || (s as any).tr || ""),
           chips: Array.isArray(s.chips) ? s.chips.map(String) : [],
           speakerName: String(s.speakerName || s.speaker || parsed.npcName || content.npcName),
           speakerRole: String(s.speakerRole || parsed.npcRole || content.npcRole),

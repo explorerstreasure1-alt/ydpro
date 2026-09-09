@@ -8,7 +8,9 @@ export function speakText(text: string, lang: string) {
     synth.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang;
-    u.rate = 0.95;
+    u.rate = 1.06; // hızlı ve aktif, insan gibi — bekletme yok
+    u.pitch = 1.02;
+    u.volume = 1;
     const voices = (synth as any).getVoices?.() || [];
     const best =
       voices.find((v: any) => v.lang.toLowerCase() === lang.toLowerCase()) ||
@@ -53,14 +55,15 @@ export function speakMixed(text: string, nativeLang: string, targetLang: string)
       const p = parts[idx];
       const u = new SpeechSynthesisUtterance(p.text);
       u.lang = p.lang;
-      u.rate = 0.95;
+      u.rate = 1.06;
+      u.pitch = 1.02;
       const best =
         voices.find((v: any) => v.lang.toLowerCase() === p.lang.toLowerCase()) ||
         voices.find((v: any) => v.lang.toLowerCase().startsWith(p.lang.split("-")[0].toLowerCase()));
       if (best) (u as any).voice = best;
-      u.onend = () => speakPart(idx + 1);
+      u.onend = () => setTimeout(()=>speakPart(idx + 1), 80);
       // @ts-ignore
-      u.onerror = () => speakPart(idx + 1);
+      u.onerror = () => setTimeout(()=>speakPart(idx + 1), 80);
       synth.speak(u);
     };
     speakPart(0);

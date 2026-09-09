@@ -12,6 +12,7 @@ type StepDone = "idle" | "correct" | "almost" | "wrong";
 
 type RStep = {
   prompt: string;
+  promptTr?: string;
   answer: string;
   turkish?: string;
   chips?: string[];
@@ -26,6 +27,7 @@ function staticSteps(day: number): RStep[] {
   const c = DAYS[day - 1];
   return c.dialog.map((d) => ({
     prompt: d.prompt,
+    promptTr: (d as any).promptTr || "",
     answer: d.fallback || d.line || d.prompt,
     turkish: (d as any).turkish || "",
     chips: d.chips,
@@ -71,8 +73,9 @@ export function Mission({
         if (r?.aiSteps && Array.isArray(r.aiSteps) && r.aiSteps.length) {
           const mapped: RStep[] = r.aiSteps.map((s: any) => ({
             prompt: s.prompt,
+            promptTr: s.promptTr || "",
             answer: s.answer,
-            turkish: s.turkish || "",
+            turkish: s.turkish || s.tr || "",
             chips: s.chips || [],
             xp: 20,
             speakerName: s.speakerName || s.speaker || r.npcName,
@@ -386,7 +389,7 @@ export function Mission({
         {aiLoading && <div className="text-[11px] text-cyan-200 animate-pulse">🧠 {persona.role} hazırlanıyor...</div>}
         {!aiLoading && curPersona.role !== persona.role && <div className="text-[10px] text-[#ffd52f] animate-pulse">↔ Şimdi {curPersona.emoji} {curPersona.name} ({curPersona.role}) konuşuyor</div>}
 
-        {/* speech bubble — hızlı pratik */}
+        {/* speech bubble — hızlı ve aktif, insan gibi — yabancı soru + altında Türkçesi */}
         {!correct && cur && (
           <div className="relative -mt-1 max-w-sm rounded-2xl bg-white px-4 py-2.5 text-left text-slate-900 shadow-xl">
             <span className="absolute -top-1.5 left-8 h-3 w-3 rotate-45 bg-white" />
@@ -394,8 +397,12 @@ export function Mission({
               <span className="mt-0.5 text-[10px] text-slate-400">{curPersona.role} • {curPersona.emoji}</span>
               <p className="text-sm font-semibold leading-snug">{cur!.prompt}</p>
             </div>
-            {cur!.turkish && <p className="mt-1 text-[11px] text-slate-500">🇹 {cur!.turkish}</p>}
-            <button onClick={() => speak(cur!.prompt, targetTts)} className="mt-1 text-[10px] font-bold text-slate-500">🔊 Tekrar dinle</button>
+            {cur!.promptTr ? (
+              <p className="mt-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1">🇹 {cur!.promptTr}</p>
+            ) : cur!.turkish ? (
+              <p className="mt-1 text-[11px] text-slate-500">🇹 {cur!.turkish}</p>
+            ) : null}
+            <button onClick={() => speak(cur!.prompt, targetTts)} className="mt-1 flex items-center gap-1 text-[10px] font-bold text-slate-500 hover:text-slate-700">🔊 Hızlı dinle — pratik</button>
           </div>
         )}
 
@@ -432,13 +439,19 @@ export function Mission({
                 <button
                   onClick={handleAnswer}
                   disabled={speaking || loading}
-                  className="flex w-full items-center gap-3 rounded-2xl border border-cyan-300/40 bg-[#0b2940]/90 px-3 py-3 transition hover:border-cyan-300/70"
+                  className="flex w-full items-center gap-3 rounded-2xl border border-cyan-300/40 bg-[#0b2940]/90 px-3 py-3 transition hover:border-cyan-300/70 active:scale-[0.99]"
                 >
                   <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xl ${speaking ? "animate-glowpulse" : "glow-cyan"}`}>🎙</span>
                   <span className="flex-1 text-left text-base font-semibold text-white">
                     {speaking ? "Dinliyorum..." : typed || cur!.answer}
                   </span>
                 </button>
+                {/* Cevabın altında anlamı — görünür */}
+                {cur!.turkish && (
+                  <div className="mt-1.5 text-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20">
+                    🇹 Cevap: {cur!.turkish}
+                  </div>
+                )}
 
                 {micState === "denied" && <div className="mt-1.5 text-center text-[11px] text-[#ffb0a0]">Mikrofona izin veremedin. Yazarak cevapla 👇</div>}
                 {micState === "error" && <div className="mt-1.5 text-center text-[11px] text-slate-400">Mikrofon hazır değil. Yazarak cevap ver 👇</div>}
