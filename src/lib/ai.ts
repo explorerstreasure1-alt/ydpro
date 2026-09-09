@@ -334,7 +334,7 @@ export async function generatePersonaScene(
   targetLangName: string = "English",
   nativeLangName: string = "Turkish"
 ): Promise<{ npcName: string; npcRole: string; npcEmoji: string; steps: (AiStep & {speakerName?:string; speakerRole?:string; speakerEmoji?:string})[]; secondaryNpc?: any } | null> {
-  const cacheKey = `scene:${day}:${level}:${targetLangName}:${nativeLangName}`;
+  const cacheKey = `scene:v3:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
   if (sceneCache.has(cacheKey)) return sceneCache.get(cacheKey);
   if (!client) return null;
   try {

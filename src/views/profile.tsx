@@ -7,7 +7,7 @@ import { LevelPill } from "@/lib/ui";
 import { LANGS } from "@/lib/levels";
 import { useLangPair } from "@/lib/useLangPair";
 
-export function Profile({ goProgress, goHome }: { goProgress: () => void; goHome: () => void }) {
+export function Profile({ goProgress, goHome, goLangSettings }: { goProgress: () => void; goHome: () => void; goLangSettings: () => void }) {
   const store = useStore();
   const u = store.user;
   const [name, setName] = useState(u?.name || "Yolcu");
@@ -105,7 +105,10 @@ export function Profile({ goProgress, goHome }: { goProgress: () => void; goHome
               <span key={s} className="ghost-btn rounded-full px-3 py-1.5 text-xs text-slate-200">{s} · Açık</span>
             ))}
           </div>
-          <button onClick={goProgress} className="ghost-btn mt-4 w-full rounded-2xl py-3 text-sm text-cyan-100">
+          <button onClick={goLangSettings} className="gold-btn mt-4 w-full rounded-2xl py-3 text-sm">
+            🌍 Tüm Diller — Ayrı Ayarlar (14 dil)
+          </button>
+          <button onClick={goProgress} className="ghost-btn mt-2 w-full rounded-2xl py-3 text-sm text-cyan-100">
             📊 İlerlememi gör
           </button>
         </div>

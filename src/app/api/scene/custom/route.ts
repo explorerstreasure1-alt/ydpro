@@ -16,16 +16,17 @@ export async function POST(req: NextRequest) {
     if (!scene) return Response.json({ error: "scene not found" }, { status: 404 });
     const targetName = LANGS.find(l => l.code === targetCode)?.spoken || "English";
     const nativeName = LANGS.find(l => l.code === nativeCode)?.spoken || "Turkish";
-    // AI ile hızlı pratik — Türkçe sahne ama hedef dilde üret (Portekizce seçildiyse Portekizce)
+    // Her dilde orijinal — Türkçe sahne ama hedef dilde üret (pt seçildiyse Portekizce)
+    const samplePrompt = targetName === "Portuguese" ? "Olá" : targetName === "German" ? "Hallo" : targetName === "French" ? "Bonjour" : targetName === "Japanese" ? "こんにちは" : "Hello";
     const personaScene = await generatePersonaScene(0, {
       title: scene.title,
       location: scene.location,
-      description: scene.description + " | SCENE CONTEXT (Turkish, translate to " + targetName + "): " + scene.examples.join(" | "),
+      description: scene.description + " | Generate in " + targetName,
       npcName: scene.npc.name,
       npcRole: scene.npc.role,
       npcEmoji: scene.npc.emoji,
       secondaryNpc: scene.secondaryNpc,
-      dialog: [{ prompt: "Hello", fallback: scene.examples[0] || scene.title, xp: 20, chips: [] }],
+      dialog: [{ prompt: samplePrompt, fallback: samplePrompt, xp: 20, chips: [] }],
     } as any, level, targetName, nativeName);
     if (personaScene?.steps) {
       // Eksik çevirileri tamamla — her dilde anlam görünsün

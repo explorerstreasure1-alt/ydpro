@@ -18,13 +18,28 @@ export function speakText(text: string, lang: string) {
   const synth = window.speechSynthesis as any;
   if (!synth) return;
   try {
-    // Bekletme yok — anında, hızlı ve aktif
     synth.cancel();
-    // Mobilde cancel sonrası kısa gecikme gerekir, yoksa ses kesilir
     setTimeout(() => {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = lang;
-      u.rate = 1.12; // daha hızlı, pratik, insan gibi
+      // Her dil için ayrı ayar — yoksa varsayılan hızlı
+      let rate = 1.12;
+      try {
+        const code = lang.split("-")[0].toLowerCase();
+        const map = JSON.parse(localStorage.getItem("yzed_lang_settings") || "{}");
+        const found = Object.values(map as any).find((v:any)=> v.code===code || v.tts===lang) as any;
+        // LANGS'tan da bul
+        if (!found) {
+          const { LANGS } = require("@/lib/levels");
+          const def = LANGS.find((l:any)=> l.tts===lang);
+          if (def) {
+            const m2 = JSON.parse(localStorage.getItem("yzed_lang_settings") || "{}");
+            const s2 = m2[def.code];
+            if (s2) rate = s2.voiceRate || 1.12;
+          }
+        } else rate = found.voiceRate || 1.12;
+      } catch {}
+      u.rate = rate;
       u.pitch = 1.0;
       u.volume = 1;
       const voices = voicesCache.length ? voicesCache : (synth.getVoices?.() || []);
