@@ -183,40 +183,20 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
   }
 
   async function record() {
-    const win: any = window;
-    const SR = win.SpeechRecognition || win.webkitSpeechRecognition;
-    if (!SR) { setUseTyped(true); return; }
-    try {
-      if (navigator.mediaDevices?.getUserMedia) {
-        await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(s=> s.getTracks().forEach(t=> t.stop())).catch(()=>{});
-      }
-    } catch {}
     try { rec.current?.abort?.(); } catch {}
     try { rec.current?.stop?.(); } catch {}
-    const r = new SR();
-    r.lang = targetTts;
-    r.interimResults = true;
-    r.maxAlternatives = 3;
-    r.continuous = false;
+    const { startMic, isMicSupported } = await import("@/lib/mic");
+    if (!isMicSupported()) { setUseTyped(true); return; }
     setSpeaking(true);
-    let timeout: any = null;
-    let gotResult = false;
-    const clear = () => { if (timeout) { clearTimeout(timeout); timeout = null; } };
-    timeout = setTimeout(() => { if (!gotResult) { try { r.stop(); } catch {}; setSpeaking(false); } }, 6500);
-    r.onresult = (ev: any) => {
-      const isFinal = ev.results[0]?.isFinal;
-      const alts = Array.from(ev.results[0] as any) as any[];
-      const best = alts.sort((a,b)=>(b.confidence||0)-(a.confidence||0))[0];
-      const text = (best?.transcript || ev.results[0][0].transcript || "").trim();
-      if (text) setTyped(text);
-      if (isFinal && text) { gotResult = true; clear(); evalText(text); }
-      else if (isFinal) { gotResult = true; clear(); setSpeaking(false); }
-    };
-    r.onerror = (e: any) => { clear(); setSpeaking(false); const err=e?.error||""; if (err==="not-allowed"||err==="service-not-allowed") { setUseTyped(true); } };
-    r.onend = () => { clear(); setSpeaking(false); if (!gotResult) setSpeaking(false); };
-    r.onspeechend = () => { clear(); try { r.stop(); } catch {} };
-    rec.current = r;
-    try { r.start(); } catch { clear(); setSpeaking(false); }
+    const handle = await startMic({
+      lang: targetTts,
+      onResult: (text, isFinal) => { if (text) setTyped(text); if (isFinal && text) evalText(text); },
+      onError: (type) => { setSpeaking(false); if (type==="not-allowed") setUseTyped(true); },
+      onStart: () => { setSpeaking(true); },
+      onEnd: () => setSpeaking(false),
+    });
+    if (!handle) { setSpeaking(false); setUseTyped(true); return; }
+    rec.current = handle as any;
   }
 
   function next() {

@@ -29,38 +29,23 @@ export function RealLife({ back }: { back: () => void }) {
     (Boolean((window as any).SpeechRecognition) || Boolean((window as any).webkitSpeechRecognition));
 
   async function record() {
-    const win: any = window;
-    const SR = win.SpeechRecognition || win.webkitSpeechRecognition;
-    if (!SR) {
-      return;
-    }
-    try {
-      if (navigator.mediaDevices?.getUserMedia) {
-        await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(s=> s.getTracks().forEach(t=> t.stop())).catch(()=>{});
-      }
-    } catch {}
-    const r = new SR();
-    r.lang = targetTts;
-    r.interimResults = true;
-    r.maxAlternatives = 3;
-    r.continuous = false;
+    try { rec.current?.abort?.(); } catch {}
+    try { rec.current?.stop?.(); } catch {}
+    const { startMic, isMicSupported } = await import("@/lib/mic");
+    if (!isMicSupported()) return;
     setSpeaking(true);
-    let timeout: any = setTimeout(()=>{ try{ r.stop(); }catch{}; setSpeaking(false); }, 6500);
-    r.onresult = (ev: any) => {
-      const isFinal = ev.results[0]?.isFinal;
-      const text = ev.results[0][0].transcript.trim();
-      if (text) setInput((p) => (p ? p + " " + text : text));
-      if (isFinal && text) { clearTimeout(timeout); sendRaw(text); }
-    };
-    r.onerror = () => { clearTimeout(timeout); setSpeaking(false); };
-    r.onend = () => { clearTimeout(timeout); setSpeaking(false); };
-    rec.current = r;
-    try {
-      r.start();
-    } catch {
-      clearTimeout(timeout);
-      setSpeaking(false);
-    }
+    const handle = await startMic({
+      lang: targetTts,
+      onResult: (text, isFinal) => {
+        if (text) setInput((p) => (p ? p + " " + text : text));
+        if (isFinal && text) sendRaw(text);
+      },
+      onError: () => setSpeaking(false),
+      onStart: () => setSpeaking(true),
+      onEnd: () => setSpeaking(false),
+    });
+    if (!handle) { setSpeaking(false); return; }
+    rec.current = handle as any;
   }
 
   function sendRaw(text: string) {

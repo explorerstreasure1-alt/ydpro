@@ -233,79 +233,29 @@ export function Mission({
   }
 
   async function record() {
-    const win: any = window;
-    const SR = win.SpeechRecognition || win.webkitSpeechRecognition;
-    if (!SR) {
-      setUseTyped(true);
-      setMicState("error");
-      return;
-    }
-    // Mobilde mikrofon izni ve hassasiyet — getUserMedia ile önden aç
-    try {
-      if (navigator.mediaDevices?.getUserMedia) {
-        await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(s=> s.getTracks().forEach(t=> t.stop())).catch(()=>{});
-      }
-    } catch {}
     try { rec.current?.abort?.(); } catch {}
     try { rec.current?.stop?.(); } catch {}
-    const r = new SR();
-    r.lang = targetTts;
-    r.interimResults = true; // hızlı pratik — ara sonuçları göster, insan gibi
-    r.maxAlternatives = 3;
-    r.continuous = false;
+    const { startMic, isMicSupported } = await import("@/lib/mic");
+    if (!isMicSupported()) { setUseTyped(true); setMicState("error"); return; }
     setSpeaking(true);
     setMicState("idle");
-    let timeout: any = null;
-    let gotResult = false;
-    const clear = () => { if (timeout) { clearTimeout(timeout); timeout = null; } };
-    timeout = setTimeout(() => {
-      if (!gotResult) {
-        try { r.stop(); } catch {}
+    const handle = await startMic({
+      lang: targetTts,
+      onResult: (text, isFinal) => {
+        if (text) setTyped(text);
+        if (isFinal && text) evalText(text);
+      },
+      onError: (type) => {
         setSpeaking(false);
-        if (!gotResult) setMicState("error");
-      }
-    }, 6500);
-    r.onresult = (ev: any) => {
-      // Interim de olsa göster, finalde değerlendir
-      const isFinal = ev.results[0]?.isFinal;
-      const alts = Array.from(ev.results[0] as any) as any[];
-      const best = alts.sort((a,b)=> (b.confidence||0)-(a.confidence||0))[0];
-      const text = (best?.transcript || ev.results[0][0].transcript || "").trim();
-      if (text) setTyped(text);
-      if (isFinal && text) {
-        gotResult = true;
-        clear();
-        evalText(text);
-      } else if (isFinal) {
-        gotResult = true;
-        clear();
-        setSpeaking(false);
-      }
-    };
-    r.onerror = (e: any) => {
-      clear();
-      setSpeaking(false);
-      const err = e?.error || "";
-      if (err === "not-allowed" || err === "service-not-allowed") {
-        setMicState("denied");
-        setUseTyped(true);
-      } else if (err === "no-speech") {
-        setMicState("error");
-      } else {
-        setMicState("error");
-      }
-    };
-    r.onend = () => { clear(); setSpeaking(false); if (!gotResult && !typed) setMicState("error"); };
-    r.onspeechend = () => { clear(); try { r.stop(); } catch {} };
-    r.onaudiostart = () => { clearTimeout(timeout); timeout = setTimeout(()=>{ try{ r.stop(); }catch{}; setSpeaking(false); }, 6500); };
-    rec.current = r;
-    try {
-      r.start();
-    } catch {
-      clear();
-      setSpeaking(false);
-      setMicState("error");
-    }
+        if (type === "not-allowed" || type === "service-not-allowed") { setMicState("denied"); setUseTyped(true); }
+        else if (type === "unsupported") { setMicState("error"); setUseTyped(true); }
+        else setMicState("error");
+      },
+      onStart: () => { setSpeaking(true); setMicState("idle"); },
+      onEnd: () => setSpeaking(false),
+    });
+    if (!handle) { setSpeaking(false); setMicState("error"); setUseTyped(true); return; }
+    rec.current = handle as any;
   }
 
   function handleAnswer() {

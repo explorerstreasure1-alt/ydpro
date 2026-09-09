@@ -163,43 +163,20 @@ export function Lessons({ back }: { back: () => void }) {
   }
 
   async function record() {
-    const win: any = window;
-    const SR = win.SpeechRecognition || win.webkitSpeechRecognition;
-    if (!SR) {
-      setUseTyped(true);
-      return;
-    }
-    try {
-      if (navigator.mediaDevices?.getUserMedia) {
-        await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(s=> s.getTracks().forEach(t=> t.stop())).catch(()=>{});
-      }
-    } catch {}
     try { rec.current?.abort?.(); } catch {}
-    const r = new SR();
-    r.lang = tts;
-    r.interimResults = true;
-    r.maxAlternatives = 3;
-    r.continuous = false;
+    try { rec.current?.stop?.(); } catch {}
+    const { startMic, isMicSupported } = await import("@/lib/mic");
+    if (!isMicSupported()) { setUseTyped(true); return; }
     setSpeaking(true);
-    let timeout: any = setTimeout(()=>{ try{ r.stop(); }catch{}; setSpeaking(false); }, 6500);
-    r.onresult = (ev: any) => {
-      const isFinal = ev.results[0]?.isFinal;
-      const text = (ev.results[0][0].transcript || "").trim();
-      if (text) setTyped(text);
-      if (isFinal && text) { clearTimeout(timeout); evalText(text); }
-    };
-    r.onerror = (e: any) => {
-      clearTimeout(timeout);
-      setSpeaking(false);
-      if (e?.error === "not-allowed") setUseTyped(true);
-    };
-    r.onend = () => { clearTimeout(timeout); setSpeaking(false); };
-    rec.current = r;
-    try {
-      r.start();
-    } catch {
-      setSpeaking(false);
-    }
+    const handle = await startMic({
+      lang: tts,
+      onResult: (text, isFinal) => { if (text) setTyped(text); if (isFinal && text) evalText(text); },
+      onError: (type) => { setSpeaking(false); if (type==="not-allowed") setUseTyped(true); },
+      onStart: () => setSpeaking(true),
+      onEnd: () => setSpeaking(false),
+    });
+    if (!handle) { setSpeaking(false); setUseTyped(true); return; }
+    rec.current = handle as any;
   }
 
   function handleAnswer() {
