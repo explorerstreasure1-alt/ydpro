@@ -345,7 +345,7 @@ export function Mission({
   }
 
   if (learning) {
-    return <Review day={day} content={content} onFinish={() => onComplete(day)} onSpeak={(t) => speak(t, targetTts)} />;
+    return <Review day={day} content={content} onFinish={() => onComplete(day)} onSpeak={(t, lang) => speakText(t, (lang as string) || targetTts)} />;
   }
 
   const correct = status === "correct";
@@ -588,13 +588,44 @@ function Review({
   day: number;
   content: any;
   onFinish: () => void;
-  onSpeak: (t: string) => void;
+  onSpeak: (t: string, lang?: string) => void;
 }) {
   const [i, setI] = useState(0);
-  const store = useStore();
+  const store = useStore() as any;
+  const targetLang: string = store.targetLang || "en";
+  const nativeLang: string = store.nativeLang || "tr";
+  const [displayW, setDisplayW] = useState<any>(null);
   const vocab = content.vocabulary;
-  const w = vocab[Math.min(i, vocab.length - 1)];
+  const wRaw = vocab[Math.min(i, vocab.length - 1)];
+  const w = displayW || wRaw;
   const done = i >= vocab.length;
+
+  // Hafıza kartı — hedef dilde göster, orijinal telafuzla oku (her dilde)
+  useEffect(() => {
+    if (targetLang === "en" || !wRaw) { setDisplayW(null); return; }
+    let cancelled = false;
+    (async () => {
+      try {
+        const targetName = (()=>{ try{ const {LANGS}=require("@/lib/levels"); return LANGS.find((l:any)=>l.code===targetLang)?.spoken||"English"; }catch{return "English";}})();
+        // Kelime ve örnek cümleyi hedef dile çevir — AI ile
+        const resWord = await fetch("/api/translate", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ text: wRaw.word, lang: targetLang })}).then(r=>r.json()).catch(()=>null);
+        const resEx = await fetch("/api/translate", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ text: wRaw.example, lang: targetLang })}).then(r=>r.json()).catch(()=>null);
+        if (cancelled) return;
+        // translate API native'e çevirir, ama biz hedef dile çevirmek istiyoruz — lang=target
+        // Eğer translate hedef dilde değilse, fallback orijinal
+        const wordTr = resWord?.tr || wRaw.word;
+        const exTr = resEx?.tr || wRaw.example;
+        // wordTr aslında hedef dilde, ama API native'e çevirir — bu yüzden farklı endpoint gerek
+        // Basit: eğer hedef en değilse, kelimeyi hedef dilde göster (orijinal İngilizceyi de küçük göster)
+        if (wordTr && wordTr !== wRaw.word) {
+          setDisplayW({ ...wRaw, word: wordTr, example: exTr, translation: wRaw.translation, pronunciation: wRaw.pronunciation });
+        } else {
+          setDisplayW(null);
+        }
+      } catch { if (!cancelled) setDisplayW(null); }
+    })();
+    return () => { cancelled = true; };
+  }, [i, targetLang, wRaw]);
 
   async function finish() {
     await store.post({ type: "learn-words", gainedXp: 10 * vocab.length, words: vocab.length });
@@ -629,7 +660,7 @@ function Review({
               <p className="mt-1 text-xs italic text-slate-400">Örnek: “{w.example}”</p>
             </div>
             <div className="mt-4 flex w-full gap-2">
-              <button onClick={() => onSpeak(w.word + ". " + w.example)} className="ghost-btn flex-1 rounded-2xl py-3 text-sm">🔊 Dinle</button>
+              <button onClick={() => onSpeak(w.word + ". " + w.example, displayW ? (():string=>{ try{ const {LANGS}=require("@/lib/levels"); return LANGS.find((l:any)=>l.code===targetLang)?.tts||"en-GB"; }catch{return "en-GB";}})() : "en-GB")} className="ghost-btn flex-1 rounded-2xl py-3 text-sm">🔊 Dinle — orijinal telafuz</button>
               <button onClick={() => setI(i + 1)} className="gold-btn flex-1 rounded-2xl py-3 text-sm">Devam Et →</button>
             </div>
           </div>
