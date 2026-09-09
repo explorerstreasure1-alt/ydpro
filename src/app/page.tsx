@@ -37,16 +37,25 @@ function Shell() {
   const store = useStore();
 
   useEffect(() => {
+    // Hızlı test için ?skipSplash=1 ile direkt geç
+    if (new URLSearchParams(window.location.search).has("skipSplash")) {
+      setOnboarding(false);
+      return;
+    }
+    console.log("Splash effect run, checking onboarded", localStorage.getItem("yzed_onboarded"));
     const splash = setTimeout(() => {
       const done = localStorage.getItem("yzed_onboarded") === "1";
+      console.log("Splash timeout done", done);
       setOnboarding(!done);
-    }, 1600);
+    }, 400);
     return () => clearTimeout(splash);
   }, []);
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
+    console.log("Route effect", { route: route.t, onboarding });
     if (route.t === "splash" && onboarding !== null) {
+      console.log("Setting route to", onboarding ? "onboard" : "app/home");
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setRoute(onboarding ? { t: "onboard" } : { t: "app", tab: "home" });
     }

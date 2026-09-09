@@ -23,6 +23,7 @@ type RStep = {
 };
 
 export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; back: () => void; onComplete: () => void }) {
+  console.log("SceneMission mount", scene?.id, scene?.title);
   const store = useStore() as any;
   const { nativeLang, targetLang, nativeDef, targetDef, targetTts, nativeTts } = useLangPair();
   const cefr = cefrForXp(store.user?.xp || 0);
@@ -109,24 +110,10 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
 
   const speak = (text: string, lang = targetTts) => speakText(text, lang);
 
-  if (!steps) {
-    return (
-      <div className="relative flex min-h-dvh flex-col items-center justify-center px-6 text-center">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${scene.photo}')` }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#03111d]/80 to-[#03111d]" />
-        <div className="relative z-10 flex flex-col items-center">
-          <div className="animate-pulse text-4xl">🧠</div>
-          <div className="mt-3 text-sm font-black text-white">{scene.emoji} {scene.title} hazırlanıyor…</div>
-          <div className="mt-1 text-xs text-slate-400">{scene.location} • {targetDef?.flag} {targetDef?.spoken} → {cefr.level}</div>
-        </div>
-      </div>
-    );
-  }
-
-  const idx = Math.min(step, steps.length - 1);
-  const cur = steps[idx] as RStep;
-  const curPersona = { name: cur.speakerName || persona.name, role: cur.speakerRole || persona.role, emoji: cur.speakerEmoji || persona.emoji, dayTitle: persona.dayTitle };
-  const completed = solved.length >= steps.length;
+  const idx = steps ? Math.min(step, steps.length - 1) : 0;
+  const cur = (steps ? steps[idx] : null) as RStep | null;
+  const curPersona = cur ? { name: cur.speakerName || persona.name, role: cur.speakerRole || persona.role, emoji: cur.speakerEmoji || persona.emoji, dayTitle: persona.dayTitle } : persona;
+  const completed = steps ? solved.length >= steps.length : false;
 
   useEffect(() => {
     if (cur && status === "idle") speak(cur.prompt, targetTts);
@@ -146,6 +133,20 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
       return () => clearTimeout(t);
     }
   }, [completed, scene.xp, store, onComplete]);
+
+  if (!steps || !cur) {
+    return (
+      <div className="relative flex min-h-dvh flex-col items-center justify-center px-6 text-center">
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${scene.photo}')` }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#03111d]/80 to-[#03111d]" />
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="animate-pulse text-4xl">🧠</div>
+          <div className="mt-3 text-sm font-black text-white">{scene.emoji} {scene.title} hazırlanıyor…</div>
+          <div className="mt-1 text-xs text-slate-400">{scene.location} • {targetDef?.flag} {targetDef?.spoken} → {cefr.level}</div>
+        </div>
+      </div>
+    );
+  }
 
   function solve(i: number) { setSolved(p => p.includes(i) ? p : [...p, i]); }
 
