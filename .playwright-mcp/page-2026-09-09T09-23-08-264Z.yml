@@ -1,7 +1,0 @@
-- generic [active] [ref=e1]:
-  - generic [ref=e7]:
-    - img "7DİL Logo" [ref=e8]
-    - heading "7DİL" [level=1] [ref=e9]
-    - paragraph [ref=e10]: Her Dilde Her Dil. A1 → C1
-    - paragraph [ref=e11]: 18 ORTAM • 14 DİL • OFFLINE
-  - alert [ref=e14]
