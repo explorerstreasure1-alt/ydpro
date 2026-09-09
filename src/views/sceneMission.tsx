@@ -156,7 +156,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
     const res = await fetch("/api/action", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, persona: curPersona, nativeLang, native: nativeLang }),
+      body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, persona: curPersona, nativeLang, native: nativeLang, targetLang, target: targetLang }),
     }).then(r => r.json());
     setLoading(false);
     const r = res.res;

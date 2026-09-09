@@ -118,6 +118,8 @@ export async function evaluateAnswer(
   input: string,
   ideal: string,
   targetWord?: string,
+  nativeLangName: string = "Turkish",
+  targetLangName: string = "English",
 ): Promise<TeacherResult> {
   if (!client) return fallbackEvaluate(input, ideal);
 
@@ -129,10 +131,10 @@ export async function evaluateAnswer(
       messages: [
         {
           role: "system",
-          content: `You are a warm, encouraging English teacher for a Turkish learner inside a language game.
-The learner is supposed to say/write approximately: "${ideal}".
+          content: `You are a warm, encouraging ${targetLangName} teacher for a ${nativeLangName} learner inside a language game.
+The learner is supposed to say/write approximately: "${ideal}" (${targetLangName}).
 Judge the learner's contribution. Return STRICT JSON only:
-{"score": 0-100, "correct": bool, "almost": bool, "verdict": "one of Mükemmel/Yaklaştın/Bir kez daha deneyelim", "feedback": "one short, encouraging sentence in Turkish (use quotes for the corrected sentence)", "ideal": "${ideal}", "pronunciation": 0-100}
+{"score": 0-100, "correct": bool, "almost": bool, "verdict": "one of ${nativeLangName==="Turkish"?"Mükemmel/Yaklaştın/Bir kez daha deneyelim":nativeLangName==="English"?"Perfect/Almost/Try again": "Perfect/Almost/Try again"}", "feedback": "one short, encouraging sentence in ${nativeLangName} (use quotes for the corrected sentence)", "ideal": "${ideal}", "pronunciation": 0-100}
 Be forgiving: a missing tiny word like "a" or slightly different but natural wording counts as correct or almost. Do not be harsh.`,
         },
         { role: "user", content: input },

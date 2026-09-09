@@ -184,11 +184,11 @@ export function Mission({
     if (!text.trim() || !cur) return;
     setLoading(true);
     const native = (store as any).nativeLang as string || "tr";
-    // Persona ile değerlendir — AI o anki karaktere bürünür: memur→memur, anne→anne, sevgili→sevgili, patron→patron, ana dile göre feedback
+    const target = (store as any).targetLang as string || "en";
     const res = await fetch("/api/action", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, persona: curPersona, nativeLang: native, native }),
+      body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, persona: curPersona, nativeLang: native, native, targetLang: target, target }),
     }).then((r) => r.json());
     setLoading(false);
     const r = res.res;

@@ -32,18 +32,19 @@ function todayIso() {
 export async function POST(req: NextRequest) {
   const body = (await req.json()) as Body;
   await ensureContent();
-  // FIX: demo mode — all actions succeed without DB (AI persona aware + native dil)
+  // FIX: demo mode — all actions succeed without DB (AI persona aware + native dil, tüm diller)
   if (!hasDb || !db) {
     if (body.type === "answer-free-text") {
       const text = body.answerText || body.input || "";
       const ideal = body.ideal || "";
       const nativeCode = body.nativeLang || body.native || "tr";
+      const targetCode = (body as any).targetLang || (body as any).target || "en";
       const { LANGS } = await import("@/lib/levels");
       const nativeName = LANGS.find((l:any)=>l.code===nativeCode)?.spoken || "Turkish";
+      const targetName = LANGS.find((l:any)=>l.code===targetCode)?.spoken || "English";
       const res = body.persona
         ? await evaluateWithPersona(text, ideal, body.persona as any, nativeName)
-        : await evaluateAnswer(text, ideal);
-      // ensure feedback in native language already handled via evaluateWithPersona native param
+        : await evaluateAnswer(text, ideal, undefined, nativeName, targetName);
       return Response.json({ res });
     }
     return Response.json({ ok: true, gain: body.gainedXp || 20, demo: true });
@@ -70,11 +71,13 @@ export async function POST(req: NextRequest) {
       const text = body.answerText || body.input || "";
       const ideal = body.ideal || "";
       const nativeCode = (body as any).nativeLang || (body as any).native || "tr";
+      const targetCode = (body as any).targetLang || (body as any).target || "en";
       const { LANGS } = await import("@/lib/levels");
       const nativeName = LANGS.find((l:any)=>l.code===nativeCode)?.spoken || "Turkish";
+      const targetName = LANGS.find((l:any)=>l.code===targetCode)?.spoken || "English";
       const res = body.persona
         ? await evaluateWithPersona(text, ideal, body.persona as any, nativeName)
-        : await evaluateAnswer(text, ideal);
+        : await evaluateAnswer(text, ideal, undefined, nativeName, targetName);
       return Response.json({ res });
     }
 

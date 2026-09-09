@@ -138,7 +138,7 @@ export function Lessons({ back }: { back: () => void }) {
     const res = await fetch("/api/action", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, nativeLang: native, native }),
+      body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, nativeLang: native, native, targetLang: lang, target: lang }),
     }).then((r) => r.json());
     setLoading(false);
     const r = res.res;
