@@ -41,12 +41,24 @@ export async function POST(req: NextRequest) {
       }
       return Response.json({ steps: personaScene.steps, npcName: personaScene.npcName, npcRole: personaScene.npcRole, npcEmoji: personaScene.npcEmoji });
     }
-    // Fallback: örnekleri direkt döndür
+    // Fallback: örnekleri seviyeye uyarlayarak döndür (tüm seviyelerde geçerli)
+    const { adaptAnswerToLevel, xpForLevel } = await import("@/lib/ai");
     return Response.json({
-      steps: scene.examples.map(ex => ({ prompt: ex, promptTr: "", answer: ex, turkish: "", chips: ex.split(" ").slice(0,2) })),
+      steps: scene.examples.map(ex => ({
+        prompt: ex,
+        promptTr: "",
+        answer: adaptAnswerToLevel(ex, level),
+        turkish: "",
+        chips: ex.split(" ").slice(0, 2),
+        xp: xpForLevel(level),
+        speakerName: scene.npc.name,
+        speakerRole: scene.npc.role,
+        speakerEmoji: scene.npc.emoji,
+      })),
       npcName: scene.npc.name,
       npcRole: scene.npc.role,
       npcEmoji: scene.npc.emoji,
+      offline: true,
     });
   } catch (e: any) {
     return Response.json({ error: e?.message || "error" }, { status: 500 });

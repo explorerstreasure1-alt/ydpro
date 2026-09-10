@@ -17,13 +17,16 @@ export async function GET() {
   });
 }
 
-// POST /api/ai { day, theme, level } -> AI generates fresh dialog for a day
+// POST /api/ai { day, theme, level, target, native } -> AI generates fresh dialog for a day
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const day = Number(body.day || 1);
   const theme = String(body.theme || body.topic || "Havaalanı - Airport");
   const level = String(body.level || "A1");
-  const steps = await generateFullScene(day, theme, level);
+  const { LANGS } = await import("@/lib/levels");
+  const targetName = LANGS.find((l: any) => l.code === String(body.target || body.lang || "en"))?.spoken || "English";
+  const nativeName = LANGS.find((l: any) => l.code === String(body.native || body.nativeLang || "tr"))?.spoken || "Turkish";
+  const steps = await generateFullScene(day, theme, level, targetName, nativeName);
   if (!steps) return Response.json({ error: "AI generation failed, fallback to static" }, { status: 502 });
   return Response.json({ day, theme, level, steps, orchestrator: AI_ORCHESTRATOR.model });
 }

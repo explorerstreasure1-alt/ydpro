@@ -9,13 +9,32 @@ import { speakText } from "@/lib/tts";
 
 type Msg = { role: "ai" | "user"; text: string };
 
+// Hedef dilde açılış selamı — tüm dillerde (sabit İngilizce yerine)
+const GREETINGS: Record<string, string> = {
+  en: "Hi! Welcome — let's talk in English. I'll help you, and I can switch if you get stuck. ✨",
+  de: "Hallo! Willkommen — lass uns auf Deutsch sprechen. Ich helfe dir gerne! ✨",
+  fr: "Salut ! Bienvenue — parlons en français. Je vais t'aider ! ✨",
+  es: "¡Hola! Bienvenido — hablemos en español. ¡Te ayudo! ✨",
+  it: "Ciao! Benvenuto — parliamo in italiano. Ti aiuto io! ✨",
+  ru: "Привет! Давай поговорим по-русски. Я помогу тебе! ✨",
+  zh: "你好！欢迎 — 我们用中文聊吧。我会帮你的！✨",
+  ja: "こんにちは！日本語で話しましょう。お手伝いします！✨",
+  pt: "Olá! Bem-vindo — vamos falar em português. Eu ajudo-te! ✨",
+  ar: "مرحباً! أهلاً بك — لنتحدث بالعربية. سأساعدك! ✨",
+  ko: "안녕하세요! 환영합니다 — 한국어로 대화해요. 도와드릴게요! ✨",
+  nl: "Hoi! Welkom — laten we Nederlands spreken. Ik help je! ✨",
+  tr: "Merhaba! Hoş geldin — Türkçe konuşalım. Sana yardım edeceğim! ✨",
+  pl: "Cześć! Witaj — porozmawiajmy po polsku. Pomogę ci! ✨",
+};
+
 export function RealLife({ back }: { back: () => void }) {
   const store = useStore();
   const { targetLang, nativeLang, targetDef, nativeDef, targetTts, nativeTts } = useLangPair();
+  const greet = (code: string) => GREETINGS[code] || GREETINGS.en;
   const [phase, setPhase] = useState<"topic" | "chat">("topic");
   const [topic, setTopic] = useState<string>("daily");
   const [msgs, setMsgs] = useState<Msg[]>([
-    { role: "ai", text: `Hi! Welcome — let's talk in ${targetDef.spoken}. I'll help you, and I can switch to ${nativeDef.spoken} if you get stuck. ✨` },
+    { role: "ai", text: greet(targetLang) },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -36,9 +55,10 @@ export function RealLife({ back }: { back: () => void }) {
     setSpeaking(true);
     const handle = await startMic({
       lang: targetTts,
+      preferWhisper: true, // aksanlı konuşmada tarayıcı yanlış yazıyor — Whisper birincil
       onResult: (text, isFinal) => {
-        if (text) setInput((p) => (p ? p + " " + text : text));
         if (isFinal && text) sendRaw(text);
+        else if (text) setInput(text);
       },
       onError: () => setSpeaking(false),
       onStart: () => setSpeaking(true),
@@ -96,12 +116,17 @@ export function RealLife({ back }: { back: () => void }) {
   }
 
   function stopChat() {
+    // Gerçek konuşmadan hesaplanan rapor (sabit sahte skorlar yerine)
+    const userMsgs = msgs.filter((m) => m.role === "user");
+    const words = userMsgs.flatMap((m) => m.text.split(/\s+/).filter(Boolean));
+    const avgWords = userMsgs.length ? words.length / userMsgs.length : 0;
+    const clamp = (v: number) => Math.max(5, Math.min(98, Math.round(v)));
     setReport({
-      usage: 84,
-      kelime: 91,
-      dogruluk: 84,
-      telaffuz: 82,
-      akicilik: 76,
+      usage: clamp(45 + userMsgs.length * 9 + avgWords * 3),
+      kelime: clamp(40 + words.length * 1.6),
+      dogruluk: clamp(50 + avgWords * 5 + userMsgs.length * 2),
+      telaffuz: clamp(50 + userMsgs.length * 5),
+      akicilik: clamp(45 + userMsgs.length * 7 + avgWords * 2),
       count: msgs.length - 1,
     });
   }
@@ -123,7 +148,7 @@ export function RealLife({ back }: { back: () => void }) {
           {TALK_TOPICS.map((t) => (
             <button
               key={t.key}
-              onClick={() => { setTopic(t.key); setPhase("chat"); }}
+              onClick={() => { setTopic(t.key); setMsgs([{ role: "ai", text: greet(targetLang) }]); setReport(null); setPhase("chat"); }}
               className="glass rounded-2xl p-4 text-left hover:border-cyan-300/60"
             >
               <div className="text-3xl">{t.emoji}</div>
@@ -168,7 +193,7 @@ export function RealLife({ back }: { back: () => void }) {
             ))}
           </div>
           <p className="mt-4 text-center text-xs text-slate-400">Düzenli konuşarak telaffuzunu ve akıcılığını artırabilirsin.</p>
-          <button onClick={() => { setReport(null); setMsgs([{ role: "ai", text: "Great! Let's keep talking. ne konuşalım? 🎧" }]); }} className="gold-btn mt-4 w-full rounded-2xl py-3">
+          <button onClick={() => { setReport(null); setMsgs([{ role: "ai", text: greet(targetLang) }]); }} className="gold-btn mt-4 w-full rounded-2xl py-3">
             Yeni Konuşma Başlat
           </button>
         </div>

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import { cefrForXp } from "@/lib/levels";
 import { useLangPair } from "@/lib/useLangPair";
-import { speakText } from "@/lib/tts";
+import { speakText, speakMixed } from "@/lib/tts";
 import { sfx } from "@/lib/sfx";
 import { npcPortrait, NPC_FALLBACK } from "@/lib/img";
 import { SceneDef } from "@/lib/scenes";
@@ -50,7 +50,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
             answer: s.answer,
             turkish: s.turkish || s.tr || "",
             chips: s.chips || [],
-            xp: 20,
+            xp: s.xp || 20,
             speakerName: s.speakerName || res.npcName || scene.npc.name,
             speakerRole: s.speakerRole || res.npcRole || scene.npc.role,
             speakerEmoji: s.speakerEmoji || res.npcEmoji || scene.npc.emoji,
@@ -149,15 +149,17 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
 
   function solve(i: number) { setSolved(p => p.includes(i) ? p : [...p, i]); }
 
+  const evalBusy = useRef(false);
   async function evalText(text: string) {
     if (!text.trim() || !cur) return;
+    if (evalBusy.current) return;
+    evalBusy.current = true;
     setLoading(true);
     const res = await fetch("/api/action", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, persona: curPersona, nativeLang, native: nativeLang, targetLang, target: targetLang }),
-    }).then(r => r.json());
-    setLoading(false);
+    }).then(r => r.json()).finally(() => { evalBusy.current = false; setLoading(false); });
     const r = res.res;
     const personaReply: string = r.personaReply || "";
     if (r.correct) {
@@ -167,17 +169,17 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
       setStatus("correct");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Mükemmel! +${cur.xp} XP`);
       solve(idx);
-      if (personaReply) speakText(personaReply, targetTts); else speakText(cur.answer, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts); else speakText(cur.answer, targetTts);
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Yaklaştın! “${cur.answer}”`);
-      if (personaReply) speakText(personaReply, targetTts); else speakText(cur.answer, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts); else speakText(cur.answer, targetTts);
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Hayır öyle değil: “${cur.answer}”`);
-      if (personaReply) speakText(personaReply, targetTts); else speakText(cur.answer, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts); else speakText(cur.answer, targetTts);
     }
   }
 
@@ -189,6 +191,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
     setSpeaking(true);
     const handle = await startMic({
       lang: targetTts,
+      preferWhisper: true, // aksanlı konuşmada tarayıcı yanlış yazıyor — Whisper birincil
       onResult: (text, isFinal) => { if (text) setTyped(text); if (isFinal && text) evalText(text); },
       onError: (type) => { setSpeaking(false); if (type==="not-allowed") setUseTyped(true); },
       onStart: () => { setSpeaking(true); },
@@ -199,6 +202,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
   }
 
   function next() {
+    evalBusy.current = false;
     setStatus("idle"); setMsg(""); setTyped(""); setStep(s=>s+1);
   }
 
@@ -253,6 +257,20 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
         {correct && <div className="animate-pop w-full max-w-sm rounded-2xl bg-emerald-500 px-4 py-3 text-white font-bold">⭐ {msg}</div>}
         {status==="almost" && <div className="w-full max-w-sm rounded-2xl bg-[#0b2940] px-4 py-3 text-cyan-200">💡 {msg}</div>}
         {status==="wrong" && <div className="w-full max-w-sm rounded-2xl bg-[#0b2940] px-4 py-3 text-slate-200">🎯 {msg}</div>}
+        {(status==="wrong"||status==="almost") && typed ? (
+          <div className="w-full max-w-sm rounded-xl bg-white/5 px-3 py-1.5 text-center text-[11px] text-slate-400">🎤 Ben şunu duydum: <span className="font-semibold text-slate-200">“{typed}”</span> — yanlış duyduysam tekrar dene</div>
+        ) : null}
+        {(status==="wrong"||status==="almost") && cur && (
+          <div className="w-full max-w-sm rounded-2xl border border-[#ffd52f]/40 bg-[#0b2940] px-4 py-3 text-left ring-1 ring-white/10">
+            <div className="text-[10px] font-black uppercase tracking-widest text-[#ffd52f]">Doğru cevap • {targetDef?.spoken} orijinal</div>
+            <div className="mt-1 flex items-start gap-2">
+              <p className="flex-1 text-sm font-bold leading-snug text-white">“{cur.answer}”</p>
+              <button onClick={()=>speakText(cur.answer, targetTts)} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xs" title="Orijinal aksanla dinle">🔊</button>
+            </div>
+            <div className="mt-1 text-[11px] text-cyan-200">🔊 Orijinal okunuşla dinle + tekrar et — kelimeler tamamen {targetDef?.spoken}.</div>
+            {cur.turkish ? <div className="mt-1 text-[11px] text-slate-400">🇹 Anlamı: {cur.turkish}</div> : null}
+          </div>
+        )}
         {!correct && (
           <div className="w-full max-w-sm">
             <button onClick={()=> useTyped ? evalText(typed) : record()} disabled={speaking||loading} className="flex w-full items-center gap-3 rounded-2xl border border-cyan-300/40 bg-[#0b2940]/90 px-3 py-3">
@@ -272,7 +290,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
             )}
             {(status==="wrong"||status==="almost") && (
               <div className="mt-2 space-y-2">
-                <button onClick={()=>{setStatus("idle"); setMsg(""); setTyped("");}} className="gold-btn w-full rounded-xl py-3 text-sm">🔄 Tekrar Dene</button>
+                <button onClick={()=>{evalBusy.current=false; setStatus("idle"); setMsg(""); setTyped("");}} className="gold-btn w-full rounded-xl py-3 text-sm">🔄 Tekrar Dene</button>
                 <div className="flex gap-2">
                   <button onClick={()=>speakText(cur.answer, targetTts)} className="ghost-btn flex-1 rounded-xl py-2.5 text-xs">🔊 Doğrusunu dinle</button>
                   <button onClick={()=>{ setStatus("correct"); setTimeout(next, 800); }} className="border border-[#ffd52f]/50 bg-[#ffd52f]/10 rounded-xl px-3 py-2.5 text-xs font-bold text-[#ffd52f]">→ Devam</button>

@@ -19,7 +19,14 @@ export async function POST(req: NextRequest) {
 
   const lesson = await generateLesson(langName, level, topic, nativeName);
   if (!lesson) {
-    return Response.json({ error: "generate failed" }, { status: 502 });
+    // Offline/AI yoksa: ders bölümü ölmesin — seviyeye uyarlanmış taban + offline bayrağı
+    const { offlineLessonSteps } = await import("@/lib/ai");
+    return Response.json({
+      npcName: "Rehber",
+      npcEmoji: "🗣️",
+      steps: offlineLessonSteps(topic, level),
+      offline: true,
+    });
   }
   return Response.json(lesson);
 }

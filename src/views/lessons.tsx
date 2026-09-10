@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import { LANGS, CEFR, TOPICS } from "@/lib/levels";
 import { sfx } from "@/lib/sfx";
-import { speakText } from "@/lib/tts";
+import { speakText, speakMixed } from "@/lib/tts";
 import { useLangPair } from "@/lib/useLangPair";
 import { NPC_FALLBACK, LANG_PHOTO, TOPIC_PHOTO } from "@/lib/img";
 import { IMG } from "@/lib/img";
@@ -48,6 +48,8 @@ export function Lessons({ back }: { back: () => void }) {
   const topicDef = TOPICS.find((t) => t.key === topic)!;
   // cefrDef used in UI below via CEFR.find
   const tts = langDef.tts;
+  const nativeTts = LANGS.find((l) => l.code === native)?.tts || "tr-TR";
+  const evalBusy = useRef(false);
 
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
   const micSupport =
@@ -134,6 +136,8 @@ export function Lessons({ back }: { back: () => void }) {
 
   async function evalText(text: string) {
     if (!cur || !text.trim()) return;
+    if (evalBusy.current) return;
+    evalBusy.current = true;
     setLoading(true);
     // Seviyelerde de her dilde yabancı aksanla düzeltme — persona ile
     const persona = { name: npc.name, role: topicDef.name, emoji: npc.emoji, dayTitle: `${topicDef.name} — ${langDef.spoken}` };
@@ -141,28 +145,28 @@ export function Lessons({ back }: { back: () => void }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, persona, nativeLang: native, native, targetLang: lang, target: lang }),
-    }).then((r) => r.json());
-    setLoading(false);
+    }).then((r) => r.json()).finally(() => { evalBusy.current = false; setLoading(false); });
     const r = res.res as any;
     const personaReply: string = r.personaReply || "";
+    const xpGain = level === "C1" ? 25 : level === "B2" || level === "B1" ? 20 : 15;
     if (r.correct) {
       sfx.correct();
-      await store.post({ type: "answer-free-text-correct", gainedXp: 15 });
-      store.addXpFlash(15);
+      await store.post({ type: "answer-free-text-correct", gainedXp: xpGain });
+      store.addXpFlash(xpGain);
       setStatus("correct");
-      setMsg(personaReply ? `${npc.emoji} ${npc.name}: ${personaReply}` : `Mükemmel! Doğru söyledin. +15 XP`);
+      setMsg(personaReply ? `${npc.emoji} ${npc.name}: ${personaReply}` : `Mükemmel! Doğru söyledin. +${xpGain} XP`);
       solve(idx);
-      if (personaReply) speakText(personaReply, tts); else speak(cur.answer, tts);
+      if (personaReply) speakMixed(personaReply, nativeTts, tts); else speak(cur.answer, tts);
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${npc.emoji} ${npc.name}: ${personaReply}` : `Yaklaştın! Doğrusu: “${cur.answer}”`);
-      if (personaReply) speakText(personaReply, tts); else speak(cur.answer, tts);
+      if (personaReply) speakMixed(personaReply, nativeTts, tts); else speak(cur.answer, tts);
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${npc.emoji} ${npc.name}: ${personaReply}` : `Hayır öyle değil, şöyle diyeceksin: “${cur.answer}” — ${langDef.spoken} orijinal telafuzla dinle`);
-      if (personaReply) speakText(personaReply, tts); else speak(cur.answer, tts);
+      if (personaReply) speakMixed(personaReply, nativeTts, tts); else speak(cur.answer, tts);
     }
     translate(text).then((t) => t && setUserTr(t));
   }
@@ -175,6 +179,7 @@ export function Lessons({ back }: { back: () => void }) {
     setSpeaking(true);
     const handle = await startMic({
       lang: tts,
+      preferWhisper: true, // aksanlı konuşmada tarayıcı yanlış yazıyor — Whisper birincil
       onResult: (text, isFinal) => { if (text) setTyped(text); if (isFinal && text) evalText(text); },
       onError: (type) => { setSpeaking(false); if (type==="not-allowed") setUseTyped(true); },
       onStart: () => setSpeaking(true),
@@ -201,6 +206,7 @@ export function Lessons({ back }: { back: () => void }) {
   }
 
   function next() {
+    evalBusy.current = false;
     setStatus("idle");
     setMsg("");
     setTyped("");
@@ -403,6 +409,20 @@ export function Lessons({ back }: { back: () => void }) {
         )}
         {status === "almost" && <div className="w-full max-w-sm rounded-2xl bg-[#0b2940] px-4 py-3 text-sm font-semibold text-cyan-200 ring-1 ring-cyan-300/30">💡 {msg}</div>}
         {status === "wrong" && <div className="w-full max-w-sm rounded-2xl bg-[#0b2940] px-4 py-3 text-sm font-semibold text-slate-200 ring-1 ring-white/10">🎯 {msg}</div>}
+        {(status === "wrong" || status === "almost") && typed ? (
+          <div className="w-full max-w-sm rounded-xl bg-white/5 px-3 py-1.5 text-center text-[11px] text-slate-400">🎤 Ben şunu duydum: <span className="font-semibold text-slate-200">“{typed}”</span> — yanlış duyduysam tekrar dene</div>
+        ) : null}
+        {(status === "wrong" || status === "almost") && cur && (
+          <div className="w-full max-w-sm rounded-2xl border border-[#ffd52f]/40 bg-[#0b2940] px-4 py-3 text-left ring-1 ring-white/10">
+            <div className="text-[10px] font-black uppercase tracking-widest text-[#ffd52f]">Doğru cevap • {langDef.spoken} orijinal</div>
+            <div className="mt-1 flex items-start gap-2">
+              <p className="flex-1 text-sm font-bold leading-snug text-white">“{cur.answer}”</p>
+              <button onClick={() => speakText(cur.answer, tts)} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xs" title="Orijinal aksanla dinle">🔊</button>
+            </div>
+            <div className="mt-1 text-[11px] text-cyan-200">🔊 Orijinal okunuşla dinle + tekrar et — kelimeler tamamen {langDef.spoken}.</div>
+            {cur.tr ? <div className="mt-1 text-[11px] text-slate-400">🇹 Anlamı: {cur.tr}</div> : null}
+          </div>
+        )}
 
         {!correct && cur && (
           <div className="w-full max-w-sm">
@@ -453,10 +473,20 @@ export function Lessons({ back }: { back: () => void }) {
 
         {cur?.chips && cur.chips.length > 0 && (
           <div className="w-full max-w-sm">
-            <div className="mb-1 text-[11px] font-bold text-slate-300">Yeni kelimeler:</div>
+            <div className="mb-1 flex items-center justify-between">
+              <span className="text-[11px] font-bold text-slate-300">Yeni kelimeler — dokun, hızlı ekle:</span>
+              <span className="text-[10px] text-slate-500">Hızlı pratik</span>
+            </div>
             <div className="flex flex-wrap gap-1.5">
               {cur.chips.map((c) => (
-                <span key={c} className="rounded-full border border-cyan-300/30 bg-[#0b2940]/90 px-2.5 py-1 text-xs font-medium text-cyan-100">{c}</span>
+                <button
+                  key={c}
+                  onClick={() => { setTyped((p) => (p ? p + " " + c : c)); setUseTyped(true); sfx.tap(); }}
+                  className="rounded-full border border-cyan-300/30 bg-[#0b2940]/90 px-2.5 py-1 text-xs font-medium text-cyan-100 hover:bg-cyan-400/20 hover:border-cyan-300/60 transition active:scale-95"
+                  title="Dokun, cümleye ekle — hızlı pratik"
+                >
+                  + {c}
+                </button>
               ))}
             </div>
           </div>

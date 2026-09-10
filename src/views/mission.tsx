@@ -248,6 +248,7 @@ export function Mission({
     setMicState("idle");
     const handle = await startMic({
       lang: targetTts,
+      preferWhisper: true, // aksanlı konuşmada tarayıcı yanlış yazıyor — Whisper birincil
       onResult: (text, isFinal) => {
         if (text) setTyped(text);
         if (isFinal && text) evalText(text);
@@ -391,6 +392,9 @@ export function Mission({
         )}
         {status === "almost" && <div className="w-full max-w-sm rounded-2xl bg-[#0b2940] px-4 py-3 text-sm font-semibold text-cyan-200 ring-1 ring-cyan-300/30">💡 {msg}</div>}
         {status === "wrong" && <div className="w-full max-w-sm rounded-2xl bg-[#0b2940] px-4 py-3 text-sm font-semibold text-slate-200 ring-1 ring-white/10">🎯 {msg}</div>}
+        {(status === "wrong" || status === "almost") && typed ? (
+          <div className="w-full max-w-sm rounded-xl bg-white/5 px-3 py-1.5 text-center text-[11px] text-slate-400">🎤 Ben şunu duydum: <span className="font-semibold text-slate-200">“{typed}”</span> — yanlış duyduysam tekrar dene</div>
+        ) : null}
         {/* 4. aşama DOĞRU CEVAP: asla anadil değil — tamamen hedef dil + orijinal okunuş */}
         {(status === "wrong" || status === "almost") && cur && (
           <div className="w-full max-w-sm rounded-2xl border border-[#ffd52f]/40 bg-[#0b2940] px-4 py-3 text-left ring-1 ring-white/10">

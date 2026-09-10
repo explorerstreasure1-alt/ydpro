@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { BottomNav } from "@/components/nav";
 import { DAYS } from "@/lib/content";
+import { speakText } from "@/lib/tts";
+import { useLangPair } from "@/lib/useLangPair";
 
 export function Memory({ goStart }: { goStart: (d: number) => void }) {
   const [active, setActive] = useState<number | null>(null);
@@ -49,6 +51,7 @@ export function Memory({ goStart }: { goStart: (d: number) => void }) {
 }
 
 function Deck({ dayIndex, onBack }: { dayIndex: number; onBack: () => void }) {
+  const { targetTts, targetDef } = useLangPair();
   const day = DAYS[dayIndex];
   const vocab = day.vocabulary;
   const [i, setI] = useState(0);
@@ -109,6 +112,13 @@ function Deck({ dayIndex, onBack }: { dayIndex: number; onBack: () => void }) {
             <h2 className="mt-1 text-4xl font-black tracking-tight text-white">{w.word.toUpperCase()}</h2>
             <div className="mt-1 text-sm text-cyan-300">{w.pronunciation}</div>
             <div className="text-base font-semibold text-slate-200">({w.translation})</div>
+            <button
+              onClick={() => speakText(`${w.word}. ${(w as any).example || ""}`.trim(), targetTts)}
+              className="ghost-btn mt-2 rounded-xl px-4 py-2 text-xs font-semibold text-cyan-100"
+              title="Orijinal telafuzla dinle"
+            >
+              🔊 Dinle — {targetDef?.spoken} orijinal
+            </button>
             {/* yellow memory band */}
             <div className="mt-4 w-full rounded-2xl bg-[#ffd52f]/15 px-3 py-2.5 ring-1 ring-[#ffd52f]/40">
               <div className="text-[10px] font-bold uppercase tracking-wide text-[#ffd52f]">Hafıza hikâyesi</div>

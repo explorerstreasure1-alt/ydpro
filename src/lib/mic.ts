@@ -8,6 +8,9 @@ export interface MicOptions {
   onError?: (type: string) => void;
   onStart?: () => void;
   onEnd?: () => void;
+  // true ise: tarayıcı sonucu hemen yayınlanmaz, GROQ Whisper yazımı BİRİNCİL olur.
+  // Aksanlı/Portekizce konuşmada tarayıcı emin olup yanlış yazabildiği için önerilir.
+  preferWhisper?: boolean;
 }
 
 let whisperSupported: boolean | null = null;
@@ -101,6 +104,39 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
     try { mediaStream?.getTracks().forEach((t: any) => t.stop()); } catch {}
   };
 
+  // preferWhisper bekleyen SR finali (henüz yayınlanmadı)
+  let whisperPendingText = "";
+
+  // Whisper-birincil final: kaydı yazıya çevir, boşsa SR metnine düş
+  const emitPreferredFinal = async (srText: string) => {
+    if (gotFinal) return;
+    if (mediaRecorder) {
+      try {
+        if (audioChunks.length > 0) {
+          const blobType = mediaRecorder.mimeType || "audio/webm";
+          const blob = new Blob(audioChunks as any, { type: blobType });
+          if (blob.size >= 800) {
+            const wt = await transcribeWithWhisper(blob, opts.lang);
+            if (!gotFinal && wt && wt.trim().length > 1) {
+              whisperDone = true;
+              gotFinal = true;
+              whisperPendingText = "";
+              opts.onResult(wt.trim(), true);
+              stopMedia();
+              return;
+            }
+          }
+        }
+      } catch {}
+    }
+    if (!gotFinal) {
+      gotFinal = true;
+      whisperPendingText = "";
+      opts.onResult(srText, true);
+    }
+    stopMedia();
+  };
+
   const doWhisperFallback = async (isFinal: boolean, srText: string) => {
     if (whisperDone) return;
     // Whisper: SR boş veya düşük güvenliyse, kayıtlı sesi Groq ile dene
@@ -157,8 +193,22 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
       }
       const text = combined.trim();
       const lowConf = minConf < 0.6;
-      if (text) opts.onResult(text, allFinal);
+      if (text && !(allFinal && opts.preferWhisper)) opts.onResult(text, allFinal);
       if (allFinal && text) {
+        if (opts.preferWhisper) {
+          // Whisper birincil: SR finalini BEKLET, kaydı bitir, yazımı Whisper'dan al.
+          // (SR aksanlı konuşmada emin olup yanlış yazabiliyor.)
+          whisperPendingText = text;
+          if (text) opts.onResult(text, false); // ekranda ara metin görünsün
+          if (mediaRecorder && mediaRecorder.state !== "inactive") {
+            try { mediaRecorder.stop(); } catch {}
+          } else {
+            emitPreferredFinal(text);
+          }
+          // Güvenlik: 9sn içinde Whisper dönmezse SR metniyle devam et (takılma yok)
+          setTimeout(() => { if (!gotFinal && whisperPendingText) emitPreferredFinal(whisperPendingText); }, 9000);
+          return;
+        }
         gotFinal = true;
         // Düşük güvenliyse Whisper ile teyit et
         if (lowConf) doWhisperFallback(true, text);
@@ -176,8 +226,17 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
     };
     rec.onend = () => {
       clear();
+      // preferWhisper bekliyorsa onstop halleder — burada çift işlem yapma.
       // SR final verdiyse onu EZME: Whisper sadece SR sonuçsuz kaldıysa devreye girer.
-      // (Önceki sürüm doğru SR sonucunu kötü Whisper ile ezip "doğruyu kabul etmiyor" yapıyordu.)
+      if (whisperPendingText && !gotFinal) {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          try { mediaRecorder.stop(); } catch {}
+        } else {
+          emitPreferredFinal(whisperPendingText);
+        }
+        opts.onEnd?.();
+        return;
+      }
       if (mediaRecorder && mediaRecorder.state !== "inactive") {
         try { mediaRecorder.stop(); } catch {}
         if (!gotFinal) {
@@ -224,6 +283,11 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
   // MediaRecorder Whisper için her durumda dinle
   if (mediaRecorder && hasSR) {
     mediaRecorder.onstop = async () => {
+      // preferWhisper bekleyen final önce — Whisper birincil yazım
+      if (whisperPendingText && !gotFinal) {
+        await emitPreferredFinal(whisperPendingText);
+        return;
+      }
       if (gotFinal) { stopMedia(); return; }
       // SR final gelmediyse Whisper dene
       await doWhisperFallback(true, "");
@@ -240,12 +304,14 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
   return {
     stop: () => {
       clear();
+      whisperPendingText = "";
       try { rec?.stop(); } catch {}
       try { mediaRecorder?.stop(); } catch {}
       stopMedia();
     },
     abort: () => {
       clear();
+      whisperPendingText = "";
       try { rec?.abort?.(); } catch {}
       try { mediaRecorder?.stop(); } catch {}
       stopMedia();

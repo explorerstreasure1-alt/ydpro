@@ -67,18 +67,38 @@ const NUMBER_WORDS: Record<string, string> = {
   eight: "8", nine: "9", ten: "10", eleven: "11", twelve: "12", thirteen: "13", fourteen: "14",
   fifteen: "15", sixteen: "16", seventeen: "17", eighteen: "18", nineteen: "19", twenty: "20",
   thirty: "30",
-  // Portekizce
+  // Portekizce (BR + PT yazımları)
   zero_pt: "0", um: "1", uma: "1", dois: "2", duas: "2", tres: "3", quatro: "4", cinco: "5",
   seis: "6", sete: "7", oito: "8", nove: "9", dez: "10", onze: "11", doze: "12",
+  treze: "13", catorze: "14", quatorze: "14", quinze: "15", dezasseis: "16", dezesseis: "16",
+  dezassete: "17", dezessete: "17", dezoito: "18", dezanove: "19", dezenove: "19", vinte: "20",
+  trinta: "30", quarenta: "40", cinquenta: "50", sessenta: "60", setenta: "70", oitenta: "80",
+  noventa: "90", cem: "100", cento: "100",
   // İspanyolca/Fransızca/Almanca sık sayılar
   uno: "1", dos: "2", drei: "3", vier: "4", funf: "5", un: "1", deux: "2", trois: "3",
 };
 
 /** Konuşma dilindeki kısaltmalar (ASR doğal yazar, ideal tam yazar) */
 const CONTRACTION_MAP: Record<string, string> = {
-  pra: "para", pro: "para", pros: "para", pras: "para", ta: "esta", to: "estou",
-  num: "em", numa: "em", dum: "de", dun: "de", gonna: "going", wanna: "want",
-  gimme: "give", gotta: "got", dunno: "know",
+  // Portekizce konuşma kısaltmaları + edat birleşmeleri (BR + PT)
+  pra: "para", pro: "para", pros: "para", pras: "para", pa: "para",
+  ta: "esta", tas: "estas", to: "estou", tou: "estou", tamos: "estamos",
+  num: "em", numa: "em", nuns: "em", numas: "em", no: "em", na: "em", nos: "em", nas: "em",
+  dum: "de", duma: "de", duns: "de", dumas: "de", do: "de", da: "de", dos: "de", das: "de",
+  pelo: "por", pela: "por", pelos: "por", pelas: "por",
+  neste: "este", nesta: "esta", nesse: "esse", nessa: "essa",
+  // BR ↔ PT kelime varyantları (aynı anlama gelir, ikisi de doğru)
+  telemovel: "__phone", celular: "__phone",
+  autocarro: "__bus", onibus: "__bus",
+  comboio: "__train", trem: "__train",
+  pequeno: "__small", pequenino: "__small",
+  // Cinsiyet çekimi (konuşmacıya göre ikisi de doğru)
+  obrigado: "__thanks", obrigada: "__thanks",
+  // Evet/hayır — tüm dillerde ASR varyantı (simetrik, eşleşmeyi bozmaz)
+  yes: "__yes", sim: "__yes", si: "__yes", oui: "__yes", ja: "__yes",
+  nao: "__no", non: "__no", nein: "__no", nee: "__no",
+  // İngilizce konuşma kısaltmaları
+  gonna: "going", wanna: "want", gimme: "give", gotta: "got", dunno: "know",
 };
 
 function canonToken(t: string): string {
@@ -351,6 +371,26 @@ export function offlineSceneSteps(
       speakerEmoji: useSecondary ? raw.secondaryNpc!.emoji : speakerEmoji,
     };
   });
+}
+
+// Offline konu-dersi tabanı: AI yoksa ders bölümü 502 ile ölmesin diye
+// seviyeye uyarlanmış İngilizce taban adımlar (online'da hedef dilde tazelenir).
+export function offlineLessonSteps(
+  topicName: string,
+  level: string = "A1",
+): { prompt: string; promptTr: string; answer: string; tr: string; chips: string[] }[] {
+  const base = [
+    { prompt: `Hello! What do you like about ${topicName}?`, answer: "I like it very much.", chips: ["like", "very"] },
+    { prompt: "Can you tell me more?", answer: "Yes, of course.", chips: ["yes", "course"] },
+    { prompt: "What do you do every day?", answer: "I practice every day.", chips: ["practice", "every"] },
+  ];
+  return base.map((s) => ({
+    prompt: s.prompt,
+    promptTr: "",
+    answer: adaptAnswerToLevel(s.answer, level),
+    tr: "",
+    chips: s.chips,
+  }));
 }
 
 // --- Persona-based evaluation: AI o serinin konusuna göre kişiliğe bürünür, ana dile göre feedback ---
@@ -635,7 +675,13 @@ Now generate for ${targetLangName} (prompt in ${targetLangName} original, prompt
 }
 
 // --- AI Orchestrator: generate FULL scene dynamically (tüm yapıdan AI sorumlu) ---
-export async function generateFullScene(day: number, theme: string, level: string = "A1"): Promise<AiStep[] | null> {
+export async function generateFullScene(
+  day: number,
+  theme: string,
+  level: string = "A1",
+  targetLangName: string = "English",
+  nativeLangName: string = "Turkish",
+): Promise<AiStep[] | null> {
   if (!client) return null;
   try {
     const params: any = {
@@ -647,10 +693,19 @@ export async function generateFullScene(day: number, theme: string, level: strin
         {
           role: "system",
           content: `You are the SOLE content generator for a gamified language app. Day ${day}, theme: ${theme}, level ${level}.
-Generate 3 fresh immersive dialog steps for this day. Each step: NPC prompt (English, natural, 5-12 words), ideal learner answer (English, ${level} level), Turkish translation, chips (1-3 vocab).
+TARGET: ${targetLangName} (foreign), NATIVE: ${nativeLangName}.
+
+UYGULAMA DÖNGÜSÜ (4 aşama, tüm bölüm/ortam/seviyelerde geçerli):
+1. SORU/GÖREV (Hedef Yabancı Dil): prompt HER ZAMAN ${targetLangName} dilinde soru/senaryo.
+2. KULLANICININ CEVABI: kullanıcı ${targetLangName} dilinde cevap verir.
+3. DÜZELTME (anadil + yabancı aksan): karakter ${nativeLangName} konuşur ama yabancı aksanla, karakter üslubuyla.
+4. DOĞRU CEVAP (asla anadil değil): answer tamamen ${targetLangName} dilinde + orijinal okunuş.
+
+CEFR ${level}: ${level === "A1" ? "2-4 words" : level === "A2" ? "5-8 words" : level === "B1" ? "8-14 words" : level === "B2" ? "12-20 words" : "15-25 words with idioms"}.
+Generate 3 fresh immersive dialog steps. Each step: NPC prompt (${targetLangName}, natural), ideal learner answer (${targetLangName}, ${level} level, NEVER ${nativeLangName}), ${nativeLangName} translation, chips (1-3 ${targetLangName} vocab).
 Return STRICT JSON: {"steps":[{"prompt":"...","answer":"...","turkish":"...","chips":["..."]}]}`
         },
-        { role: "user", content: `Generate day ${day} for ${theme} at ${level}` }
+        { role: "user", content: `Generate day ${day} for ${theme} at ${level} in ${targetLangName} (translations in ${nativeLangName})` }
       ],
     };
     const completion = await callGroq(params);
