@@ -61,16 +61,77 @@ function norm(s: string): string {
     .trim();
 }
 
+/** Sayı kelimesi ↔ rakam denkliği (ASR "twelve" yazar, ideal "12" olabilir) */
+const NUMBER_WORDS: Record<string, string> = {
+  zero: "0", one: "1", two: "2", three: "3", four: "4", five: "5", six: "6", seven: "7",
+  eight: "8", nine: "9", ten: "10", eleven: "11", twelve: "12", thirteen: "13", fourteen: "14",
+  fifteen: "15", sixteen: "16", seventeen: "17", eighteen: "18", nineteen: "19", twenty: "20",
+  thirty: "30",
+  // Portekizce
+  zero_pt: "0", um: "1", uma: "1", dois: "2", duas: "2", tres: "3", quatro: "4", cinco: "5",
+  seis: "6", sete: "7", oito: "8", nove: "9", dez: "10", onze: "11", doze: "12",
+  // İspanyolca/Fransızca/Almanca sık sayılar
+  uno: "1", dos: "2", drei: "3", vier: "4", funf: "5", un: "1", deux: "2", trois: "3",
+};
+
+/** Konuşma dilindeki kısaltmalar (ASR doğal yazar, ideal tam yazar) */
+const CONTRACTION_MAP: Record<string, string> = {
+  pra: "para", pro: "para", pros: "para", pras: "para", ta: "esta", to: "estou",
+  num: "em", numa: "em", dum: "de", dun: "de", gonna: "going", wanna: "want",
+  gimme: "give", gotta: "got", dunno: "know",
+};
+
+function canonToken(t: string): string {
+  let x = (t || "").toLowerCase();
+  if (CONTRACTION_MAP[x]) x = CONTRACTION_MAP[x];
+  if (NUMBER_WORDS[x]) x = NUMBER_WORDS[x];
+  return x;
+}
+
+/** Küçük yazım/ASR farkı (1 harf) — kısa kelimelerde değil */
+function editDistance(a: string, b: string): number {
+  if (a === b) return 0;
+  const m = a.length, n = b.length;
+  if (Math.abs(m - n) > 1) return 99;
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) {
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+
+function stripPlural(t: string): string {
+  if (t.endsWith("ies") && t.length > 4) return t.slice(0, -3) + "y";
+  if (t.endsWith("es") && t.length > 4) return t.slice(0, -2);
+  if (t.endsWith("s") && t.length > 3) return t.slice(0, -1);
+  return t;
+}
+
+function tokensMatch(a: string, b: string): boolean {
+  const ca = canonToken(a), cb = canonToken(b);
+  if (ca === cb) return true;
+  if (stripPlural(ca) === stripPlural(cb)) return true; // ticket≈tickets
+  if (ca.length >= 4 && cb.length >= 4 && editDistance(ca, cb) <= 1) return true; // 1 harf ASR hatası
+  return false;
+}
+
 /**
- * Token overlap similarity 0..1
+ * Token overlap similarity 0..1 — ASR toleranslı (kısaltma/çoğul/1-harf/sayı).
  */
 function similarity(a: string, ideal: string): number {
   const ta = norm(a).split(" ").filter(Boolean);
   const ti = norm(ideal).split(" ").filter(Boolean);
   if (ti.length === 0) return 0;
+  const used = new Array(ti.length).fill(false);
   let hits = 0;
   for (const t of ta) {
-    if (ti.includes(t)) hits++;
+    for (let i = 0; i < ti.length; i++) {
+      if (!used[i] && tokensMatch(t, ti[i])) { used[i] = true; hits++; break; }
+    }
   }
   return hits / ti.length;
 }
@@ -78,11 +139,15 @@ function similarity(a: string, ideal: string): number {
 function fallbackEvaluate(input: string, ideal: string): TeacherResult {
   const n = norm(input);
   const ni = norm(ideal);
+  // Birebir eşleşme (büyük/küçük harf, aksan, noktalama farkı sayılmaz) → direkt kabul
+  if (n && ni && n === ni) {
+    return { score: 100, correct: true, almost: false, verdict: "Mükemmel!", feedback: "Great job! Perfect sentence. 🎉", ideal, pronunciation: 100 };
+  }
   const sim = similarity(input, ideal);
-  // simple fuzzy: allow up to ~25% (1-2 words) deviation
   const injectedScore = Math.round(sim * 100);
-  const correct = sim >= 0.85;
-  const almost = !correct && sim >= 0.55;
+  // Eşikler: doğru ≥0.75 (kısaltma/çoğul/sayı farkı kabul), neredeyse ≥0.45
+  const correct = sim >= 0.75;
+  const almost = !correct && sim >= 0.45;
 
   if (correct) {
     return {
@@ -138,7 +203,8 @@ export async function evaluateAnswer(
 The learner is supposed to say/write approximately: "${ideal}" (${targetLangName}).
 Judge the learner's contribution. Return STRICT JSON only:
 {"score": 0-100, "correct": bool, "almost": bool, "verdict": "one of ${nativeLangName==="Turkish"?"Mükemmel/Yaklaştın/Bir kez daha deneyelim":nativeLangName==="English"?"Perfect/Almost/Try again": "Perfect/Almost/Try again"}", "feedback": "one short, encouraging sentence in ${nativeLangName} (use quotes for the corrected sentence)", "ideal": "${ideal}", "pronunciation": 0-100}
-Be forgiving: a missing tiny word like "a" or slightly different but natural wording counts as correct or almost. Do not be harsh.`,
+Be forgiving: a missing tiny word like "a" or slightly different but natural wording counts as correct or almost. Do not be harsh.
+HARD RULE: if the learner text equals the ideal ignoring case/accents/punctuation (e.g. "ola" vs "olá", "tickets" vs "ticket", "twelve" vs "12", "pra" vs "para"), you MUST return correct:true with score>=85. Never reject a matching answer.`,
         },
         { role: "user", content: input },
       ],
@@ -147,6 +213,11 @@ Be forgiving: a missing tiny word like "a" or slightly different but natural wor
     const completion = await callGroq(params);
     const raw = completion.choices[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
+    // Güvenlik filesi: offline motor birebir kabul ediyorsa GROQ reddedemez
+    const offline = fallbackEvaluate(input, ideal);
+    if (offline.correct && !parsed.correct) {
+      return { ...offline, ideal };
+    }
     return { ...fallbackEvaluate(ideal, ideal), ...parsed, ideal };
   } catch (e) {
     console.error("GROQ eval error", e);
@@ -318,7 +389,8 @@ ASIL CEVAP VE HEDEF DİL KURALLARI (kesin):
 2. Bu yabancı cümle hem yazılı olarak (hedef dilde) hem de o dilin orijinal aksan/fonetik rehberiyle birlikte verilecek (spoken with target native accent).
 3. Asla yabancı dildeki cümleyi ${nativeLangName} kelimelerle kurup yabancı aksanla okumaya çalışmayacaksın. Kelimeler ve gramer tamamen hedef yabancı dilde olacak.
 
-TASK: Judge correct/almost/wrong (forgiving on "a/the").
+TASK: Judge correct/almost/wrong (forgiving on "a/the", plurals, contractions like pra≈para, number words like twelve≈12, 1-letter ASR slips).
+HARD RULE: if the learner text equals the ideal ignoring case/accents/punctuation, you MUST return correct:true with score>=85. Never reject a matching answer.
 Then respond IN CHARACTER as ${persona.name} (${persona.role}) in ${nativeLangName} WITH foreign accent, in that character's style (anne→şefkatli, arkadaş→samimi, patron→resmi, esnaf→samimi), not necessarily as teacher.
 
 Rules:
@@ -337,15 +409,18 @@ Return STRICT JSON only:
     const raw = completion.choices[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
     const base = fallbackEvaluate(input, ideal);
+    // Güvenlik filesi: offline motor birebir/hoşgörülü kabul ediyorsa GROQ reddedemez
+    const finalCorrect = !!parsed.correct || base.correct;
+    const finalAlmost = finalCorrect ? false : (!!parsed.almost || base.almost);
     return {
-      score: typeof parsed.score === "number" ? parsed.score : base.score,
-      correct: !!parsed.correct,
-      almost: !!parsed.almost,
-      verdict: parsed.verdict || base.verdict,
+      score: finalCorrect ? Math.max(typeof parsed.score === "number" ? parsed.score : 0, base.score, 85) : (typeof parsed.score === "number" ? parsed.score : base.score),
+      correct: finalCorrect,
+      almost: finalAlmost,
+      verdict: finalCorrect ? base.verdict === "Mükemmel!" ? (parsed.verdict || base.verdict) : base.verdict : (parsed.verdict || base.verdict),
       feedback: parsed.feedback || base.feedback,
       ideal,
       pronunciation: typeof parsed.pronunciation === "number" ? parsed.pronunciation : base.pronunciation,
-      personaReply: parsed.personaReply || (parsed.correct ? `Tamam, "${ideal}" — aferin!` : `Hayır öyle değil, şöyle diyeceksin: "${ideal}"`),
+      personaReply: parsed.personaReply || offlinePersonaReply({ ...base, correct: finalCorrect, almost: finalAlmost }, ideal, persona, nativeLangName),
     };
   } catch (e) {
     console.error("persona eval error", e);

@@ -176,24 +176,27 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
     };
     rec.onend = () => {
       clear();
-      // SR bitti: ses kaydı varsa Whisper ile ÇİFT KONTROL et (SR yabancı aksanda emin olup yanlış yazabiliyor)
+      // SR final verdiyse onu EZME: Whisper sadece SR sonuçsuz kaldıysa devreye girer.
+      // (Önceki sürüm doğru SR sonucunu kötü Whisper ile ezip "doğruyu kabul etmiyor" yapıyordu.)
       if (mediaRecorder && mediaRecorder.state !== "inactive") {
         try { mediaRecorder.stop(); } catch {}
-        setTimeout(async () => {
-          try {
-            if (audioChunks.length === 0) return;
-            const blobType = mediaRecorder.mimeType || "audio/webm";
-            const blob = new Blob(audioChunks as any, { type: blobType });
-            if (blob.size < 2000) return;
-            const whisperText = await transcribeWithWhisper(blob, opts.lang);
-            if (whisperText && whisperText.trim().length > 1) {
-              opts.onResult(whisperText.trim(), true);
-            }
-          } catch {}
-        }, 400);
+        if (!gotFinal) {
+          setTimeout(async () => {
+            try {
+              if (gotFinal || audioChunks.length === 0) return;
+              const blobType = mediaRecorder.mimeType || "audio/webm";
+              const blob = new Blob(audioChunks as any, { type: blobType });
+              if (blob.size < 2000) return;
+              const whisperText = await transcribeWithWhisper(blob, opts.lang);
+              if (!gotFinal && whisperText && whisperText.trim().length > 1) {
+                opts.onResult(whisperText.trim(), true);
+              }
+            } catch {}
+          }, 400);
+        }
       }
       opts.onEnd?.();
-      // stopMedia mediaRecorder.onstop içinde yapılıyor (çift kontrol bitsin diye burada kapatma)
+      // stopMedia mediaRecorder.onstop içinde yapılıyor
     };
     rec.onspeechend = () => { clear(); try { rec.stop(); } catch {} };
     rec.onnomatch = () => { doWhisperFallback(false, ""); opts.onError?.("no-match"); };

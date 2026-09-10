@@ -182,8 +182,13 @@ export function Mission({
     }
   }
 
+  const evalBusy = useRef(false);
   async function evalText(text: string) {
     if (!text.trim() || !cur) return;
+    // Mikrofon SR+Whisper çift final gönderebilir — ilk değerlendirme bitmeden ikinciyi yoksay
+    // (yoksa doğru sonuç kötü ikinci sonuçla eziliyordu)
+    if (evalBusy.current) return;
+    evalBusy.current = true;
     setLoading(true);
     const native = (store as any).nativeLang as string || "tr";
     const target = (store as any).targetLang as string || "en";
@@ -191,8 +196,7 @@ export function Mission({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, persona: curPersona, nativeLang: native, native, targetLang: target, target }),
-    }).then((r) => r.json());
-    setLoading(false);
+    }).then((r) => r.json()).finally(() => { evalBusy.current = false; setLoading(false); });
     const r = res.res;
     translate(text).then((t) => t && setUserTr(t));
     const personaReply: string = r.personaReply || "";
@@ -286,6 +290,7 @@ export function Mission({
   }
 
   function next() {
+    evalBusy.current = false;
     setStatus("idle");
     setMsg("");
     setTyped("");
