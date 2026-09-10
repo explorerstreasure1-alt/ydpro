@@ -336,7 +336,7 @@ export async function generatePersonaScene(
   targetLangName: string = "English",
   nativeLangName: string = "Turkish"
 ): Promise<{ npcName: string; npcRole: string; npcEmoji: string; steps: (AiStep & {speakerName?:string; speakerRole?:string; speakerEmoji?:string})[]; secondaryNpc?: any } | null> {
-  const cacheKey = `scene:v4:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
+  const cacheKey = `scene:v5:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
   if (sceneCache.has(cacheKey)) return sceneCache.get(cacheKey);
   if (!client) return null;
   try {
@@ -365,12 +365,13 @@ Rules:
 - KEEP personality: if police → strict, anne → warm motherly, patron → professional boss, sevgili → affectionate, garson → polite — but speak ${targetLangName}.
 - CEFR ${level} complexity MUST match: ${level==="A1"?"very short 2-4 words":level==="A2"?"simple 5-8 words":level==="B1"?"connected 8-14 words":level==="B2"?"fluent 12-20 words":"rich 15-25 words with idioms"} in ${targetLangName}.
 - ${hasSecondary ? "For this multi-character scene, ALTERNATE speakers: some steps from primary, some from secondary. Include speakerName/speakerRole/speakerEmoji per step." : "Single speaker, all steps from primary NPC."}
-- Each step: NPC prompt in ${targetLangName} (${level} level, in-character), NPC prompt's ${nativeLangName} translation ("promptTr"), ideal learner answer in ${targetLangName} (${level} level), answer's ${nativeLangName} translation ("turkish"), chips (1-3 vocab in ${targetLangName}, ${level} appropriate).
-- Hızlı pratik, insan gibi: kısa, doğal, günlük hayatta anında kullanılabilir.
+- SÖYLE MEKANİZMASI (örnekteki gibi): "prompt" in ${nativeLangName} (native, ${targetLangName} aksanıyla — hafif bozuk, yabancı hoca gibi), instructing learner to say "answer" in ${targetLangName}. Example if native Turkish & target English: prompt="Toplantının saat 14:00'e ertelendiğini, bu yüzden ofiste olamayacağımı yabancı bir aksanla ve İngilizce olarak söyle." / promptTr same as prompt (already native), answer="I'm afraid the meeting has been postponed to 2:00 PM, so I won't be able to make it to the office in time." / turkish="Toplantı 14:00'e ertelendi, bu yüzden ofiste olamayacağım."
+- Each step: "prompt" in ${nativeLangName} (with ${targetLangName} accent, instructing what to say in ${targetLangName}), "promptTr" same as prompt (native, no translation needed), "answer" in ${targetLangName} (${level} level, original), "turkish" = ${nativeLangName} translation of answer, chips in ${targetLangName}.
+- Hızlı pratik, insan gibi.
 
-Return STRICT JSON with EXAMPLE (if target is Portuguese, native Turkish):
-{"npcName":"Anne Ayşe","npcRole":"Anne","npcEmoji":"👩‍🍳","steps":[{"prompt":"Pode me passar o garfo?","promptTr":"Çatalı uzatır mısın?","answer":"Claro, aqui está.","turkish":"Tabii, işte.","chips":["garfo"],"speakerName":"Anne Ayşe","speakerRole":"Anne","speakerEmoji":"👩‍🍳"}]}
-Now generate for ${targetLangName} (prompt/answer in ${targetLangName}, promptTr/turkish in ${nativeLangName}):
+Return STRICT JSON with EXAMPLE (native Turkish, target English):
+{"npcName":"Öğretmen","npcRole":"Öğretmen","npcEmoji":"👩‍🏫","steps":[{"prompt":"Toplantının saat 14:00'e ertelendiğini, bu yüzden ofiste olamayacağımı yabancı bir aksanla ve İngilizce olarak söyle.","promptTr":"Toplantının saat 14:00'e ertelendiğini, bu yüzden ofiste olamayacağımı yabancı bir aksanla ve İngilizce olarak söyle.","answer":"I'm afraid the meeting has been postponed to 2:00 PM, so I won't be able to make it to the office in time.","turkish":"Toplantı 14:00'e ertelendi, bu yüzden ofiste olamayacağım.","chips":["meeting","postponed"]}] }
+Now generate for ${targetLangName} (prompt/promptTr in ${nativeLangName} with ${targetLangName} accent, answer in ${targetLangName}, turkish in ${nativeLangName}):
 {"npcName":"${content.npcName}","npcRole":"${content.npcRole}","npcEmoji":"${content.npcEmoji}","steps":[{"prompt":"...","promptTr":"...","answer":"...","turkish":"...","chips":["..."],"speakerName":"...","speakerRole":"...","speakerEmoji":"..."}]}`
         },
         { role: "user", content: `Generate fresh Day ${day} dialog, keep ${hasSecondary ? "both characters alternating" : content.npcRole + " personality"}.` }
@@ -463,7 +464,7 @@ export async function generateLesson(
   topicName: string,
   nativeLangName: string = "Turkish",
 ): Promise<{ steps: LessonStep[]; npcName: string; npcEmoji: string } | null> {
-  const cacheKey = `lesson:v2:${langName}:${level}:${topicName}:${nativeLangName}`;
+  const cacheKey = `lesson:v3:${langName}:${level}:${topicName}:${nativeLangName}`;
   if (lessonCache.has(cacheKey)) return lessonCache.get(cacheKey);
   if (!client) return null;
   try {
@@ -479,13 +480,14 @@ export async function generateLesson(
 CEFR level: ${level}. Topic: ${topicName}.
 Native language for translations: ${nativeLangName}.
 Difficulty guide: A1 = 2-4 word simple phrases; A2 = simple everyday sentences; B1 = 2 sentences, more detail; B2 = fluent with opinion; C1 = rich, natural, nuanced.
-Generate exactly 3 conversational turns. For each turn provide:
-- "prompt": what the NPC says, in ${langName} (a question or greeting).
-- "promptTr": natural ${nativeLangName} translation of prompt
-- "answer": the natural short answer the learner should give, in ${langName}, matched to the ${level} level.
-- "tr": the natural ${nativeLangName} translation of that answer (translate into ${nativeLangName}, not Turkish unless native is Turkish).
-- "chips": 1-3 key vocabulary words from the answer (in ${langName}).
-Also provide a fitting native NPC name and a single emoji for the role.
+Generate exactly 3 turns of the "söyle" mechanism for ${nativeLangName} speaker learning ${langName} (CEFR ${level}, topic ${topicName}).
+Mechanism:
+- "prompt": in ${nativeLangName}, spoken with ${langName} accent (hafif bozuk, yabancı hoca gibi), instructing learner what to say in ${langName}. Example if native Turkish & target English: "Toplantının saat 14:00'e ertelendiğini, bu yüzden ofiste olamayacağımı yabancı bir aksanla ve İngilizce olarak söyle."
+- "promptTr": same as prompt (already in ${nativeLangName}, no translation needed, keep same)
+- "answer": in ${langName}, natural, ${level} level, what learner should say. Example: "I'm afraid the meeting has been postponed to 2:00 PM, so I won't be able to make it to the office in time."
+- "tr": natural ${nativeLangName} translation of answer
+- "chips": 1-3 key vocab from answer in ${langName}
+Keep prompt in ${nativeLangName} (with ${langName} accent instruction), answer in ${langName} original.
 Return STRICT JSON only:
 {"npcName":"...","npcEmoji":"...","steps":[{"prompt":"...","promptTr":"...","answer":"...","tr":"...","chips":["..."]}]}
 Keep answers appropriate to the ${level} level. Do not add explanations.`,
