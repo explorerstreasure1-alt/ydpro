@@ -5,7 +5,7 @@ import { useStore } from "@/lib/store";
 import { DAYS } from "@/lib/content";
 import { cefrForXp } from "@/lib/levels";
 import { useLangPair } from "@/lib/useLangPair";
-import { speakText, speakMixed } from "@/lib/tts";
+import { speakText, speakMixed, speakNatural, stopNatural } from "@/lib/tts";
 import { sfx } from "@/lib/sfx";
 import { dayBg, npcPortrait, NPC_FALLBACK } from "@/lib/img";
 
@@ -67,7 +67,8 @@ export function Mission({
   // TÜM seriler + TÜM diller + TÜM seviyeler: AI yoksa bile statik tabanla devam et (takılma yok)
   const steps = aiSteps || staticBase;
   const usingOfflineBase = !aiSteps;
-  const speak = (text: string, lang = targetTts) => speakText(text, lang, { level: cefr.level });
+  // Vurgulu, akıcı okuma — robot gibi tek nefeste değil
+  const speak = (text: string, lang = targetTts) => speakNatural(text, lang, { level: cefr.level });
   // Her açılışta TAZE üretim + görülenleri gönder (asla tekrar yok, devamlı yeni)
   const loadScene = useCallback(async (signal: { cancelled: boolean }) => {
     try {
@@ -146,6 +147,7 @@ export function Mission({
       try {
         rec.current?.abort?.();
       } catch {}
+      stopNatural();
     };
   }, []);
 
@@ -226,19 +228,19 @@ export function Mission({
       // 3. aşama DÜZELTME (anadil + yabancı aksan) + 4. aşama DOĞRU CEVAP (hedef dil orijinal):
       // tırnak içi hedef dille, dışı anadille okunur — her karakter kendi üslubuyla, seviyeye göre hız
       if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level });
-      else speakText(cur.answer, targetTts, { level: cefr.level });
+      else speakNatural(cur.answer, targetTts, { level: cefr.level });
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Yaklaştın! Doğrusu: “${cur.answer}” — bir daha dene.`);
       if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level });
-      else speakText(cur.answer, targetTts, { level: cefr.level });
+      else speakNatural(cur.answer, targetTts, { level: cefr.level });
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Hayır öyle değil, şöyle diyeceksin: “${cur.answer}” — dinle, tekrar et.`);
       if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level });
-      else speakText(cur.answer, targetTts, { level: cefr.level });
+      else speakNatural(cur.answer, targetTts, { level: cefr.level });
     }
     if (r.personaReply) setUserTr(null);
   }
@@ -400,7 +402,7 @@ export function Mission({
             {cur!.promptTr ? (
               <div className="mt-1 flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1">
                 <span className="flex-1">🇹 {cur!.promptTr}</span>
-                <button onClick={() => speakText(cur!.promptTr!, targetTts)} className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-white border border-slate-200 text-[10px] hover:bg-slate-50" title="Anadili hedef aksanla dinle">🔊</button>
+                <button onClick={() => speakNatural(cur!.promptTr!, targetTts, { level: cefr.level })} className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-white border border-slate-200 text-[10px] hover:bg-slate-50" title="Anadili hedef aksanla dinle">🔊</button>
               </div>
             ) : cur!.turkish ? (
               <p className="mt-1 text-[11px] text-slate-500">🇹 {cur!.turkish}</p>
@@ -426,7 +428,7 @@ export function Mission({
             <div className="text-[10px] font-black uppercase tracking-widest text-[#ffd52f]">Doğru cevap • {targetDef?.spoken} orijinal</div>
             <div className="mt-1 flex items-start gap-2">
               <p className="flex-1 text-sm font-bold leading-snug text-white">“{cur.answer}”</p>
-              <button onClick={() => speakText(cur.answer, targetTts)} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xs" title="Orijinal aksanla dinle">🔊</button>
+              <button onClick={() => speakNatural(cur.answer, targetTts, { level: cefr.level })} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xs" title="Orijinal aksanla dinle">🔊</button>
             </div>
             <div className="mt-1 text-[11px] text-cyan-200">🔊 Orijinal okunuşla dinle + tekrar et — kelimeler tamamen {targetDef?.spoken}.</div>
             {cur.turkish ? <div className="mt-1 text-[11px] text-slate-400">🇹 Anlamı: {cur.turkish}</div> : null}
@@ -471,7 +473,7 @@ export function Mission({
                 {cur!.turkish && (
                   <div className="mt-1.5 flex items-center gap-1.5 justify-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20">
                     <span className="flex-1 text-center">🇹 Cevap: {cur!.turkish}</span>
-                    <button onClick={() => speakText(cur!.turkish!, targetTts)} className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-[10px] hover:bg-white/20" title="Anadili hedef aksanla dinle">🔊</button>
+                    <button onClick={() => speakNatural(cur!.turkish!, targetTts, { level: cefr.level })} className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-[10px] hover:bg-white/20" title="Anadili hedef aksanla dinle">🔊</button>
                   </div>
                 )}
 
@@ -525,7 +527,7 @@ export function Mission({
                   🔄 Tekrar Dene — {targetDef?.flag} {targetDef?.spoken}
                 </button>
                 <div className="flex gap-2">
-                  <button onClick={() => speakText(cur!.answer, targetTts)} className="ghost-btn flex-1 rounded-xl py-2.5 text-xs font-semibold text-cyan-100">🔊 Doğrusunu dinle (orijinal)</button>
+                  <button onClick={() => speakNatural(cur!.answer, targetTts, { level: cefr.level })} className="ghost-btn flex-1 rounded-xl py-2.5 text-xs font-semibold text-cyan-100">🔊 Doğrusunu dinle (orijinal)</button>
                   <button onClick={skip} className="rounded-xl border border-[#ffd52f]/50 bg-[#ffd52f]/10 px-3 py-2.5 text-xs font-bold text-[#ffd52f]">→ Dinle ve devam et</button>
                 </div>
               </div>

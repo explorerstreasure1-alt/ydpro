@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
-import { LANGS, CEFR, TOPICS, cefrForXp } from "@/lib/levels";
+import { LANGS, CEFR, TOPICS, cefrForXp, ttsRateForLevel } from "@/lib/levels";
 import { useLangPair } from "@/lib/useLangPair";
 import { speakText } from "@/lib/tts";
 import { sfx } from "@/lib/sfx";
@@ -55,8 +55,11 @@ export function Dialogue({ back }: { back: () => void }) {
   // - Türkçe: sadece satırdaki ikonla, bir kez — tekrar modu yok
   const [playing, setPlaying] = useState(false);
   const [loopMode, setLoopMode] = useState(false);
-  const [playPos, setPlayPos] = useState<{ i: number } | null>(null);
+  const [playPos, setPlayPos] = useState<{ i: number; s: number } | null>(null);
   const playCtl = useRef({ stop: false });
+  // Arka plan: ekran kapansa da okuma sürsün diye sessiz ses + uyanık kilidi
+  const keepAlive = useRef<HTMLAudioElement | null>(null);
+  const wakeRef = useRef<any>(null);
 
   const activeTopic = topic.trim() || "Günlük hayat";
 
@@ -65,6 +68,13 @@ export function Dialogue({ back }: { back: () => void }) {
     try {
       window.speechSynthesis?.cancel();
     } catch {}
+    try {
+      keepAlive.current?.pause();
+    } catch {}
+    try {
+      wakeRef.current?.release?.();
+    } catch {}
+    wakeRef.current = null;
     setPlaying(false);
     setLoopMode(false);
     setPlayPos(null);
@@ -76,27 +86,128 @@ export function Dialogue({ back }: { back: () => void }) {
       try {
         window.speechSynthesis?.cancel();
       } catch {}
+      try {
+        keepAlive.current?.pause();
+      } catch {}
+      try {
+        wakeRef.current?.release?.();
+      } catch {}
     };
   }, []);
 
-  const speakOnce = (text: string, lang: string) =>
-    new Promise<void>((res) => speakText(text, lang, { level, onEnd: () => res() }));
+  // Cümlelere böl — vurgulu okuma + cümle sonu bekleme için
+  function splitSentences(text: string): string[] {
+    const m = String(text || "").match(/[^.!?…؟\n]+[.!?…؟]+["'»”)\]]?|[^.!?…؟\n]+$/g);
+    const parts = (m || [text]).map((s) => s.trim()).filter(Boolean);
+    return parts.length ? parts : [String(text || "")];
+  }
+
+  // Virgül nefesleri — uzun cümleyi doğal soluklarla parçala (vurgu cümlede kalır)
+  function splitPhrases(sentence: string): string[] {
+    const m = String(sentence || "").match(/[^,;:—–،；：]+[,;:—–،；：]?/g);
+    const parts = (m || [sentence]).map((s) => s.trim()).filter(Boolean);
+    return parts.length ? parts : [String(sentence || "")];
+  }
+
+  // Duygu ve bağlam tonu — selam sıcak, teşekkür içten, veda yumuşak (0.8–1.3 bandı)
+  function moodPitch(text: string): number {
+    const x = ` ${String(text || "").toLowerCase()} `;
+    if (/(olá|[^a-z]ola[^a-z]|hola|hello|\bhi\b|hey|bonjour|salut|ciao|hallo|\boi\b|selam|merhaba)/.test(x)) return 1.06;
+    if (/(obrigad|gracias|merci|danke|thank|grazie|bedankt|teşekkür|sağ ol)/.test(x)) return 1.05;
+    if (/(adeus|adi[óo]s|au revoir|arrivederci|tschüss|tschuss|tot ziens|görüşürüz|hoşça kal)/.test(x)) return 0.95;
+    return 1.0;
+  }
+
+  // Ekranı uyanık tut (kilitlenirse bazı tarayıcılar sesi keser) + kilit ekranı bilgisi
+  async function holdAwake() {
+    try {
+      wakeRef.current = await (navigator as any).wakeLock?.request("screen");
+    } catch {}
+    try {
+      const nav = navigator as any;
+      if (nav.mediaSession) {
+        nav.mediaSession.metadata = new MediaMetadata({
+          title: `7DİL • ${activeTopic}`,
+          artist: `${targetDef?.spoken} • ${level} • Tekrar Modu`,
+          album: "Diyalog Stüdyosu",
+        });
+        nav.mediaSession.setActionHandler("pause", () => stopLoop());
+      }
+    } catch {}
+    // Sessiz döngü sesi — işletim sisteminin sayfayı arka planda yaşatmasına yardım eder
+    try {
+      if (!keepAlive.current) {
+        keepAlive.current = new Audio(
+          "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAA"
+        );
+        keepAlive.current.loop = true;
+      }
+      keepAlive.current.volume = 0;
+      const p = keepAlive.current.play() as any;
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } catch {}
+  }
+
+  const speakOnce = (text: string, lang: string, pitch?: number, rate?: number) =>
+    new Promise<void>((res) => speakText(text, lang, { level, pitch, rate, onEnd: () => res() }));
+
+  // Duraklamalı bekleme — sekme gizliyken bile ilerler (kısa adımlarla)
+  const waitGap = (ms: number) =>
+    new Promise<void>((res) => {
+      const t0 = Date.now();
+      const tick = () => {
+        if (playCtl.current.stop || Date.now() - t0 >= ms) res();
+        else setTimeout(tick, 80);
+      };
+      tick();
+    });
 
   // ▶ Dinle: yabancı diyalog bir kez baştan sona — 🇹 Türkçe OTOMATİK çalmaz
-  // 🔁 Tekrar Modu: yabancı diyalog kapatana kadar başa sarıp döner
+  // 🔁 Tekrar Modu: yabancı diyalog kapatana kadar pürüzsüz döngü (başa sararken es verilir)
+  // Dolgun stüdyo okuması: tok perde + konuşmacı ses ayrımı + geniş nefesler + cümle vurgusu
   async function playForeign(loop: boolean) {
     if (!lines || lines.length === 0 || playing) return;
     stopLoop();
     playCtl.current.stop = false;
     setPlaying(true);
     setLoopMode(loop);
+    await holdAwake();
+    const gapMs = level === "A1" || level === "A2" ? 750 : 550;
+    const breathMs = 260;
+    // Konuşmacı ses ayrımı: birinci kişi doğal, ikinci kişi daha tok — iki kişi konuşuyormuş hissi
+    const voiceOf = new Map<string, number>();
+    let voiceCount = 0;
+    const speakerPitch = (name: string) => {
+      if (!voiceOf.has(name)) voiceOf.set(name, voiceCount++);
+      const idx = voiceOf.get(name) || 0;
+      return idx === 0 ? 1.0 : idx === 1 ? 0.9 : 0.95;
+    };
+    // Sıcaklık: hızı %4 kıs (daha tok ve dolgun), perdeyi 0.97 ile yumuşat
+    const warmRate = Math.max(0.8, ttsRateForLevel(level) * 0.96);
     const snapshot = lines;
+    const clampPitch = (p: number) => Math.max(0.8, Math.min(1.3, p));
     do {
       for (let i = 0; i < snapshot.length; i++) {
         if (playCtl.current.stop) break;
-        setPlayPos({ i });
-        await speakOnce(snapshot[i].target_text, targetTts);
+        const sents = splitSentences(snapshot[i].target_text);
+        for (let s = 0; s < sents.length; s++) {
+          if (playCtl.current.stop) break;
+          setPlayPos({ i, s });
+          const t = sents[s];
+          const base = /[?？]$/.test(t) ? 1.15 : /[!！]$/.test(t) ? 1.12 : 0.97;
+          const pitch = clampPitch(base * moodPitch(t) * speakerPitch(snapshot[i].speaker));
+          const phrases = splitPhrases(t);
+          for (let p = 0; p < phrases.length; p++) {
+            if (playCtl.current.stop) break;
+            await speakOnce(phrases[p], targetTts, pitch, warmRate);
+            if (!playCtl.current.stop && p < phrases.length - 1) await waitGap(breathMs);
+          }
+          if (!playCtl.current.stop && s < sents.length - 1) await waitGap(gapMs);
+        }
+        if (!playCtl.current.stop) await waitGap(350);
       }
+      // Kusursuz döngü: başa sararken üst üste binmesin diye es ver (çıt-pıt yok)
+      if (loop && !playCtl.current.stop) await waitGap(800);
     } while (loop && !playCtl.current.stop);
     setPlaying(false);
     setLoopMode(false);
@@ -292,6 +403,7 @@ export function Dialogue({ back }: { back: () => void }) {
             <div className="mt-2 space-y-2">
               {lines.map((l, i) => {
                 const active = playing && playPos?.i === i;
+                const sents = active || playing ? splitSentences(l.target_text) : [l.target_text];
                 return (
                   <div
                     key={i}
@@ -304,8 +416,19 @@ export function Dialogue({ back }: { back: () => void }) {
                         {l.speaker}
                       </span>
                       <p className="flex-1 text-sm font-semibold text-white">
-                        {active ? "🔊 " : ""}
-                        {l.target_text}
+                        {sents.map((s, si) => (
+                          <span
+                            key={si}
+                            className={
+                              active && playPos?.s === si
+                                ? "rounded bg-[#ffd52f]/25 text-[#ffd52f]"
+                                : undefined
+                            }
+                          >
+                            {active && playPos?.s === si ? "🔊 " : ""}
+                            {s}{" "}
+                          </span>
+                        ))}
                       </p>
                       <button
                         onClick={() => speakLine(l.target_text)}

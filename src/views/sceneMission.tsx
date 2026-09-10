@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import { cefrForXp } from "@/lib/levels";
 import { useLangPair } from "@/lib/useLangPair";
-import { speakText, speakMixed } from "@/lib/tts";
+import { speakText, speakMixed, speakNatural, stopNatural } from "@/lib/tts";
 import { getSeen, addSeen } from "@/lib/seen";
 import { sfx } from "@/lib/sfx";
 import { npcPortrait, NPC_FALLBACK } from "@/lib/img";
@@ -123,7 +123,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
   const micSupport = typeof window !== "undefined" && (Boolean((window as any).SpeechRecognition) || Boolean((window as any).webkitSpeechRecognition));
 
-  const speak = useCallback((text: string, lang = targetTts) => speakText(text, lang, { level: cefr.level }), [targetTts, cefr.level]);
+  const speak = useCallback((text: string, lang = targetTts) => speakNatural(text, lang, { level: cefr.level }), [targetTts, cefr.level]);
 
   const idx = steps ? Math.min(step, steps.length - 1) : 0;
   const cur = (steps ? steps[idx] : null) as RStep | null;
@@ -135,7 +135,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
   }, [step, cur, cur?.prompt, targetTts, status, speak]);
 
   useEffect(() => {
-    return () => { try { rec.current?.abort?.(); } catch {} };
+    return () => { try { rec.current?.abort?.(); } catch {} stopNatural(); };
   }, []);
 
   useEffect(() => {
@@ -185,17 +185,17 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
       setStatus("correct");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Mükemmel! +${cur.xp} XP`);
       solve(idx);
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level }); else speakText(cur.answer, targetTts, { level: cefr.level });
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level }); else speakNatural(cur.answer, targetTts, { level: cefr.level });
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Yaklaştın! “${cur.answer}”`);
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level }); else speakText(cur.answer, targetTts, { level: cefr.level });
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level }); else speakNatural(cur.answer, targetTts, { level: cefr.level });
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Hayır öyle değil: “${cur.answer}”`);
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level }); else speakText(cur.answer, targetTts, { level: cefr.level });
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level }); else speakNatural(cur.answer, targetTts, { level: cefr.level });
     }
   }
 
@@ -274,8 +274,8 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
               <span className="text-[10px] text-slate-400">{curPersona.role}</span>
               <p className="text-sm font-semibold">{cur.prompt}</p>
             </div>
-            {cur.promptTr && <div className="mt-1 flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1"><span className="flex-1">🇹 {cur.promptTr}</span><button onClick={() => speakText(cur.promptTr!, targetTts)} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white border text-[10px]">🔊</button></div>}
-            <button onClick={() => speakText(cur.prompt, targetTts)} className="mt-1 flex items-center gap-1 text-[10px] font-bold text-slate-500">🔊 Hızlı dinle — {targetDef.spoken} orijinal</button>
+            {cur.promptTr && <div className="mt-1 flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1"><span className="flex-1">🇹 {cur.promptTr}</span><button onClick={() => speakNatural(cur.promptTr!, targetTts, { level: cefr.level })} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white border text-[10px]">🔊</button></div>}
+            <button onClick={() => speak(cur.prompt, targetTts)} className="mt-1 flex items-center gap-1 text-[10px] font-bold text-slate-500">🔊 Hızlı dinle — {targetDef.spoken} orijinal</button>
           </div>
         )}
         {correct && <div className="animate-pop w-full max-w-sm rounded-2xl bg-emerald-500 px-4 py-3 text-white font-bold">⭐ {msg}</div>}
@@ -289,7 +289,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
             <div className="text-[10px] font-black uppercase tracking-widest text-[#ffd52f]">Doğru cevap • {targetDef?.spoken} orijinal</div>
             <div className="mt-1 flex items-start gap-2">
               <p className="flex-1 text-sm font-bold leading-snug text-white">“{cur.answer}”</p>
-              <button onClick={()=>speakText(cur.answer, targetTts)} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xs" title="Orijinal aksanla dinle">🔊</button>
+              <button onClick={()=>speakNatural(cur.answer, targetTts, { level: cefr.level })} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xs" title="Orijinal aksanla dinle">🔊</button>
             </div>
             <div className="mt-1 text-[11px] text-cyan-200">🔊 Orijinal okunuşla dinle + tekrar et — kelimeler tamamen {targetDef?.spoken}.</div>
             {cur.turkish ? <div className="mt-1 text-[11px] text-slate-400">🇹 Anlamı: {cur.turkish}</div> : null}
@@ -301,10 +301,10 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
               <span className={`h-12 w-12 rounded-full bg-[#00bfff] flex items-center justify-center text-xl ${speaking ? "animate-glowpulse":""}`}>🎙</span>
               <span className="flex-1 text-left text-white font-semibold">{speaking ? "Dinliyorum..." : typed || cur.answer}</span>
             </button>
-            {cur.turkish && <div className="mt-1.5 flex items-center gap-1.5 justify-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20"><span className="flex-1 text-center">🇹 Cevap: {cur.turkish}</span><button onClick={() => speakText(cur.turkish!, targetTts)} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white/10 text-[10px]">🔊</button></div>}
+            {cur.turkish && <div className="mt-1.5 flex items-center gap-1.5 justify-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20"><span className="flex-1 text-center">🇹 Cevap: {cur.turkish}</span><button onClick={() => speakNatural(cur.turkish!, targetTts, { level: cefr.level })} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white/10 text-[10px]">🔊</button></div>}
             <div className="mt-2 flex gap-2">
               <button onClick={()=>setUseTyped(!useTyped)} className={`flex-1 rounded-xl py-2 text-xs font-semibold ${useTyped?"gold-btn":"ghost-btn text-slate-200"}`}>{useTyped?"✍️ Yazılı":"🎤 Sesli"}</button>
-              <button onClick={()=>speakText(cur.answer, targetTts)} className="ghost-btn px-3 py-2 text-xs">🔊</button>
+              <button onClick={()=>speakNatural(cur.answer, targetTts, { level: cefr.level })} className="ghost-btn px-3 py-2 text-xs">🔊</button>
             </div>
             {useTyped && (
               <div className="mt-2 flex gap-2">
@@ -316,7 +316,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
               <div className="mt-2 space-y-2">
                 <button onClick={()=>{evalBusy.current=false; setStatus("idle"); setMsg(""); setTyped("");}} className="gold-btn w-full rounded-xl py-3 text-sm">🔄 Tekrar Dene</button>
                 <div className="flex gap-2">
-                  <button onClick={()=>speakText(cur.answer, targetTts)} className="ghost-btn flex-1 rounded-xl py-2.5 text-xs">🔊 Doğrusunu dinle</button>
+                  <button onClick={()=>speakNatural(cur.answer, targetTts, { level: cefr.level })} className="ghost-btn flex-1 rounded-xl py-2.5 text-xs">🔊 Doğrusunu dinle</button>
                   <button onClick={()=>{ setStatus("correct"); setTimeout(next, 800); }} className="border border-[#ffd52f]/50 bg-[#ffd52f]/10 rounded-xl px-3 py-2.5 text-xs font-bold text-[#ffd52f]">→ Devam</button>
                 </div>
               </div>

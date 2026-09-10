@@ -1,11 +1,11 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import { BottomNav } from "@/components/nav";
 import { IMG } from "@/lib/img";
 import { TALK_TOPICS } from "@/lib/content";
 import { useLangPair } from "@/lib/useLangPair";
-import { speakText } from "@/lib/tts";
+import { speakNatural, stopNatural } from "@/lib/tts";
 
 type Msg = { role: "ai" | "user"; text: string };
 
@@ -43,6 +43,15 @@ export function RealLife({ back }: { back: () => void }) {
   const [engine, setEngine] = useState<"browser" | "whisper" | null>(null);
   const [transMap, setTransMap] = useState<Record<number, string>>({});
   const rec = useRef<any>(null);
+
+  useEffect(() => {
+    return () => {
+      try {
+        rec.current?.abort?.();
+      } catch {}
+      stopNatural();
+    };
+  }, []);
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
   const micSupport =
     typeof window !== "undefined" &&
@@ -115,7 +124,7 @@ export function RealLife({ back }: { back: () => void }) {
   }
 
   function speak(text: string) {
-    speakText(text, targetTts);
+    speakNatural(text, targetTts);
   }
 
   function stopChat() {

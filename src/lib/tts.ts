@@ -18,6 +18,8 @@ export interface SpeakOpts {
   level?: string;
   /** Açık hız — verilirse seviye kuralını ezer */
   rate?: number;
+  /** Perde — soru/ünlem vurgusu için (varsayılan 1.0) */
+  pitch?: number;
   /** Okuma bitince (veya hatada) çağrılır — zincirleme oynatma için */
   onEnd?: () => void;
 }
@@ -29,6 +31,59 @@ export function rateForLevel(level?: string): number {
   if (level === "B1") return 1.0;
   if (level === "B2") return 1.05;
   return 1.12;
+}
+
+/**
+ * Dil başına bilinen en net sesler (Apple/Windows/Android kaliteli ses adları).
+ * Cihazda hangisi kuruluysa o kazanır — yoksa genel neural puanlamaya düşer.
+ */
+const PREFERRED_VOICES: Record<string, string[]> = {
+  en: ["google us english", "aria", "jenny", "guy", "samantha", "daniel", "moira", "tessa", "google uk english"],
+  tr: ["emel", "google türkçe", "google turkish"],
+  de: ["katja", "conrad", "anna", "google deutsch", "hedda"],
+  fr: ["amelie", "amélie", "thomas", "google français", "google francais", "hortense"],
+  es: ["monica", "mónica", "jorge", "paulina", "google español", "google espanol", "sabina"],
+  it: ["alice", "luca", "google italiano", "elsa", "isabella"],
+  pt: ["joana", "luciana", "google português", "google portugues", "ines", "inês"],
+  ru: ["milena", "yuri", "google русский", "google russkiy", "katya"],
+  nl: ["xander", "ellen", "google nederlands", "frank"],
+  pl: ["zosia", "paulina", "google polski"],
+  zh: ["tingting", "xiaoxiao", "yunxi", "meijia", "yaoyao", "google 普通话", "google putonghua"],
+  ja: ["kyoko", "otoya", "haruka", "nanami", "google 日本語", "google nihongo"],
+  ko: ["yuna", "sunhi", "injoon", "google 한국어"],
+  ar: ["maged", "tarik", "laila", "hoda", "salim", "google العربية"],
+};
+
+/**
+ * En doğal sesi seç — önce dile özel en net ses, sonra Neural/Natural/Premium
+ * motorlar (robotik tonlardan uzak). Puanlama: dil + bilinen ses + motor kalitesi.
+ */
+export function pickBestVoice(voices: any[], lang: string): any | null {
+  if (!voices || voices.length === 0) return null;
+  const code = lang.split("-")[0].toLowerCase();
+  const full = lang.toLowerCase();
+  const preferred = PREFERRED_VOICES[code] || [];
+  let best: any = null;
+  let bestScore = -1;
+  for (const v of voices) {
+    const vl = String(v.lang || "").toLowerCase();
+    const nm = String(v.name || "").toLowerCase();
+    let s = 0;
+    if (vl === full) s += 4;
+    else if (vl.startsWith(code)) s += 2;
+    else if (nm.includes(code)) s += 1;
+    else continue; // başka dilin sesi asla
+    if (preferred.some((p) => nm.includes(p))) s += 5;
+    if (/neural|natural|premium|enhanced|high quality/.test(nm)) s += 3;
+    if (/google/.test(nm)) s += 2;
+    if (/microsoft|apple|samsung/.test(nm)) s += 1;
+    if (/compact|legacy|basic|robot|espeak|festival/.test(nm)) s -= 3;
+    if (s > bestScore) {
+      bestScore = s;
+      best = v;
+    }
+  }
+  return best;
 }
 
 export function speakText(text: string, lang: string, opts?: SpeakOpts) {
@@ -58,14 +113,12 @@ export function speakText(text: string, lang: string, opts?: SpeakOpts) {
         } else rate = found.voiceRate || 1.12;
       } catch {}
       u.rate = rate;
-      u.pitch = 1.0;
+      u.pitch = opts?.pitch ?? 1.0;
       u.volume = 1;
       const voices = voicesCache.length ? voicesCache : (synth.getVoices?.() || []);
       if (!voicesCache.length && voices.length) voicesCache = voices;
-      const best =
-        voices.find((v: any) => v.lang.toLowerCase() === lang.toLowerCase()) ||
-        voices.find((v: any) => v.lang.toLowerCase().startsWith(lang.split("-")[0].toLowerCase())) ||
-        voices.find((v: any) => v.name.toLowerCase().includes(lang.split("-")[0].toLowerCase()));
+      // Neural/doğal ses öncelikli seçim (robotik tonlardan uzak)
+      const best = pickBestVoice(voices, lang);
       if (best) (u as any).voice = best;
       // Zincirleme oynatma: bitince veya hatada tek sefer çöz
       let done = false;
@@ -126,10 +179,7 @@ export function speakMixed(text: string, nativeLang: string, targetLang: string,
       u.lang = p.lang;
       u.rate = levelRate;
       u.pitch = 1.0;
-      const best =
-        voices.find((v: any) => v.lang.toLowerCase() === p.lang.toLowerCase()) ||
-        voices.find((v: any) => v.lang.toLowerCase().startsWith(p.lang.split("-")[0].toLowerCase())) ||
-        voices.find((v: any) => v.name.toLowerCase().includes(p.lang.split("-")[0].toLowerCase()));
+      const best = pickBestVoice(voices, p.lang);
       if (best) (u as any).voice = best;
       u.onend = () => setTimeout(()=>speakPart(idx + 1), 60);
       // @ts-ignore
@@ -138,6 +188,115 @@ export function speakMixed(text: string, nativeLang: string, targetLang: string,
     };
     speakPart(0);
   } catch {}
+}
+
+/** Cümlelere böl — vurgulu okuma için (CJK/Arapça noktalama dahil) */
+export function splitSentences(text: string): string[] {
+  const m = String(text || "").match(/[^.!?…؟\n。！？]+[.!?…؟。！？]+["'»”)\]]?|[^.!?…؟\n。！？]+$/g);
+  const parts = (m || [text]).map((s) => s.trim()).filter(Boolean);
+  return parts.length ? parts : [String(text || "")];
+}
+
+/** Virgül nefesleri — uzun cümleyi doğal soluklarla parçala */
+export function splitPhrases(sentence: string): string[] {
+  const m = String(sentence || "").match(/[^,;:—–،；：、]+[,;:—–،；：、]?/g);
+  const parts = (m || [sentence]).map((s) => s.trim()).filter(Boolean);
+  return parts.length ? parts : [String(sentence || "")];
+}
+
+let naturalToken = 0;
+
+/** Vurgulu okumayı durdur (yeni okuma otomatik durdurur, bu ek güvenlik/temizlik için) */
+export function stopNatural() {
+  naturalToken++;
+  try {
+    (window.speechSynthesis as any)?.cancel();
+  } catch {}
+}
+
+export interface NaturalOpts extends SpeakOpts {
+  /** Cümle sonu bekleme (ms) — verilmezse seviyeye göre */
+  gapMs?: number;
+  /** Virgül nefesi (ms) */
+  breathMs?: number;
+  /** Bitişte çağrılır */
+  onDone?: () => void;
+}
+
+/**
+ * Vurgulu, akıcı, insansı okuma — robot gibi tek nefeste değil:
+ * cümle cümle + virgül nefesleri, soru/ünlem perdesi, cümle sonu bekleme,
+ * dile özel en net ses. Yeni çağrı öncekini keser (üst üste binme yok).
+ */
+export function speakNatural(text: string, lang: string, opts?: NaturalOpts) {
+  if (typeof window === "undefined") return;
+  const synth = window.speechSynthesis as any;
+  if (!synth || !text) return;
+  const my = ++naturalToken;
+  try {
+    synth.cancel();
+  } catch {}
+  const rate = opts?.rate ?? rateForLevel(opts?.level);
+  const gapMs = opts?.gapMs ?? (opts?.level === "A1" || opts?.level === "A2" ? 600 : 400);
+  const breathMs = opts?.breathMs ?? 200;
+  const voices = voicesCache.length ? voicesCache : synth.getVoices?.() || [];
+  if (!voicesCache.length && voices.length) voicesCache = voices;
+  const voice = pickBestVoice(voices, lang);
+
+  const speakOne = (t: string, pitch: number) =>
+    new Promise<void>((res) => {
+      if (my !== naturalToken) return res();
+      try {
+        const u = new SpeechSynthesisUtterance(t);
+        u.lang = lang;
+        u.rate = rate;
+        u.pitch = pitch;
+        u.volume = 1;
+        if (voice) (u as any).voice = voice;
+        let done = false;
+        const fin = () => {
+          if (done) return;
+          done = true;
+          res();
+        };
+        u.onend = fin;
+        // @ts-ignore
+        u.onerror = fin;
+        synth.speak(u);
+        setTimeout(fin, Math.min(12000, 2000 + t.length * 120));
+      } catch {
+        res();
+      }
+    });
+
+  const wait = (ms: number) =>
+    new Promise<void>((res) => {
+      const t0 = Date.now();
+      const tick = () => {
+        if (my !== naturalToken || Date.now() - t0 >= ms) res();
+        else setTimeout(tick, 80);
+      };
+      tick();
+    });
+
+  (async () => {
+    const sents = splitSentences(text);
+    for (let s = 0; s < sents.length; s++) {
+      if (my !== naturalToken) return;
+      const t = sents[s];
+      const pitch = /[?？]$/.test(t) ? 1.15 : /[!！]$/.test(t) ? 1.1 : 1.0;
+      const phrases = splitPhrases(t);
+      for (let p = 0; p < phrases.length; p++) {
+        if (my !== naturalToken) return;
+        await speakOne(phrases[p], pitch);
+        if (my !== naturalToken) return;
+        if (p < phrases.length - 1) await wait(breathMs);
+      }
+      if (s < sents.length - 1) await wait(gapMs);
+    }
+    if (my === naturalToken) opts?.onDone?.();
+    if (my === naturalToken) opts?.onEnd?.();
+  })();
 }
 
 export function getTtsFor(code: string, fallback = "en-GB") {
