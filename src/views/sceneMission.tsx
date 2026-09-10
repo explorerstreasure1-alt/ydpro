@@ -119,6 +119,8 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
   const [loading, setLoading] = useState(false);
   const [solved, setSolved] = useState<number[]>([]);
   const [engine, setEngine] = useState<"browser" | "whisper" | null>(null);
+  // Tüm hook'lar early return'den ÖNCE olmalı (Rules of Hooks) — evalBusy burada!
+  const evalBusy = useRef(false);
   const rec = useRef<any>(null);
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
   const micSupport = typeof window !== "undefined" && (Boolean((window as any).SpeechRecognition) || Boolean((window as any).webkitSpeechRecognition));
@@ -165,7 +167,6 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
 
   function solve(i: number) { setSolved(p => p.includes(i) ? p : [...p, i]); }
 
-  const evalBusy = useRef(false);
   async function evalText(text: string) {
     if (!text.trim() || !cur) return;
     if (evalBusy.current) return;
