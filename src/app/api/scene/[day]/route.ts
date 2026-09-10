@@ -55,6 +55,27 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ day:
         aiSteps = personaScene.steps;
       }
     } catch {}
+    // Offline / AI yoksa: TÜM seriler + TÜM seviyeler için takılmayan taban adımlar
+    if (!aiSteps) {
+      try {
+        const { offlineSceneSteps } = await import("@/lib/ai");
+        const steps = offlineSceneSteps(raw as any, level);
+        // Anadil çevirileri eksikse AI çeviriyle tamamla (varsa), yoksa boş bırak
+        try {
+          const { translateTo } = await import("@/lib/ai");
+          for (const s of steps as any[]) {
+            if (!s.promptTr) {
+              try { s.promptTr = await translateTo(s.prompt, nativeName) || ""; } catch { s.promptTr = ""; }
+            }
+            if (!s.turkish) {
+              try { s.turkish = await translateTo(s.answer, nativeName) || ""; } catch { s.turkish = ""; }
+            }
+          }
+        } catch {}
+        aiSteps = steps;
+        personaScene = { npcName: raw.npcName, npcRole: raw.npcRole, npcEmoji: raw.npcEmoji, steps, offline: true };
+      } catch {}
+    }
     return Response.json({
       scene: raw,
       status: Number(day) <= 2 ? "open" : "locked",
@@ -95,15 +116,39 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ day:
     learned: false,
   }));
 
+  // DB modunda da AI persona sahne üretimi (tüm seriler + seviyeler + diller)
+  let npcName = raw.npcName;
+  let npcRole = raw.npcRole;
+  let npcEmoji = raw.npcEmoji;
+  let aiSteps: any = null;
+  let personaScene: any = null;
+  try {
+    const { generatePersonaScene, offlineSceneSteps } = await import("@/lib/ai");
+    personaScene = await generatePersonaScene(Number(day), raw as any, level, targetName, nativeName);
+    if (personaScene?.steps?.length) {
+      aiSteps = personaScene.steps;
+      npcName = personaScene.npcName || npcName;
+      npcRole = personaScene.npcRole || npcRole;
+      npcEmoji = personaScene.npcEmoji || npcEmoji;
+    } else {
+      const steps = offlineSceneSteps(raw as any, level);
+      aiSteps = steps;
+      personaScene = { npcName, npcRole, npcEmoji, steps, offline: true };
+    }
+  } catch {}
+
   return Response.json({
     scene: raw, // full structured content for the dialog player
     status: prog[0]?.status ?? "locked",
     dbOptions: opts,
     vocabulary: vocab,
     npcLine: raw.dialog[0].line,
-    npcName: raw.npcName,
-    npcRole: raw.npcRole,
-    npcEmoji: raw.npcEmoji,
+    npcName,
+    npcRole,
+    npcEmoji,
     heading: `${day}. Gün — ${raw.title}`,
+    aiSteps,
+    personaScene,
+    aiOrchestrator: true,
   });
 }

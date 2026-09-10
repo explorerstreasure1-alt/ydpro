@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       const nativeName = LANGS.find((l:any)=>l.code===nativeCode)?.spoken || "Turkish";
       const targetName = LANGS.find((l:any)=>l.code===targetCode)?.spoken || "English";
       const res = body.persona
-        ? await evaluateWithPersona(text, ideal, body.persona as any, nativeName)
+        ? await evaluateWithPersona(text, ideal, body.persona as any, nativeName, targetName)
         : await evaluateAnswer(text, ideal, undefined, nativeName, targetName);
       return Response.json({ res });
     }
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       const nativeName = LANGS.find((l:any)=>l.code===nativeCode)?.spoken || "Turkish";
       const targetName = LANGS.find((l:any)=>l.code===targetCode)?.spoken || "English";
       const res = body.persona
-        ? await evaluateWithPersona(text, ideal, body.persona as any, nativeName)
+        ? await evaluateWithPersona(text, ideal, body.persona as any, nativeName, targetName)
         : await evaluateAnswer(text, ideal, undefined, nativeName, targetName);
       return Response.json({ res });
     }

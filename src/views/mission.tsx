@@ -62,7 +62,9 @@ export function Mission({
   const staticBase = staticSteps(day);
   const { nativeLang, targetLang, nativeDef, targetDef, targetTts, nativeTts } = useLangPair();
   const cefr = cefrForXp(store.user?.xp || 0);
-  const steps = aiSteps || (targetLang === "en" ? staticBase : null);
+  // TÜM seriler + TÜM diller + TÜM seviyeler: AI yoksa bile statik tabanla devam et (takılma yok)
+  const steps = aiSteps || staticBase;
+  const usingOfflineBase = !aiSteps;
   const speak = (text: string, lang = targetTts) => speakText(text, lang);
   useEffect(() => {
     let cancelled = false;
@@ -201,20 +203,21 @@ export function Mission({
       setStatus("correct");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Mükemmel! Doğru söyledin. +${cur.xp} XP`);
       solve(idx);
-      // Telaffuz: hatayı düzeltirken TÜRKÇE'yi YABANCI AKSANLA + yabancı cümleyi ORİJİNAL aksanla
-      if (personaReply) speakText(personaReply, targetTts);
+      // 3. aşama DÜZELTME (anadil + yabancı aksan) + 4. aşama DOĞRU CEVAP (hedef dil orijinal):
+      // tırnak içi hedef dille, dışı anadille okunur — her karakter kendi üslubuyla
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
       else speakText(cur.answer, targetTts);
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Yaklaştın! Doğrusu: “${cur.answer}” — bir daha dene.`);
-      if (personaReply) speakText(personaReply, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
       else speakText(cur.answer, targetTts);
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Hayır öyle değil, şöyle diyeceksin: “${cur.answer}” — dinle, tekrar et.`);
-      if (personaReply) speakText(personaReply, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
       else speakText(cur.answer, targetTts);
     }
     if (r.personaReply) setUserTr(null);
@@ -383,6 +386,21 @@ export function Mission({
         )}
         {status === "almost" && <div className="w-full max-w-sm rounded-2xl bg-[#0b2940] px-4 py-3 text-sm font-semibold text-cyan-200 ring-1 ring-cyan-300/30">💡 {msg}</div>}
         {status === "wrong" && <div className="w-full max-w-sm rounded-2xl bg-[#0b2940] px-4 py-3 text-sm font-semibold text-slate-200 ring-1 ring-white/10">🎯 {msg}</div>}
+        {/* 4. aşama DOĞRU CEVAP: asla anadil değil — tamamen hedef dil + orijinal okunuş */}
+        {(status === "wrong" || status === "almost") && cur && (
+          <div className="w-full max-w-sm rounded-2xl border border-[#ffd52f]/40 bg-[#0b2940] px-4 py-3 text-left ring-1 ring-white/10">
+            <div className="text-[10px] font-black uppercase tracking-widest text-[#ffd52f]">Doğru cevap • {targetDef?.spoken} orijinal</div>
+            <div className="mt-1 flex items-start gap-2">
+              <p className="flex-1 text-sm font-bold leading-snug text-white">“{cur.answer}”</p>
+              <button onClick={() => speakText(cur.answer, targetTts)} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xs" title="Orijinal aksanla dinle">🔊</button>
+            </div>
+            <div className="mt-1 text-[11px] text-cyan-200">🔊 Orijinal okunuşla dinle + tekrar et — kelimeler tamamen {targetDef?.spoken}.</div>
+            {cur.turkish ? <div className="mt-1 text-[11px] text-slate-400">🇹 Anlamı: {cur.turkish}</div> : null}
+          </div>
+        )}
+        {usingOfflineBase && targetLang !== "en" && status === "idle" && (
+          <div className="w-full max-w-sm rounded-xl bg-white/5 px-3 py-1.5 text-center text-[10px] text-slate-400">📶 Çevrimdışı taban — çevrimiçi olunca {targetDef?.spoken} sahne AI ile tazelenir • {cefr.level}</div>
+        )}
 
         {/* interactive */}
         {!correct && (

@@ -20,12 +20,17 @@ export async function POST(req: NextRequest) {
     const groq = new Groq({ apiKey: groqKey });
     // Groq Whisper large-v3 — çok dilli, aksanlı konuşmada daha doğru
     const arrayBuffer = await file.arrayBuffer();
+    const mime = file.type || "audio/webm";
+    const ext = mime.includes("mp4") ? "audio.mp4" : mime.includes("ogg") ? "audio.ogg" : "audio.webm";
+    // Whisper dil kodu: pt-PT→pt, zh-CN→zh, ja-JP→ja; boş/garip kodda auto-detect (language yok)
+    const safeLang = /^[a-z]{2}$/.test(langCode) ? langCode : "";
     // @ts-ignore — groq-sdk expects File/Blob
     const transcription = await groq.audio.transcriptions.create({
-      file: new File([arrayBuffer], "audio.webm", { type: file.type || "audio/webm" }),
+      file: new File([arrayBuffer], ext, { type: mime }),
       model: "whisper-large-v3",
-      language: langCode,
+      ...(safeLang ? { language: safeLang } : {}),
       response_format: "json",
+      temperature: 0,
     } as any);
 
     const text = (transcription as any).text || "";

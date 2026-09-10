@@ -85,17 +85,12 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
     rec.lang = opts.lang;
     rec.interimResults = true;
     rec.maxAlternatives = 3;
-    rec.continuous = false;
+    // Yavaş konuşan öğrenci + Portekizce/Fransızca gibi dillerde tek nefeste kesilmesin
+    rec.continuous = true;
   }
 
-  try {
-    const SG = (win as any).SpeechGrammarList || (win as any).webkitSpeechGrammarList;
-    if (SG && rec) {
-      const grammars = new SG();
-      grammars.addFromString(`#JSGF V1.0; grammar target; public <target> = hello | thank you | please | yes | no ;`, 1);
-      rec.grammars = grammars;
-    }
-  } catch {}
+  // NOT: SpeechGrammarList bilerek KULLANILMIYOR — İngilizce-only JSGF grammar
+  // Portekizce/Fransızca/Almanca tanımayı bozuyordu. Tarayıcı varsayılan dil modeline bırak.
 
   let gotFinal = false;
   let timeout: any = null;
@@ -136,7 +131,7 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
         // Whisper fallback dene
         doWhisperFallback(false, "");
       }
-    }, 7000);
+    }, 12000);
   };
 
   if (rec) {
@@ -146,17 +141,27 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
     rec.onaudiostart = () => resetTimeout();
     rec.onresult = (ev: any) => {
       resetTimeout();
-      const res = ev.results[0];
-      const isFinal = !!res.isFinal;
-      const alts = Array.from(res as any) as any[];
-      const best = alts.slice().sort((a, b) => (b.confidence || 0) - (a.confidence || 0))[0];
-      const text = (best?.transcript || res[0].transcript || "").trim();
-      const lowConf = (best?.confidence || 0) < 0.6;
-      if (text) opts.onResult(text, isFinal);
-      if (isFinal) {
+      // continuous=true iken TÜM sonuçları birleştir (yoksa cümlenin ilk yarısı kaybolur)
+      let combined = "";
+      let allFinal = true;
+      let minConf = 1;
+      for (let i = 0; i < ev.results.length; i++) {
+        const r = ev.results[i];
+        const alts = Array.from(r as any) as any[];
+        const best = alts.slice().sort((a, b) => (b.confidence || 0) - (a.confidence || 0))[0];
+        const t = (best?.transcript || r[0]?.transcript || "").trim();
+        if (t) combined += (combined ? " " : "") + t;
+        if (!r.isFinal) allFinal = false;
+        const c = typeof best?.confidence === "number" ? best.confidence : 0.9;
+        if (c > 0) minConf = Math.min(minConf, c);
+      }
+      const text = combined.trim();
+      const lowConf = minConf < 0.6;
+      if (text) opts.onResult(text, allFinal);
+      if (allFinal && text) {
         gotFinal = true;
         // Düşük güvenliyse Whisper ile teyit et
-        if (lowConf && text) doWhisperFallback(true, text);
+        if (lowConf) doWhisperFallback(true, text);
         if (mediaRecorder && mediaRecorder.state !== "inactive") { try { mediaRecorder.stop(); } catch {} }
       }
     };
@@ -171,13 +176,24 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
     };
     rec.onend = () => {
       clear();
-      // SR bitti, Whisper kaydını da bitir ve dene
+      // SR bitti: ses kaydı varsa Whisper ile ÇİFT KONTROL et (SR yabancı aksanda emin olup yanlış yazabiliyor)
       if (mediaRecorder && mediaRecorder.state !== "inactive") {
         try { mediaRecorder.stop(); } catch {}
-        setTimeout(() => { if (!gotFinal) doWhisperFallback(true, ""); }, 400);
+        setTimeout(async () => {
+          try {
+            if (audioChunks.length === 0) return;
+            const blobType = mediaRecorder.mimeType || "audio/webm";
+            const blob = new Blob(audioChunks as any, { type: blobType });
+            if (blob.size < 2000) return;
+            const whisperText = await transcribeWithWhisper(blob, opts.lang);
+            if (whisperText && whisperText.trim().length > 1) {
+              opts.onResult(whisperText.trim(), true);
+            }
+          } catch {}
+        }, 400);
       }
       opts.onEnd?.();
-      stopMedia();
+      // stopMedia mediaRecorder.onstop içinde yapılıyor (çift kontrol bitsin diye burada kapatma)
     };
     rec.onspeechend = () => { clear(); try { rec.stop(); } catch {} };
     rec.onnomatch = () => { doWhisperFallback(false, ""); opts.onError?.("no-match"); };
@@ -197,8 +213,8 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
         opts.onEnd?.();
         stopMedia();
       };
-      // iOS için 4sn sonra otomatik durdur ve gönder
-      setTimeout(() => { if (mediaRecorder && mediaRecorder.state === "recording") { try { mediaRecorder.stop(); } catch {} } }, 4000);
+      // iOS için 6sn sonra otomatik durdur ve gönder (yavaş konuşmaya pay)
+      setTimeout(() => { if (mediaRecorder && mediaRecorder.state === "recording") { try { mediaRecorder.stop(); } catch {} } }, 6000);
     }
   }
 

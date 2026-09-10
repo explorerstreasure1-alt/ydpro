@@ -51,9 +51,12 @@ export interface TeacherResult {
  * Normalize user input: lowercase, trim punctuation, collapse whitespace.
  */
 function norm(s: string): string {
-  return s
+  return (s || "")
     .toLowerCase()
-    .replace(/[.,!?"']/g, "")
+    // Portekizce/Fransızca/Almanca aksanları: olá≈ola, ç≈c, ñ≈n, ü≈u — ASR aksanı kaçırsa da eşleşsin
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[.,!?;:"'«»“”‘’¿¡]/g, "")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -151,19 +154,146 @@ Be forgiving: a missing tiny word like "a" or slightly different but natural wor
   }
 }
 
+// --- Tüm seriler: karakter üslubu haritası (18 ortam + esnaf/anne/arkadaş/patron vb.) ---
+// 3. aşama (DÜZELTME) her zaman ana dilde + yabancı aksanla + karakter üslubuyla.
+// 4. aşama (DOĞRU CEVAP) asla ana dilde değil, tamamen hedef yabancı dilde + orijinal okunuş.
+export interface PersonaStyle {
+  praise: string;
+  correctMid: string;
+  almost: string;
+  wrong: string;
+}
+
+function personaStyleFor(role: string, nativeLangName: string): PersonaStyle {
+  const r = (role || "").toLowerCase();
+  const isTr = nativeLangName.toLowerCase().includes("turk");
+  // Yabancı aksan hissi: hafif bozuk, sevimli ekler ("hani", "bak", "tamam mı?")
+  if (/anne|mother|mama|mãe|madre|mutter/.test(r))
+    return {
+      praise: isTr ? "Aferin yavrum, çok güzel söyledin hani!" : "Very good, my dear!",
+      correctMid: isTr ? "Bak yavrum, tam böyle diycen:" : "Say like this:",
+      almost: isTr ? "Bak yavrum, az kalmış, şöyle diycen hani:" : "Almost, my dear, say:",
+      wrong: isTr ? "Bak yavrum, yanlış söyledin, bunu böyle diycen hani:" : "No my dear, say like this:",
+    };
+  if (/arkadaş|friend|dost|kanka|mia|sophie|amy|amigo/.test(r))
+    return {
+      praise: isTr ? "Kanka helal, tam böyle denir!" : "Nice, buddy!",
+      correctMid: isTr ? "Kanka bak şöyle:" : "Look buddy:",
+      almost: isTr ? "Kanka bak az kalmış, şöyle diceksin:" : "Almost buddy:",
+      wrong: isTr ? "Kanka bak şöyle diceksin hani, dinle:" : "Nah buddy, say:",
+    };
+  if (/patron|boss|müdür|smith|prof|doktor|doctor|banka|hakim|avukat/.test(r))
+    return {
+      praise: isTr ? "Güzel, doğru söylediniz, devam edelim." : "Good, correct.",
+      correctMid: isTr ? "Bakın, şöyle söylemeniz lazım:" : "Please say:",
+      almost: isTr ? "Bakın, yaklaştınız, şöyle söylemeniz lazım:" : "Almost, please say:",
+      wrong: isTr ? "Bakın, öyle değil, şöyle söylemeniz lazım hani:" : "Not quite, please say:",
+    };
+  if (/esnaf|satıcı|shop|mağaza|kasiyer|garson|waiter|şoför|berber|terzi|fırın|kasap|manav|baker|butcher|barber|clerk|cashier/.test(r))
+    return {
+      praise: isTr ? "Buyur abim, tam böyle denir, helal!" : "Well said, my friend!",
+      correctMid: isTr ? "Bak abim, şöyle diceksin hani:" : "Say like this:",
+      almost: isTr ? "Bak abim az kalmış, şöyle diceksin:" : "Almost, say:",
+      wrong: isTr ? "Yok abim öyle değil, şöyle diceksin bak:" : "Not like that, say:",
+    };
+  if (/sevgili|lover|aşk|elif|girlfriend|eş/.test(r))
+    return {
+      praise: isTr ? "Aşkım harikasın, tam böyle!" : "Perfect, my love!",
+      correctMid: isTr ? "Aşkım bak şöyle diceksin:" : "My love, say:",
+      almost: isTr ? "Aşkım az kalmış, şöyle diceksin hani:" : "Almost my love:",
+      wrong: isTr ? "Aşkım öyle değil hani, şöyle diceksin bak:" : "Not like that my love:",
+    };
+  // Varsayılan: rehber / görevli / öğretmen tonu
+  return {
+    praise: isTr ? "Tamam, güzel söyledin!" : "Good, well said!",
+    correctMid: isTr ? "Bak, şöyle diycen hani:" : "Say like this:",
+    almost: isTr ? "Bak, yaklaştın, şöyle diycen:" : "Close, say:",
+    wrong: isTr ? "Hayır öyle değil, şöyle diycen bak hani:" : "Not quite, say:",
+  };
+}
+
+function offlinePersonaReply(
+  base: TeacherResult,
+  ideal: string,
+  persona: { name: string; role: string; emoji: string; dayTitle: string },
+  nativeLangName: string,
+): string {
+  const st = personaStyleFor(persona.role || "", nativeLangName);
+  // 4. aşama kuralı: ideal ASLA ana dilde değil — tırnak içi tamamen hedef dilde.
+  if (base.correct) return `${st.praise} "${ideal}" — dinle, orijinal aksanla tekrar et.`;
+  if (base.almost) return `${st.almost} "${ideal}" — bir daha dene, tamam mı?`;
+  return `${st.wrong} "${ideal}" — dinle, tekrar et bakayım.`;
+}
+
+// --- Seviye uyarlaması: A1 kısa → C1 zengin (offline statik içerik için) ---
+export function adaptAnswerToLevel(answer: string, level: string): string {
+  const words = answer.split(" ").filter(Boolean);
+  if (level === "A1") return words.slice(0, 6).join(" ") || answer;
+  if (level === "A2") return words.slice(0, 10).join(" ") || answer;
+  if (level === "B1") return answer;
+  if (level === "B2") return answer.endsWith(".") ? `${answer.slice(0, -1)}, in my opinion.` : `${answer}, in my opinion.`;
+  // C1: deyim ekle
+  return answer.endsWith(".") ? `${answer.slice(0, -1)}, to be honest, that's exactly what I mean.` : `${answer}, to be honest.`;
+}
+
+export function xpForLevel(level: string): number {
+  if (level === "A1") return 20;
+  if (level === "A2") return 20;
+  if (level === "B1") return 25;
+  if (level === "B2") return 25;
+  return 30;
+}
+
+// Offline: GROQ yokken bile TÜM seriler (18 gün) + TÜM dillerde takılma olmasın diye
+// statik İngilizce diyalogdan seviyeye uyarlanmış adımlar üretir. Online iken AI zaten
+// hedef dilde taze sahne üretir; bu sadece güvenli tabandır.
+export function offlineSceneSteps(
+  raw: { dialog: any[]; npcName: string; npcRole: string; npcEmoji: string; secondaryNpc?: { name: string; role: string; emoji: string } },
+  level: string = "A1",
+): { prompt: string; promptTr: string; answer: string; turkish: string; chips: string[]; xp: number; speakerName: string; speakerRole: string; speakerEmoji: string }[] {
+  return (raw.dialog || []).map((d: any, i: number) => {
+    const isSecondary =
+      d.speaker === "secondary" ||
+      (raw.secondaryNpc && d.speaker === raw.secondaryNpc.name);
+    const speakerName = isSecondary
+      ? raw.secondaryNpc!.name
+      : d.speaker && d.speaker !== "primary"
+        ? String(d.speaker)
+        : raw.npcName;
+    const speakerRole = isSecondary
+      ? raw.secondaryNpc!.role
+      : d.speakerRole || raw.npcRole;
+    const speakerEmoji = isSecondary
+      ? raw.secondaryNpc!.emoji
+      : d.speakerEmoji || raw.npcEmoji;
+    // Çoklu karakterli seride konuşmacıyı değiştirerek uyarla
+    const useSecondary = raw.secondaryNpc && (raw.dialog.length > 2 ? i % 2 === 1 : isSecondary);
+    return {
+      prompt: String(d.prompt || ""),
+      promptTr: String(d.promptTr || d.prompt_tr || ""),
+      answer: adaptAnswerToLevel(String(d.fallback || d.line || d.prompt || ""), level),
+      turkish: String(d.turkish || d.tr || ""),
+      chips: Array.isArray(d.chips) ? d.chips.map(String) : [],
+      xp: xpForLevel(level),
+      speakerName: useSecondary ? raw.secondaryNpc!.name : speakerName,
+      speakerRole: useSecondary ? raw.secondaryNpc!.role : speakerRole,
+      speakerEmoji: useSecondary ? raw.secondaryNpc!.emoji : speakerEmoji,
+    };
+  });
+}
+
 // --- Persona-based evaluation: AI o serinin konusuna göre kişiliğe bürünür, ana dile göre feedback ---
 export async function evaluateWithPersona(
   input: string,
   ideal: string,
   persona: { name: string; role: string; emoji: string; dayTitle: string },
   nativeLangName: string = "Turkish",
+  targetLangName: string = "English",
 ): Promise<TeacherResult & { personaReply: string }> {
+  void targetLangName;
   if (!client) {
     const base = fallbackEvaluate(input, ideal);
-    const personaReply = base.correct
-      ? `${persona.emoji} ${persona.name} (${persona.role}): Harika! "${ideal}" — tam böyle söylenir.`
-      : `${persona.emoji} ${persona.name} (${persona.role}): Hayır öyle değil, şöyle diyeceksin: "${ideal}" — bir daha dene!`;
-    return { ...base, personaReply };
+    return { ...base, personaReply: offlinePersonaReply(base, ideal, persona, nativeLangName) };
   }
   try {
     const params: any = {
@@ -220,7 +350,7 @@ Return STRICT JSON only:
   } catch (e) {
     console.error("persona eval error", e);
     const base = fallbackEvaluate(input, ideal);
-    return { ...base, personaReply: base.correct ? `Tamam! "${ideal}"` : `Hayır öyle değil, şöyle: "${ideal}"` };
+    return { ...base, personaReply: offlinePersonaReply(base, ideal, persona, nativeLangName) };
   }
 }
 
@@ -342,7 +472,7 @@ export async function generatePersonaScene(
   targetLangName: string = "English",
   nativeLangName: string = "Turkish"
 ): Promise<{ npcName: string; npcRole: string; npcEmoji: string; steps: (AiStep & {speakerName?:string; speakerRole?:string; speakerEmoji?:string})[]; secondaryNpc?: any } | null> {
-  const cacheKey = `scene:v7:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
+  const cacheKey = `scene:v8:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
   if (sceneCache.has(cacheKey)) return sceneCache.get(cacheKey);
   if (!client) return null;
   try {
@@ -381,11 +511,22 @@ Example flow (if native Turkish & target Portuguese, character Anne):
 - Teacher (Anne, slightly foreign-accented Turkish): "Bak yavrum, adını sorsalar şöyle diyeceksin:"
 - Foreign answer (written + original accent): "Eu me chamo João." (Portuguese) + pronunciation guide
 
-Generate SÖYLE mechanism: "prompt" in ${nativeLangName} WITH ${targetLangName} accent, in character's style (e.g., anne: "Bak yavrum, ...", arkadaş: "Kanka bak...", patron: "Bakın, ..."), instructing what to say in ${targetLangName}, "promptTr" same as prompt (already ${nativeLangName}), "answer" in ${targetLangName} original (never ${nativeLangName} words) + pronunciation, "turkish" = ${nativeLangName} translation of answer.
+UYGULAMA DÖNGÜSÜ (4 aşama, her zaman):
+1. SORU/GÖREV (Hedef Yabancı Dil): Kullanıcıya her zaman hedef yabancı dilde sorular sor veya senaryo ver. Örn. Portekizce "Onde vai?" / "Eu me chamo João. nerede?"
+2. KULLANICININ CEVABI: Kullanıcı hedef yabancı dilde cevap vermeye çalışır.
+3. DÜZELTME (Türkçe + Yabancı Aksan): Yanlış ise karakter devreye girer, HER ZAMAN TÜRKÇE ama yabancı aksanla, karakter üslubuyla: anne "Bak yavrum, yanlış söyledin, bunu böyle diycen...", arkadaş "Kanka bak şöyle:", patron "Bakın, şöyle yapmanız lazım..."
+4. DOĞRU CEVAP (Yabancı Dil + Orijinal Aksan): Asıl doğru cevap ASLA Türkçe değil, tamamen hedef yabancı dilde + orijinal telaffuz rehberiyle.
 
-Return STRICT JSON with EXAMPLE (native Turkish, target Portuguese, character Anne):
-{"npcName":"Anne Ayşe","npcRole":"Anne","npcEmoji":"👩‍🍳","steps":[{"prompt":"Bak yavrum, adını sorsalar şöyle diyeceksin:","promptTr":"Bak yavrum, adını sorsalar şöyle diyeceksin:","answer":"Eu me chamo João.","turkish":"Benim adım João.","chips":["chamo"],"speakerName":"Anne Ayşe","speakerRole":"Anne","speakerEmoji":"👩‍🍳"}]}
-Now generate for ${targetLangName} (prompt/promptTr in ${nativeLangName} with ${targetLangName} accent, in character style, answer in ${targetLangName} original with ${targetLangName} accent, turkish in ${nativeLangName}):
+Generate each step:
+- "prompt": in ${targetLangName} (target, original accent), what NPC asks in ${targetLangName} (e.g., Portuguese "Onde vai?" for travel, not Turkish)
+- "promptTr": natural ${nativeLangName} translation of prompt (e.g., "Nereye gidiyorsun?")
+- "answer": in ${targetLangName} original, ${level} level, what learner should say to answer prompt (e.g., Portuguese "Vou para Lisboa."), never ${nativeLangName} words, fully ${targetLangName} grammar
+- "turkish": ${nativeLangName} translation of answer
+- Chips in ${targetLangName}
+
+Return STRICT JSON with EXAMPLE (native Turkish, target Portuguese, character Anne, A1):
+{"npcName":"Anne Ayşe","npcRole":"Anne","npcEmoji":"👩‍🍳","steps":[{"prompt":"Onde vai?","promptTr":"Nereye gidiyorsun?","answer":"Vou para Lisboa.","turkish":"Lizbon'a gidiyorum.","chips":["vou","para"],"speakerName":"Anne Ayşe","speakerRole":"Anne","speakerEmoji":"👩‍🍳"}]}
+Now generate for ${targetLangName} (prompt in ${targetLangName} original, promptTr in ${nativeLangName}, answer in ${targetLangName} original, turkish in ${nativeLangName}):
 {"npcName":"${content.npcName}","npcRole":"${content.npcRole}","npcEmoji":"${content.npcEmoji}","steps":[{"prompt":"...","promptTr":"...","answer":"...","turkish":"...","chips":["..."],"speakerName":"...","speakerRole":"...","speakerEmoji":"..."}]}`
         },
         { role: "user", content: `Generate fresh Day ${day} dialog, keep ${hasSecondary ? "both characters alternating" : content.npcRole + " personality"}.` }
@@ -494,26 +635,18 @@ export async function generateLesson(
 CEFR level: ${level}. Topic: ${topicName}.
 Native language for translations: ${nativeLangName}.
 Difficulty guide: A1 = 2-4 word simple phrases; A2 = simple everyday sentences; B1 = 2 sentences, more detail; B2 = fluent with opinion; C1 = rich, natural, nuanced.
-You are a DYNAMIC CHARACTER and LANGUAGE COACH (character user-selectable: Anne, arkadaş, patron, esnaf...), native ${langName}, speaking ${nativeLangName} with slight ${langName} accent.
-Generate exactly 3 turns of the "söyle" mechanism for ${nativeLangName} speaker learning ${langName} (CEFR ${level}, topic ${topicName}).
+You are a DYNAMIC CHARACTER and LANGUAGE COACH (Anne, arkadaş, patron, esnaf... selectable), native ${langName}, speaking ${nativeLangName} with slight ${langName} accent when correcting.
 
-İLETİŞİM VE DÜZELTME KURALLARI:
-1. Kullanıcı ile iletişim kurarken HER ZAMAN ${nativeLangName.toUpperCase()} konuşacaksın.
-2. ${nativeLangName} konuşurken, seçilen karaktere uygun üslup takın (anne→şefkatli "Bak yavrum...", arkadaş→samimi "Kanka bak...", patron→resmi "Bakın, şöyle yapmanız lazım..."), ve ${nativeLangName}'yi sonradan öğrenmiş bir yabancının şivesiyle (yabancı aksan) konuşacaksın.
+UYGULAMA DÖNGÜSÜ (4 aşama):
+1. SORU/GÖREV (Hedef Yabancı Dil): Kullanıcıya her zaman hedef yabancı dilde sorular sor veya senaryo ver (örn. Portekizce "Onde vai?" ).
+2. KULLANICININ CEVABI: Kullanıcı hedef yabancı dilde cevap vermeye çalışır.
+3. DÜZELTME (Türkçe + Yabancı Aksan): Yanlış ise karakter Türkçe ama yabancı aksanla düzeltir: anne "Bak yavrum, yanlış söyledin, bunu böyle diycen...", arkadaş "Kanka bak şöyle:", patron "Bakın, şöyle yapmanız lazım..." — HER ZAMAN TÜRKÇE, karaktere uygun üslup, yabancı aksan.
+4. DOĞRU CEVAP (Yabancı Dil + Orijinal Aksan): Asıl doğru cevap ASLA Türkçe değil, tamamen hedef yabancı dilde + orijinal telaffuz rehberiyle.
 
-ASIL CEVAP VE HEDEF DİL KURALLARI (kesin):
-1. Üretilen cümle ASLA ${nativeLangName} olmayacak; tamamen hedef yabancı dilde olacak (örn. Portekizce "Eu me chamo João.", not Turkish words).
-2. Bu yabancı cümle hem yazılı olarak (hedef dilde) hem de o dilin orijinal aksan/fonetik rehberiyle birlikte verilecek.
-3. Asla yabancı dildeki cümleyi ${nativeLangName} kelimelerle kurup yabancı aksanla okumaya çalışmayacaksın. Kelimeler ve gramer tamamen hedef yabancı dilde olacak.
-
-Example flow (if native Turkish & target Portuguese, character Anne):
-- Teacher (Anne, slightly foreign-accented Turkish): "Bak yavrum, adını sorsalar şöyle diyeceksin:"
-- Foreign answer (written + original accent): "Eu me chamo João." (Portuguese) + pronunciation guide
-
-Generate:
-- "prompt": in ${nativeLangName} WITH ${langName} accent, in character's style (e.g., anne: "Bak yavrum, adını sorsalar şöyle diyeceksin:"), instructing what to say in ${langName}
-- "promptTr": same as prompt (already ${nativeLangName})
-- "answer": in ${langName} original, ${level} level. Example if target Portuguese: "Eu me chamo João." (never Turkish words, fully ${langName} grammar)
+Generate exactly 3 turns:
+- "prompt": in ${langName} (target, original accent), what NPC asks in ${langName} (e.g., Portuguese "Onde vai?" for travel)
+- "promptTr": natural ${nativeLangName} translation of prompt (e.g., "Nereye gidiyorsun?")
+- "answer": in ${langName} original, ${level} level, what learner should say (e.g., Portuguese "Vou para Lisboa.", never Turkish words, fully ${langName} grammar)
 - "tr": natural ${nativeLangName} translation of answer
 - "chips": 1-3 key vocab from answer in ${langName}
 Return STRICT JSON only:
