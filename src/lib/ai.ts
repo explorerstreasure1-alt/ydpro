@@ -854,32 +854,43 @@ Now generate for ${targetLangName} (prompt in ${targetLangName} original, prompt
         { role: "user", content: `Generate fresh Day ${day} dialog, keep ${hasSecondary ? "both characters alternating" : content.npcRole + " personality"}.${fresh ? " IMPORTANT: produce a DIFFERENT variant than before — new questions, new answers, no repetition." : ""}${seen.length ? ` NEVER repeat these already-shown answers (nor close paraphrases): ${seen.map((s) => `"${String(s).slice(0, 120)}"`).join(" | ")}` : ""}` }
       ],
     };
-    const completion = await callGroq(params);
-    const raw = completion.choices[0]?.message?.content || "{}";
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed.steps) && parsed.steps.length > 0) {
-      const mapped: (AiStep & { speakerName: string; speakerRole: string; speakerEmoji: string })[] = parsed.steps.map((s: any) => ({
-        prompt: String(s.prompt || ""),
-        promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
-        answer: String(s.answer || ""),
-        turkish: String(s.turkish || (s as any).tr || ""),
-        chips: Array.isArray(s.chips) ? s.chips.map(String) : [],
-        speakerName: String(s.speakerName || s.speaker || parsed.npcName || content.npcName),
-        speakerRole: String(s.speakerRole || parsed.npcRole || content.npcRole),
-        speakerEmoji: String(s.speakerEmoji || parsed.npcEmoji || content.npcEmoji),
-      }));
-      // Saçmalık filtresi: boş/aynı/tekrar adımları ele, seviyeye kısalt
-      const valid = sanitizeAiSteps(mapped, level, targetLangName);
-      if (!valid) return null;
-      const out = {
-        npcName: String(parsed.npcName || content.npcName),
-        npcRole: String(parsed.npcRole || content.npcRole),
-        npcEmoji: String(parsed.npcEmoji || content.npcEmoji),
-        secondaryNpc: content.secondaryNpc,
-        steps: valid,
-      };
-      sceneCache.set(cacheKey, out);
-      return out;
+    // Tek GROQ tökezlemede Türkçe tabana düşme — bir kez daha dene (ortamlar çalışsın)
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const completion = await callGroq(params);
+        const raw = completion.choices[0]?.message?.content || "{}";
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.steps) && parsed.steps.length > 0) {
+          const mapped: (AiStep & { speakerName: string; speakerRole: string; speakerEmoji: string })[] = parsed.steps.map((s: any) => ({
+            prompt: String(s.prompt || ""),
+            promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
+            answer: String(s.answer || ""),
+            turkish: String(s.turkish || (s as any).tr || ""),
+            chips: Array.isArray(s.chips) ? s.chips.map(String) : [],
+            speakerName: String(s.speakerName || s.speaker || parsed.npcName || content.npcName),
+            speakerRole: String(s.speakerRole || parsed.npcRole || content.npcRole),
+            speakerEmoji: String(s.speakerEmoji || parsed.npcEmoji || content.npcEmoji),
+          }));
+          // Saçmalık filtresi: boş/aynı/tekrar adımları ele, seviyeye kısalt
+          const valid = sanitizeAiSteps(mapped, level, targetLangName);
+          if (!valid) {
+            console.error(`personaScene invalid steps day=${day} attempt=${attempt}`);
+            continue;
+          }
+          const out = {
+            npcName: String(parsed.npcName || content.npcName),
+            npcRole: String(parsed.npcRole || content.npcRole),
+            npcEmoji: String(parsed.npcEmoji || content.npcEmoji),
+            secondaryNpc: content.secondaryNpc,
+            steps: valid,
+          };
+          sceneCache.set(cacheKey, out);
+          return out;
+        }
+        console.error(`personaScene empty steps day=${day} attempt=${attempt}`);
+      } catch (e) {
+        console.error(`personaScene error day=${day} attempt=${attempt}`, (e as any)?.message || e);
+      }
     }
     return null;
   } catch { return null; }
@@ -1001,26 +1012,36 @@ Keep answers appropriate to the ${level} level. Do not add explanations.`,
         { role: "user", content: `Generate the ${topicName} lesson at ${level} in ${langName}.${fresh ? " Make it a DIFFERENT variant than before — new questions and answers, no repetition." : ""}${seen.length ? ` NEVER repeat these already-shown answers (nor close paraphrases): ${seen.map((s) => `"${String(s).slice(0, 120)}"`).join(" | ")}` : ""}` },
       ],
     };
-    const completion = await callGroq(params);
-    const raw = completion.choices[0]?.message?.content || "{}";
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed.steps) && parsed.steps.length > 0) {
-      const mapped: LessonStep[] = parsed.steps.map((s: any) => ({
-        prompt: String(s.prompt || ""),
-        promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
-        answer: String(s.answer || ""),
-        tr: String(s.tr || (s as any).translation || ""),
-        chips: Array.isArray(s.chips) ? s.chips.map((c: any) => String(c)) : [],
-      }));
-      const valid = sanitizeAiSteps(mapped, level, langName);
-      if (!valid) return null;
-      const out = {
-        npcName: String(parsed.npcName || "Rehber"),
-        npcEmoji: String(parsed.npcEmoji || "🗣️"),
-        steps: valid,
-      };
-      lessonCache.set(cacheKey, out);
-      return out;
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const completion = await callGroq(params);
+        const raw = completion.choices[0]?.message?.content || "{}";
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.steps) && parsed.steps.length > 0) {
+          const mapped: LessonStep[] = parsed.steps.map((s: any) => ({
+            prompt: String(s.prompt || ""),
+            promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
+            answer: String(s.answer || ""),
+            tr: String(s.tr || (s as any).translation || ""),
+            chips: Array.isArray(s.chips) ? s.chips.map((c: any) => String(c)) : [],
+          }));
+          const valid = sanitizeAiSteps(mapped, level, langName);
+          if (!valid) {
+            console.error(`lesson invalid steps topic=${topicName} attempt=${attempt}`);
+            continue;
+          }
+          const out = {
+            npcName: String(parsed.npcName || "Rehber"),
+            npcEmoji: String(parsed.npcEmoji || "🗣️"),
+            steps: valid,
+          };
+          lessonCache.set(cacheKey, out);
+          return out;
+        }
+        console.error(`lesson empty steps topic=${topicName} attempt=${attempt}`);
+      } catch (e) {
+        console.error(`lesson error topic=${topicName} attempt=${attempt}`, (e as any)?.message || e);
+      }
     }
     return null;
   } catch {
@@ -1073,28 +1094,37 @@ Return STRICT JSON only:
         },
       ],
     };
-    const completion = await callGroq(params);
-    const raw = completion.choices[0]?.message?.content || "{}";
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed.lines) && parsed.lines.length >= 4) {
-      const seenSet = new Set<string>();
-      const lines: DialogueLine[] = [];
-      for (const l of parsed.lines) {
-        const speaker = String(l.speaker || "").trim().slice(0, 24) || "A";
-        const target_text = String(l.target_text || l.targetText || "").trim();
-        const native_text = String(l.native_text || l.nativeText || "").trim();
-        if (!target_text || !native_text) continue;
-        if (norm(target_text) === norm(native_text)) continue;
-        const k = norm(target_text);
-        if (seenSet.has(k)) continue;
-        seenSet.add(k);
-        lines.push({ speaker, target_text, native_text });
-        if (lines.length >= 10) break;
-      }
-      if (lines.length >= 4) {
-        const out = { lines };
-        dialogueCache.set(cacheKey, out);
-        return out;
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const completion = await callGroq(params);
+        const raw = completion.choices[0]?.message?.content || "{}";
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed.lines) && parsed.lines.length >= 4) {
+          const seenSet = new Set<string>();
+          const lines: DialogueLine[] = [];
+          for (const l of parsed.lines) {
+            const speaker = String(l.speaker || "").trim().slice(0, 24) || "A";
+            const target_text = String(l.target_text || l.targetText || "").trim();
+            const native_text = String(l.native_text || l.nativeText || "").trim();
+            if (!target_text || !native_text) continue;
+            if (norm(target_text) === norm(native_text)) continue;
+            const k = norm(target_text);
+            if (seenSet.has(k)) continue;
+            seenSet.add(k);
+            lines.push({ speaker, target_text, native_text });
+            if (lines.length >= 10) break;
+          }
+          if (lines.length >= 4) {
+            const out = { lines };
+            dialogueCache.set(cacheKey, out);
+            return out;
+          }
+          console.error(`dialogue invalid lines topic=${topic} attempt=${attempt}`);
+          continue;
+        }
+        console.error(`dialogue empty lines topic=${topic} attempt=${attempt}`);
+      } catch (e) {
+        console.error(`dialogue error topic=${topic} attempt=${attempt}`, (e as any)?.message || e);
       }
     }
     return null;
