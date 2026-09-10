@@ -26,7 +26,8 @@ export async function POST(req: NextRequest) {
   const { LANGS } = await import("@/lib/levels");
   const targetName = LANGS.find((l: any) => l.code === String(body.target || body.lang || "en"))?.spoken || "English";
   const nativeName = LANGS.find((l: any) => l.code === String(body.native || body.nativeLang || "tr"))?.spoken || "Turkish";
-  const steps = await generateFullScene(day, theme, level, targetName, nativeName);
+  const seen = Array.isArray((body as any).seen) ? (body as any).seen.filter((x: any) => typeof x === "string").map((x: string) => x.slice(0, 120)).slice(0, 15) : [];
+  const steps = await generateFullScene(day, theme, level, targetName, nativeName, seen);
   if (!steps) return Response.json({ error: "AI generation failed, fallback to static" }, { status: 502 });
   return Response.json({ day, theme, level, steps, orchestrator: AI_ORCHESTRATOR.model });
 }

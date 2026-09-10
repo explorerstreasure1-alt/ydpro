@@ -12,6 +12,8 @@ export async function POST(req: NextRequest) {
     const level = String(body.level || "A1");
     const targetCode = String(body.target || "en");
     const nativeCode = String(body.native || "tr");
+    const fresh = body.fresh === true || body.fresh === 1 || body.fresh === "1";
+    const seen = Array.isArray(body.seen) ? body.seen.filter((x: any) => typeof x === "string").map((x: string) => x.slice(0, 120)).slice(0, 15) : [];
     const scene = ALL_SCENES.find(s => s.id === sceneId);
     if (!scene) return Response.json({ error: "scene not found" }, { status: 404 });
     const targetName = LANGS.find(l => l.code === targetCode)?.spoken || "English";
@@ -27,7 +29,7 @@ export async function POST(req: NextRequest) {
       npcEmoji: scene.npc.emoji,
       secondaryNpc: scene.secondaryNpc,
       dialog: [{ prompt: samplePrompt, fallback: samplePrompt, xp: 20, chips: [] }],
-    } as any, level, targetName, nativeName);
+    } as any, level, targetName, nativeName, fresh, seen);
     if (personaScene?.steps) {
       // Eksik çevirileri tamamla — her dilde anlam görünsün
       const { translateTo } = await import("@/lib/ai");

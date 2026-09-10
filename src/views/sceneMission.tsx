@@ -4,6 +4,7 @@ import { useStore } from "@/lib/store";
 import { cefrForXp } from "@/lib/levels";
 import { useLangPair } from "@/lib/useLangPair";
 import { speakText, speakMixed } from "@/lib/tts";
+import { getSeen, addSeen } from "@/lib/seen";
 import { sfx } from "@/lib/sfx";
 import { npcPortrait, NPC_FALLBACK } from "@/lib/img";
 import { SceneDef } from "@/lib/scenes";
@@ -30,17 +31,21 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
   const [aiLoading, setAiLoading] = useState(true);
   const [persona, setPersona] = useState({ name: scene.npc.name, role: scene.npc.role, emoji: scene.npc.emoji, dayTitle: `${scene.title} — ${scene.location}` });
 
-  // AI ile her ortam için pratik diyalog üret — çatal ver, yumurta çıkar gibi
+  // Taze üretim sayacı — her açılışta + "Yeni sorular" butonunda artar (asla tekrar yok)
+  const [freshKey, setFreshKey] = useState(0);
+  // AI ile her ortam için pratik diyalog üret — her seferinde TAZE, görülenler hariç
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
         setAiLoading(true);
+        setAiSteps(null);
+        const seen = getSeen("custom", scene.id, cefr.level, targetLang);
         // Önce AI ile dene, olmazsa örnekleri kullan
         const res = await fetch("/api/scene/custom", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sceneId: scene.id, level: cefr.level, target: targetLang, native: nativeLang }),
+          body: JSON.stringify({ sceneId: scene.id, level: cefr.level, target: targetLang, native: nativeLang, fresh: true, seen }),
         }).then(r => r.json()).catch(() => null);
         if (cancelled) return;
         if (res?.steps && Array.isArray(res.steps) && res.steps.length) {
@@ -56,6 +61,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
             speakerEmoji: s.speakerEmoji || res.npcEmoji || scene.npc.emoji,
           }));
           setAiSteps(mapped);
+          addSeen("custom", scene.id, cefr.level, targetLang, mapped.map((s) => s.answer));
           setPersona({ name: res.npcName || scene.npc.name, role: res.npcRole || scene.npc.role, emoji: res.npcEmoji || scene.npc.emoji, dayTitle: `${scene.title} — ${scene.location}` });
         } else {
           // Fallback: örnekleri kullan — hızlı pratik
@@ -92,7 +98,16 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
       }
     })();
     return () => { cancelled = true; };
-  }, [scene.id, scene.examples, cefr.level, targetLang, nativeLang, scene.npc.name, scene.npc.role, scene.npc.emoji, scene.title, scene.location]);
+  }, [scene.id, scene.examples, cefr.level, targetLang, nativeLang, scene.npc.name, scene.npc.role, scene.npc.emoji, scene.title, scene.location, freshKey]);
+
+  // "Yeni sorular": adımı sıfırla, taze AI sahne üret
+  function refreshScene() {
+    evalBusy.current = false;
+    setEngine(null);
+    setStep(0); setStatus("idle"); setMsg(""); setTyped("");
+    setSolved([]);
+    setFreshKey((k) => k + 1);
+  }
 
   const steps = aiSteps;
   const [step, setStep] = useState(0);
@@ -241,6 +256,11 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
       </div>
       <div className="relative z-10 px-4 pt-2 text-center text-xs">
         <span className="font-black text-[#ffd52f]">Sahne:</span> <span className="text-white">{scene.description}</span>
+        <div className="mt-1">
+          <button onClick={refreshScene} disabled={aiLoading} className="rounded-full border border-cyan-300/30 bg-white/5 px-2.5 py-0.5 text-[10px] font-bold text-cyan-200 hover:bg-white/10 disabled:opacity-50" title="Taze diyalog üret (önbelleği atla)">
+            {aiLoading ? "🧠 hazırlanıyor…" : "🔄 Yeni sorular"}
+          </button>
+        </div>
       </div>
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-3 px-4 pb-3">
         <div className="relative">

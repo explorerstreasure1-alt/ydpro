@@ -35,6 +35,7 @@ export async function GET() {
       }));
       // first day done simulation for demo after day 1
       return Response.json({
+        demo: true,
         user: {
           id: user.id,
           name: user.name,

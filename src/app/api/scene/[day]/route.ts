@@ -21,6 +21,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ day:
   const level = url.searchParams.get("level") || "A1";
   const targetCode = url.searchParams.get("target") || url.searchParams.get("lang") || "en";
   const nativeCode = url.searchParams.get("native") || "tr";
+  const fresh = url.searchParams.get("fresh") === "1";
+  // Daha önce gösterilen cevaplar — AI aynısını tekrar üretmesin (asla tekrar yok)
+  let seen: string[] = [];
+  try {
+    const parsed = JSON.parse(url.searchParams.get("seen") || "[]");
+    if (Array.isArray(parsed)) seen = parsed.filter((x) => typeof x === "string").map((x) => String(x).slice(0, 120)).slice(0, 15);
+  } catch {}
   const { LANGS } = await import("@/lib/levels");
   const targetName = LANGS.find(l=>l.code===targetCode)?.spoken || "English";
   const nativeName = LANGS.find(l=>l.code===nativeCode)?.spoken || "Turkish";
@@ -41,7 +48,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ day:
     let personaScene: any = null;
     let aiSteps: any = null;
     try {
-      personaScene = await generatePersonaScene(Number(day), raw as any, level, targetName, nativeName);
+      personaScene = await generatePersonaScene(Number(day), raw as any, level, targetName, nativeName, fresh, seen);
       if (personaScene?.steps) {
         const { translateTo } = await import("@/lib/ai");
         for (const s of personaScene.steps as any[]) {
@@ -59,7 +66,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ day:
     if (!aiSteps) {
       try {
         const { offlineSceneSteps } = await import("@/lib/ai");
-        const steps = offlineSceneSteps(raw as any, level);
+        const steps = offlineSceneSteps(raw as any, level, targetName);
         // Anadil çevirileri eksikse AI çeviriyle tamamla (varsa), yoksa boş bırak
         try {
           const { translateTo } = await import("@/lib/ai");
@@ -124,14 +131,14 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ day:
   let personaScene: any = null;
   try {
     const { generatePersonaScene, offlineSceneSteps } = await import("@/lib/ai");
-    personaScene = await generatePersonaScene(Number(day), raw as any, level, targetName, nativeName);
+    personaScene = await generatePersonaScene(Number(day), raw as any, level, targetName, nativeName, fresh, seen);
     if (personaScene?.steps?.length) {
       aiSteps = personaScene.steps;
       npcName = personaScene.npcName || npcName;
       npcRole = personaScene.npcRole || npcRole;
       npcEmoji = personaScene.npcEmoji || npcEmoji;
     } else {
-      const steps = offlineSceneSteps(raw as any, level);
+      const steps = offlineSceneSteps(raw as any, level, targetName);
       aiSteps = steps;
       personaScene = { npcName, npcRole, npcEmoji, steps, offline: true };
     }

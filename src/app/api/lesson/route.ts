@@ -12,12 +12,14 @@ export async function POST(req: NextRequest) {
   const nativeCode = String(body.native || body.nativeLang || "tr");
   const level = String(body.level || "A1");
   const topic = String(body.topic || "Günlük hayat");
+  const fresh = body.fresh === true || body.fresh === 1 || body.fresh === "1";
+  const seen = Array.isArray(body.seen) ? body.seen.filter((x: any) => typeof x === "string").map((x: string) => x.slice(0, 120)).slice(0, 15) : [];
   const lang = LANGS.find((l) => l.code === langCode);
   const native = LANGS.find((l) => l.code === nativeCode);
   const langName = lang?.spoken || "English";
   const nativeName = native?.spoken || "Turkish";
 
-  const lesson = await generateLesson(langName, level, topic, nativeName);
+  const lesson = await generateLesson(langName, level, topic, nativeName, fresh, seen);
   if (!lesson) {
     // Offline/AI yoksa: ders bölümü ölmesin — seviyeye uyarlanmış taban + offline bayrağı
     const { offlineLessonSteps } = await import("@/lib/ai");

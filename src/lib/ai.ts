@@ -317,14 +317,41 @@ function offlinePersonaReply(
 }
 
 // --- Seviye uyarlaması: A1 kısa → C1 zengin (offline statik içerik için) ---
-export function adaptAnswerToLevel(answer: string, level: string): string {
-  const words = answer.split(" ").filter(Boolean);
-  if (level === "A1") return words.slice(0, 6).join(" ") || answer;
-  if (level === "A2") return words.slice(0, 10).join(" ") || answer;
-  if (level === "B1") return answer;
-  if (level === "B2") return answer.endsWith(".") ? `${answer.slice(0, -1)}, in my opinion.` : `${answer}, in my opinion.`;
-  // C1: deyim ekle
-  return answer.endsWith(".") ? `${answer.slice(0, -1)}, to be honest, that's exactly what I mean.` : `${answer}, to be honest.`;
+export function adaptAnswerToLevel(answer: string, level: string, targetLangName: string = "English"): string {
+  const words = (answer || "").split(" ").filter(Boolean);
+  if (words.length === 0) return answer;
+  // Seviye kelime tavanı — AI uzun saçmalarsa kısalt (tüm dillerde)
+  const cap = level === "A1" ? 6 : level === "A2" ? 10 : level === "B1" ? 16 : level === "B2" ? 22 : 30;
+  const trimmed = words.slice(0, cap).join(" ");
+  const isEnglish = targetLangName.toLowerCase().includes("english");
+  if (level === "A1" || level === "A2" || level === "B1") return trimmed || answer;
+  // B2/C1 deyim eki SADECE İngilizce hedefte — başka dilde İngilizce ek saçmalık olur
+  if (!isEnglish) return trimmed || answer;
+  if (level === "B2") return trimmed.endsWith(".") ? `${trimmed.slice(0, -1)}, in my opinion.` : `${trimmed}, in my opinion.`;
+  return trimmed.endsWith(".") ? `${trimmed.slice(0, -1)}, to be honest, that's exactly what I mean.` : `${trimmed}, to be honest.`;
+}
+
+/** AI adımlarını doğrula: boş/aynı/tekrarı ele, seviyeye kısalt. Geçersizse null (caller tabana düşer). */
+export function sanitizeAiSteps<T extends { prompt: string; answer: string }>(
+  steps: T[],
+  level: string,
+  targetLangName: string = "English",
+): T[] | null {
+  if (!Array.isArray(steps) || steps.length === 0) return null;
+  const seen = new Set<string>();
+  const clean: T[] = [];
+  for (const s of steps) {
+    const prompt = String(s?.prompt || "").trim();
+    const answer = String(s?.answer || "").trim();
+    if (!prompt || !answer) continue;
+    // Soru ile cevap aynıysa / cevap sorunun kopyasıysa ele (saçmalık filtresi)
+    if (norm(prompt) === norm(answer)) continue;
+    const key = norm(answer);
+    if (seen.has(key)) continue; // aynı cevabın tekrarı
+    seen.add(key);
+    clean.push({ ...s, prompt, answer: adaptAnswerToLevel(answer, level, targetLangName) });
+  }
+  return clean.length >= 2 ? clean : null;
 }
 
 export function xpForLevel(level: string): number {
@@ -341,6 +368,7 @@ export function xpForLevel(level: string): number {
 export function offlineSceneSteps(
   raw: { dialog: any[]; npcName: string; npcRole: string; npcEmoji: string; secondaryNpc?: { name: string; role: string; emoji: string } },
   level: string = "A1",
+  targetLangName: string = "English",
 ): { prompt: string; promptTr: string; answer: string; turkish: string; chips: string[]; xp: number; speakerName: string; speakerRole: string; speakerEmoji: string }[] {
   return (raw.dialog || []).map((d: any, i: number) => {
     const isSecondary =
@@ -362,7 +390,7 @@ export function offlineSceneSteps(
     return {
       prompt: String(d.prompt || ""),
       promptTr: String(d.promptTr || d.prompt_tr || ""),
-      answer: adaptAnswerToLevel(String(d.fallback || d.line || d.prompt || ""), level),
+      answer: adaptAnswerToLevel(String(d.fallback || d.line || d.prompt || ""), level, targetLangName),
       turkish: String(d.turkish || d.tr || ""),
       chips: Array.isArray(d.chips) ? d.chips.map(String) : [],
       xp: xpForLevel(level),
@@ -585,10 +613,12 @@ export async function generatePersonaScene(
   content: { title: string; location: string; description: string; npcName: string; npcRole: string; npcEmoji: string; secondaryNpc?: {name:string; role:string; emoji:string}; dialog: any[] },
   level: string = "A1",
   targetLangName: string = "English",
-  nativeLangName: string = "Turkish"
+  nativeLangName: string = "Turkish",
+  fresh: boolean = false,
+  seen: string[] = [],
 ): Promise<{ npcName: string; npcRole: string; npcEmoji: string; steps: (AiStep & {speakerName?:string; speakerRole?:string; speakerEmoji?:string})[]; secondaryNpc?: any } | null> {
-  const cacheKey = `scene:v8:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
-  if (sceneCache.has(cacheKey)) return sceneCache.get(cacheKey);
+  const cacheKey = `scene:v9:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
+  if (!fresh && sceneCache.has(cacheKey)) return sceneCache.get(cacheKey);
   if (!client) return null;
   try {
     const samplePrompts = content.dialog.map((d: any) => d.prompt).join(" | ");
@@ -644,28 +674,32 @@ Return STRICT JSON with EXAMPLE (native Turkish, target Portuguese, character An
 Now generate for ${targetLangName} (prompt in ${targetLangName} original, promptTr in ${nativeLangName}, answer in ${targetLangName} original, turkish in ${nativeLangName}):
 {"npcName":"${content.npcName}","npcRole":"${content.npcRole}","npcEmoji":"${content.npcEmoji}","steps":[{"prompt":"...","promptTr":"...","answer":"...","turkish":"...","chips":["..."],"speakerName":"...","speakerRole":"...","speakerEmoji":"..."}]}`
         },
-        { role: "user", content: `Generate fresh Day ${day} dialog, keep ${hasSecondary ? "both characters alternating" : content.npcRole + " personality"}.` }
+        { role: "user", content: `Generate fresh Day ${day} dialog, keep ${hasSecondary ? "both characters alternating" : content.npcRole + " personality"}.${fresh ? " IMPORTANT: produce a DIFFERENT variant than before — new questions, new answers, no repetition." : ""}${seen.length ? ` NEVER repeat these already-shown answers (nor close paraphrases): ${seen.map((s) => `"${String(s).slice(0, 120)}"`).join(" | ")}` : ""}` }
       ],
     };
     const completion = await callGroq(params);
     const raw = completion.choices[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed.steps) && parsed.steps.length > 0) {
+      const mapped: (AiStep & { speakerName: string; speakerRole: string; speakerEmoji: string })[] = parsed.steps.map((s: any) => ({
+        prompt: String(s.prompt || ""),
+        promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
+        answer: String(s.answer || ""),
+        turkish: String(s.turkish || (s as any).tr || ""),
+        chips: Array.isArray(s.chips) ? s.chips.map(String) : [],
+        speakerName: String(s.speakerName || s.speaker || parsed.npcName || content.npcName),
+        speakerRole: String(s.speakerRole || parsed.npcRole || content.npcRole),
+        speakerEmoji: String(s.speakerEmoji || parsed.npcEmoji || content.npcEmoji),
+      }));
+      // Saçmalık filtresi: boş/aynı/tekrar adımları ele, seviyeye kısalt
+      const valid = sanitizeAiSteps(mapped, level, targetLangName);
+      if (!valid) return null;
       const out = {
         npcName: String(parsed.npcName || content.npcName),
         npcRole: String(parsed.npcRole || content.npcRole),
         npcEmoji: String(parsed.npcEmoji || content.npcEmoji),
         secondaryNpc: content.secondaryNpc,
-        steps: parsed.steps.map((s: any) => ({
-          prompt: String(s.prompt || ""),
-          promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
-          answer: String(s.answer || ""),
-          turkish: String(s.turkish || (s as any).tr || ""),
-          chips: Array.isArray(s.chips) ? s.chips.map(String) : [],
-          speakerName: String(s.speakerName || s.speaker || parsed.npcName || content.npcName),
-          speakerRole: String(s.speakerRole || parsed.npcRole || content.npcRole),
-          speakerEmoji: String(s.speakerEmoji || parsed.npcEmoji || content.npcEmoji),
-        })),
+        steps: valid,
       };
       sceneCache.set(cacheKey, out);
       return out;
@@ -681,6 +715,7 @@ export async function generateFullScene(
   level: string = "A1",
   targetLangName: string = "English",
   nativeLangName: string = "Turkish",
+  seen: string[] = [],
 ): Promise<AiStep[] | null> {
   if (!client) return null;
   try {
@@ -705,19 +740,20 @@ CEFR ${level}: ${level === "A1" ? "2-4 words" : level === "A2" ? "5-8 words" : l
 Generate 3 fresh immersive dialog steps. Each step: NPC prompt (${targetLangName}, natural), ideal learner answer (${targetLangName}, ${level} level, NEVER ${nativeLangName}), ${nativeLangName} translation, chips (1-3 ${targetLangName} vocab).
 Return STRICT JSON: {"steps":[{"prompt":"...","answer":"...","turkish":"...","chips":["..."]}]}`
         },
-        { role: "user", content: `Generate day ${day} for ${theme} at ${level} in ${targetLangName} (translations in ${nativeLangName})` }
+        { role: "user", content: `Generate day ${day} for ${theme} at ${level} in ${targetLangName} (translations in ${nativeLangName}). Always a fresh variant, never repeat previous ones.${seen.length ? ` NEVER repeat these already-shown answers: ${seen.map((s) => `"${String(s).slice(0, 120)}"`).join(" | ")}` : ""}` }
       ],
     };
     const completion = await callGroq(params);
     const raw = completion.choices[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed.steps) && parsed.steps.length > 0) {
-      return parsed.steps.map((s: any) => ({
+      const mapped: AiStep[] = parsed.steps.map((s: any) => ({
         prompt: String(s.prompt || ""),
         answer: String(s.answer || ""),
         turkish: String(s.turkish || ""),
         chips: Array.isArray(s.chips) ? s.chips.map(String) : [],
       }));
+      return sanitizeAiSteps(mapped, level, targetLangName) || null;
     }
     return null;
   } catch { return null; }
@@ -748,9 +784,11 @@ export async function generateLesson(
   level: string,
   topicName: string,
   nativeLangName: string = "Turkish",
+  fresh: boolean = false,
+  seen: string[] = [],
 ): Promise<{ steps: LessonStep[]; npcName: string; npcEmoji: string } | null> {
-  const cacheKey = `lesson:v5:${langName}:${level}:${topicName}:${nativeLangName}`;
-  if (lessonCache.has(cacheKey)) return lessonCache.get(cacheKey);
+  const cacheKey = `lesson:v6:${langName}:${level}:${topicName}:${nativeLangName}`;
+  if (!fresh && lessonCache.has(cacheKey)) return lessonCache.get(cacheKey);
   if (!client) return null;
   try {
     const params: any = {
@@ -783,23 +821,26 @@ Return STRICT JSON only:
 {"npcName":"...","npcEmoji":"...","steps":[{"prompt":"...","promptTr":"...","answer":"...","tr":"...","chips":["..."]}]}
 Keep answers appropriate to the ${level} level. Do not add explanations.`,
         },
-        { role: "user", content: `Generate the ${topicName} lesson at ${level} in ${langName}.` },
+        { role: "user", content: `Generate the ${topicName} lesson at ${level} in ${langName}.${fresh ? " Make it a DIFFERENT variant than before — new questions and answers, no repetition." : ""}${seen.length ? ` NEVER repeat these already-shown answers (nor close paraphrases): ${seen.map((s) => `"${String(s).slice(0, 120)}"`).join(" | ")}` : ""}` },
       ],
     };
     const completion = await callGroq(params);
     const raw = completion.choices[0]?.message?.content || "{}";
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed.steps) && parsed.steps.length > 0) {
+      const mapped: LessonStep[] = parsed.steps.map((s: any) => ({
+        prompt: String(s.prompt || ""),
+        promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
+        answer: String(s.answer || ""),
+        tr: String(s.tr || (s as any).translation || ""),
+        chips: Array.isArray(s.chips) ? s.chips.map((c: any) => String(c)) : [],
+      }));
+      const valid = sanitizeAiSteps(mapped, level, langName);
+      if (!valid) return null;
       const out = {
         npcName: String(parsed.npcName || "Rehber"),
         npcEmoji: String(parsed.npcEmoji || "🗣️"),
-        steps: parsed.steps.map((s: any) => ({
-          prompt: String(s.prompt || ""),
-          promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
-          answer: String(s.answer || ""),
-          tr: String(s.tr || (s as any).translation || ""),
-          chips: Array.isArray(s.chips) ? s.chips.map((c: any) => String(c)) : [],
-        })),
+        steps: valid,
       };
       lessonCache.set(cacheKey, out);
       return out;

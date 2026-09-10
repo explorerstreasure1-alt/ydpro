@@ -96,8 +96,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const lastUnlocked = useRef<Set<string>>(new Set());
   const init = useRef(false);
 
+  // Demo modda (DB yok) sunucu XP biriktirmez — istemcide localStorage'ta biriktir ki
+  // seviye ilerlemesi (A1→A2→B1...) çalışsın. DB modunda sunucu gerçeği söyler, bonus 0.
+  const getDemoBonus = useCallback(() => {
+    try { return Number(localStorage.getItem("yzed_demo_xp") || 0) || 0; } catch { return 0; }
+  }, []);
+
   const reload = useCallback(async () => {
     const data = await fetchJSON("/api/state");
+    if (data?.demo && data.user) {
+      data.user = { ...data.user, xp: (data.user.xp || 0) + getDemoBonus() };
+    }
     setState(data.user);
     setScenes(data.scenes);
 
@@ -142,6 +151,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const post = useCallback(async (body: any) => {
     const r = await fetchJSON("/api/action", { method: "POST", body: JSON.stringify(body) });
+    // Demo cevabındaki kazancı yerel bonusa ekle (seviye ilerlesin)
+    try {
+      if (r?.demo && typeof r.gain === "number" && r.gain > 0) {
+        const cur = Number(localStorage.getItem("yzed_demo_xp") || 0) || 0;
+        localStorage.setItem("yzed_demo_xp", String(cur + r.gain));
+      }
+    } catch {}
     reload();
     return r;
   }, [reload]);

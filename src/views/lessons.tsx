@@ -4,6 +4,7 @@ import { useStore } from "@/lib/store";
 import { LANGS, CEFR, TOPICS } from "@/lib/levels";
 import { sfx } from "@/lib/sfx";
 import { speakText, speakMixed } from "@/lib/tts";
+import { getSeen, addSeen } from "@/lib/seen";
 import { useLangPair } from "@/lib/useLangPair";
 import { NPC_FALLBACK, LANG_PHOTO, TOPIC_PHOTO } from "@/lib/img";
 import { IMG } from "@/lib/img";
@@ -88,7 +89,9 @@ export function Lessons({ back }: { back: () => void }) {
     }
   }, [completed, phase, steps, store]);
 
+  // Her ders TAZE + görülenler hariç (asla tekrar yok, devamlı yeni)
   async function start() {
+    const fresh = true;
     if (native === lang) { setErr("Ana dil ile hedef dil aynı olamaz."); return; }
     setPhase("loading");
     setErr(null);
@@ -96,16 +99,19 @@ export function Lessons({ back }: { back: () => void }) {
     setStep(0);
     setSolved([]);
     started.current = false;
+    evalBusy.current = false;
+    setEngine(null);
     setStatus("idle");
     setMsg("");
     setTyped("");
     setUserTr(null);
     setUseTyped(!micSupport);
     try {
+      const seen = getSeen("lesson", topic, level, lang);
       const res = await fetch("/api/lesson", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lang, native, level, topic: topicDef.name }),
+        body: JSON.stringify({ lang, native, level, topic: topicDef.name, fresh, seen }),
       });
       const data = await res.json();
       if (!res.ok || !data.steps) {
@@ -114,6 +120,7 @@ export function Lessons({ back }: { back: () => void }) {
         return;
       }
       setSteps(data.steps);
+      addSeen("lesson", topic, level, lang, (data.steps as any[]).map((s: any) => s.answer));
       setNpc({ name: data.npcName || "Rehber", emoji: data.npcEmoji || "🗣️" });
       setPhase("play");
     } catch {
@@ -336,7 +343,7 @@ export function Lessons({ back }: { back: () => void }) {
           AI <b>{nativeDef.name} → {langDef.name}</b> · <b>{level}</b> · <b>{topicDef.name}</b> için anında ders üretir. Çeviriler {nativeDef.name} dilinde. Her çiftte aynı kalite — Groq <span className="font-mono text-cyan-300">openai/gpt-oss-20b</span>.
         </div>
 
-        <button onClick={start} className="gold-btn mt-3 w-full rounded-2xl py-4 text-base">
+        <button onClick={() => start()} className="gold-btn mt-3 w-full rounded-2xl py-4 text-base">
           {nativeDef.flag}→{langDef.flag} {topicDef.emoji} Dersi Başlat → {langDef.name}
         </button>
       </Shell>
@@ -365,7 +372,7 @@ export function Lessons({ back }: { back: () => void }) {
           <h3 className="mt-2 text-2xl font-black text-grad">Ders Bitti!</h3>
           <p className="mt-1 text-sm text-slate-300">{langDef.name} · {level} · {topicDef.name}</p>
           <div className="glass mt-4 rounded-2xl px-5 py-3 text-base font-black text-[#ffd52f]">+20 XP</div>
-          <button onClick={start} className="gold-btn mt-6 w-full rounded-2xl py-4 text-base">🎲 Yeni Ders Üret</button>
+          <button onClick={() => start()} className="gold-btn mt-6 w-full rounded-2xl py-4 text-base">🎲 Yeni Ders Üret</button>
           <button onClick={() => setPhase("select")} className="ghost-btn mt-3 w-full rounded-2xl py-3 text-sm">Konu / Seviye Değiştir</button>
         </div>
       </Shell>
@@ -391,6 +398,7 @@ export function Lessons({ back }: { back: () => void }) {
 
       <div className="relative z-10 px-4 pt-2 text-center text-[11px] font-bold text-slate-300">
         {Math.min(step + 1, steps?.length || 1)} / {steps?.length}
+        <button onClick={() => start()} className="ml-2 rounded-full border border-cyan-300/30 bg-white/5 px-2 py-0.5 text-[10px] text-cyan-200 hover:bg-white/10" title="Taze ders üret (önbelleği atla)">🔄 Yeni sorular</button>
       </div>
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-3 px-4 pb-3">

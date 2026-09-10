@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { getSeen, addSeen } from "@/lib/seen";
 import { useStore } from "@/lib/store";
 import { DAYS } from "@/lib/content";
 import { cefrForXp } from "@/lib/levels";
@@ -59,49 +60,63 @@ export function Mission({
   const [aiVocab, setAiVocab] = useState<any[] | null>(null);
   const [persona, setPersona] = useState(() => aiPersonaForDay(day));
   const [aiLoading, setAiLoading] = useState(true);
-  const staticBase = staticSteps(day);
+  // staticBase her render'da yeni diziydi → effect deps'te refetch döngüsü yapıyordu. Memo ile sabitlendi.
+  const staticBase = useMemo(() => staticSteps(day), [day]);
   const { nativeLang, targetLang, nativeDef, targetDef, targetTts, nativeTts } = useLangPair();
   const cefr = cefrForXp(store.user?.xp || 0);
   // TÜM seriler + TÜM diller + TÜM seviyeler: AI yoksa bile statik tabanla devam et (takılma yok)
   const steps = aiSteps || staticBase;
   const usingOfflineBase = !aiSteps;
   const speak = (text: string, lang = targetTts) => speakText(text, lang);
+  // Her açılışta TAZE üretim + görülenleri gönder (asla tekrar yok, devamlı yeni)
+  const loadScene = useCallback(async (signal: { cancelled: boolean }) => {
+    try {
+      setAiLoading(true);
+      setAiSteps(null);
+      const seen = getSeen("scene", day, cefr.level, targetLang);
+      const r = await fetch(`/api/scene/${day}?level=${cefr.level}&target=${targetLang}&native=${nativeLang}&fresh=1&seen=${encodeURIComponent(JSON.stringify(seen))}`).then(x => x.json());
+      if (signal.cancelled) return;
+      if (r?.vocabulary && Array.isArray(r.vocabulary) && r.vocabulary.length) {
+        setAiVocab(r.vocabulary);
+      }
+      if (r?.aiSteps && Array.isArray(r.aiSteps) && r.aiSteps.length) {
+        const mapped: RStep[] = r.aiSteps.map((s: any) => ({
+          prompt: s.prompt,
+          promptTr: s.promptTr || "",
+          answer: s.answer,
+          turkish: s.turkish || s.tr || "",
+          chips: s.chips || [],
+          xp: typeof s.xp === "number" ? s.xp : 20,
+          speakerName: s.speakerName || s.speaker || r.npcName,
+          speakerRole: s.speakerRole || r.npcRole,
+          speakerEmoji: s.speakerEmoji || r.npcEmoji,
+        }));
+        setAiSteps(mapped);
+        addSeen("scene", day, cefr.level, targetLang, mapped.map((s) => s.answer));
+      }
+      if (r?.npcName) setPersona({ name: r.npcName, role: r.npcRole, emoji: r.npcEmoji, dayTitle: `${r.scene?.title || content.title} - ${r.scene?.location || content.location}` });
+    } catch {}
+    finally { if (!signal.cancelled) setAiLoading(false); }
+  }, [day, content.title, content.location, cefr.level, nativeLang, targetLang]);
+  // Sahne ortasında seviye atlanırsa içeriği silme — yeni seviye bir sonraki girişte gelir
+  const loadedKey = useRef("");
+  const progressRef = useRef(false);
+  useEffect(() => { progressRef.current = solved.length > 0 || step > 0; });
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        setAiLoading(true);
-        const r = await fetch(`/api/scene/${day}?level=${cefr.level}&target=${targetLang}&native=${nativeLang}`).then(x => x.json());
-        if (cancelled) return;
-        if (r?.vocabulary && Array.isArray(r.vocabulary) && r.vocabulary.length) {
-          setAiVocab(r.vocabulary);
-        }
-        if (r?.aiSteps && Array.isArray(r.aiSteps) && r.aiSteps.length) {
-          const mapped: RStep[] = r.aiSteps.map((s: any) => ({
-            prompt: s.prompt,
-            promptTr: s.promptTr || "",
-            answer: s.answer,
-            turkish: s.turkish || s.tr || "",
-            chips: s.chips || [],
-            xp: 20,
-            speakerName: s.speakerName || s.speaker || r.npcName,
-            speakerRole: s.speakerRole || r.npcRole,
-            speakerEmoji: s.speakerEmoji || r.npcEmoji,
-          }));
-          // çoklu karakter desteği: her adım farklı konuşmacı olabilir
-          if (r.personaScene?.steps?.[0]?.speaker) {
-            // personaScene already has per-step speakers
-          }
-          setAiSteps(mapped);
-        } else if (staticBase[0]?.speakerName) {
-          // static already has per-step speakers
-        }
-        if (r?.npcName) setPersona({ name: r.npcName, role: r.npcRole, emoji: r.npcEmoji, dayTitle: `${r.scene?.title || content.title} - ${r.scene?.location || content.location}` });
-      } catch {}
-      finally { if (!cancelled) setAiLoading(false); }
-    })();
-    return () => { cancelled = true; };
-  }, [day, content.title, content.location, cefr.level, nativeLang, targetLang, staticBase]);
+    const k = `${day}|${cefr.level}|${targetLang}|${nativeLang}`;
+    if (loadedKey.current === k) return;
+    if (loadedKey.current && progressRef.current) return;
+    loadedKey.current = k;
+    const signal = { cancelled: false };
+    loadScene(signal);
+    return () => { signal.cancelled = true; };
+  }, [loadScene]);
+  // "Yeni sorular": bir tur daha taze üret
+  const refreshScene = useCallback(() => {
+    setStep(0); setStatus("idle"); setMsg(""); setTyped(""); setUserTr(null); setSentenceTr(null);
+    setSolved([]); started.current = false;
+    loadScene({ cancelled: false });
+  }, [loadScene]);
   const [step, setStep] = useState(0);
   const [status, setStatus] = useState<StepDone>("idle");
   const [msg, setMsg] = useState("");
@@ -348,6 +363,12 @@ export function Mission({
       <div className="relative z-10 px-4 pt-2 text-center text-[13px]">
         <span className="font-black text-[#ffd52f]">Görev:</span>{" "}
         <span className="font-semibold text-white">{content.mission}</span>
+        <div className="mt-1 flex items-center justify-center gap-2">
+          <span className="text-[10px] font-bold text-slate-400">{targetDef?.flag} {targetDef?.spoken} • {cefr.level}</span>
+          <button onClick={refreshScene} disabled={aiLoading} className="rounded-full border border-cyan-300/30 bg-white/5 px-2.5 py-0.5 text-[10px] font-bold text-cyan-200 hover:bg-white/10 disabled:opacity-50" title="Taze sorular üret (önbelleği atla)">
+            {aiLoading ? "🧠 hazırlanıyor…" : "🔄 Yeni sorular"}
+          </button>
+        </div>
       </div>
 
       {/* stage */}

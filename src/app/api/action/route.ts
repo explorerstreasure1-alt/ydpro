@@ -45,7 +45,10 @@ export async function POST(req: NextRequest) {
       const res = body.persona
         ? await evaluateWithPersona(text, ideal, body.persona as any, nativeName, targetName)
         : await evaluateAnswer(text, ideal, undefined, nativeName, targetName);
-      return Response.json({ res });
+      // Demo XP: doğruyu "answer-free-text-correct" çağrısı ödüllendirir (çift sayımı önle),
+      // burada sadece katılım payı: neredeyse 8, yanlış 2 — istemci bonusa ekler, seviye ilerler
+      const gain = res.correct ? 0 : res.almost ? 8 : 2;
+      return Response.json({ res, gain, demo: true });
     }
     return Response.json({ ok: true, gain: body.gainedXp || 20, demo: true });
   }
