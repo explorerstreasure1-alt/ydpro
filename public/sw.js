@@ -1,5 +1,5 @@
-// 7DİL — Telefon uygulama altyapısı (PWA) — offline cache v2 (ikon + dil düzeltmesi)
-const CACHE = "7dil-v2";
+// 7DİL — Telefon uygulama altyapısı (PWA) — offline cache v3 (Diyalog Stüdyosu + taze navigasyon)
+const CACHE = "7dil-v3";
 const CORE = ["/", "/manifest.json", "/logo.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
@@ -21,6 +21,22 @@ self.addEventListener("fetch", (e) => {
         .then((r) => {
           // başarılı API yanıtını cache'leme yok
           return r;
+        })
+        .catch(() => caches.match(e.request))
+    );
+    return;
+  }
+  // Sayfa geçişleri: çevrimiçiyken HER ZAMAN taze (yeni sekmeler anında görünür),
+  // çevrimdışıyken önbellek. Statik dosyalarda önbellek-öncelikli.
+  if (e.request.mode === "navigate") {
+    e.respondWith(
+      fetch(e.request)
+        .then((networkRes) => {
+          if (networkRes && networkRes.status === 200) {
+            const clone = networkRes.clone();
+            caches.open(CACHE).then((c) => c.put(e.request, clone));
+          }
+          return networkRes;
         })
         .catch(() => caches.match(e.request))
     );
