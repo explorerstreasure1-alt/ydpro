@@ -29,22 +29,33 @@ export const CEFR = [
   { level: "B1", title: "Orta", desc: "Detay ekle, bağlaçlı cümle", words: "2.200", grammar: "present perfect, if/when, should", hours: "90–180s", color: "amber", canDo: "Seyahat planı, iş görüşmesi, fikir belirt" },
   { level: "B2", title: "İleri", desc: "Akıcı, görüş belirt, tartış", words: "3.500", grammar: "conditionals, passive, reported speech", hours: "180–300s", color: "violet", canDo: "Tartış, ikna et, sunum yap" },
   { level: "C1", title: "Uzman", desc: "Zengin, doğal ve nüanslı", words: "5.000+", grammar: "idioms, nuance, humor", hours: "300–500s", color: "rose", canDo: "Müzakere, şaka, kültürel nüans" },
+  { level: "C2", title: "Usta", desc: "Anadil düzeyinde akıcılık", words: "8.000+", grammar: "mastery, style, rhetoric", hours: "500s+", color: "fuchsia", canDo: "Her konuda anadil gibi tartış, üslup kur" },
 ];
 
-// Kullanıcı XP seviyesini CEFR'a eşle — kapsamlı
+// Kullanıcı XP seviyesini CEFR'a eşle — kapsamlı (A1–C2)
 export function cefrForXp(xp: number): typeof CEFR[number] {
   if (xp < 240) return CEFR[0]; // A1
   if (xp < 700) return CEFR[1]; // A2
   if (xp < 1500) return CEFR[2]; // B1
   if (xp < 2600) return CEFR[3]; // B2
-  return CEFR[4]; // C1
+  if (xp < 4200) return CEFR[4]; // C1
+  return CEFR[5]; // C2
 }
 export function cefrForLevel(level: number): typeof CEFR[number] {
   if (level <= 1) return CEFR[0];
   if (level === 2) return CEFR[1];
   if (level === 3) return CEFR[2];
   if (level === 4) return CEFR[3];
-  return CEFR[4];
+  if (level === 5) return CEFR[4];
+  return CEFR[5];
+}
+
+/** Seviyeye göre TTS hızı — A1-A2 yavaş, B normal, C akıcı (spec Adım 3) */
+export function ttsRateForLevel(level: string): number {
+  if (level === "A1" || level === "A2") return 0.9;
+  if (level === "B1") return 1.0;
+  if (level === "B2") return 1.05;
+  return 1.12; // C1, C2
 }
 
 export interface TopicDef {

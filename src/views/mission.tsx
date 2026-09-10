@@ -67,7 +67,7 @@ export function Mission({
   // TÜM seriler + TÜM diller + TÜM seviyeler: AI yoksa bile statik tabanla devam et (takılma yok)
   const steps = aiSteps || staticBase;
   const usingOfflineBase = !aiSteps;
-  const speak = (text: string, lang = targetTts) => speakText(text, lang);
+  const speak = (text: string, lang = targetTts) => speakText(text, lang, { level: cefr.level });
   // Her açılışta TAZE üretim + görülenleri gönder (asla tekrar yok, devamlı yeni)
   const loadScene = useCallback(async (signal: { cancelled: boolean }) => {
     try {
@@ -224,21 +224,21 @@ export function Mission({
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Mükemmel! Doğru söyledin. +${cur.xp} XP`);
       solve(idx);
       // 3. aşama DÜZELTME (anadil + yabancı aksan) + 4. aşama DOĞRU CEVAP (hedef dil orijinal):
-      // tırnak içi hedef dille, dışı anadille okunur — her karakter kendi üslubuyla
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
-      else speakText(cur.answer, targetTts);
+      // tırnak içi hedef dille, dışı anadille okunur — her karakter kendi üslubuyla, seviyeye göre hız
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level });
+      else speakText(cur.answer, targetTts, { level: cefr.level });
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Yaklaştın! Doğrusu: “${cur.answer}” — bir daha dene.`);
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
-      else speakText(cur.answer, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level });
+      else speakText(cur.answer, targetTts, { level: cefr.level });
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Hayır öyle değil, şöyle diyeceksin: “${cur.answer}” — dinle, tekrar et.`);
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts);
-      else speakText(cur.answer, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level });
+      else speakText(cur.answer, targetTts, { level: cefr.level });
     }
     if (r.personaReply) setUserTr(null);
   }

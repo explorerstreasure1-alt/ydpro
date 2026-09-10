@@ -167,3 +167,19 @@ export const conversations = pgTable("conversations", {
   score: integer("score"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+// Diyalog Stüdyosu kayıtları — language_code ile dile göre filtrelenir (spec Adım 4).
+// Demo modda (DB yok) istemci localStorage kullanır; DB varken bu tablo kullanılır.
+export const savedDialogs = pgTable("saved_dialogs", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  languageCode: varchar("language_code", { length: 8 }).notNull(), // hedef dil: pt, es, fr...
+  targetLang: varchar("target_lang", { length: 8 }).notNull(),
+  nativeLang: varchar("native_lang", { length: 8 }).notNull().default("tr"),
+  level: varchar("level", { length: 4 }).notNull().default("A1"), // A1..C2
+  topic: text("topic").notNull(),
+  lines: jsonb("lines")
+    .$type<{ speaker: string; target_text: string; native_text: string }[]>()
+    .notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});

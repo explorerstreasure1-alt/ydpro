@@ -22,6 +22,7 @@ export const AI_ORCHESTRATOR = {
 // Hızlı pratik — bellek cache: aynı sahne/dil/seviye tekrar instant döner
 const sceneCache = new Map<string, any>();
 const lessonCache = new Map<string, any>();
+const dialogueCache = new Map<string, any>();
 
 async function callGroq(params: any): Promise<any> {
   if (!client) throw new Error("no client");
@@ -53,29 +54,95 @@ export interface TeacherResult {
 function norm(s: string): string {
   return (s || "")
     .toLowerCase()
-    // Portekizce/Fransızca/Almanca aksanları: olá≈ola, ç≈c, ñ≈n, ü≈u — ASR aksanı kaçırsa da eşleşsin
+    // Latin aksanları: olá≈ola, ç≈c, ñ≈n, ü≈u — ASR aksanı kaçırsa da eşleşsin
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[.,!?;:"'«»“”‘’¿¡]/g, "")
+    // Almanca ß, Arapça yazım birliği (elif/teh-merbuta/hareke) — salt imla, anlam değişmez
+    .replace(/ß/g, "ss")
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ـ/g, "")
+    // NFD, أإآؤئ'yi parçalar (elif + hemze) — hemze artıkları da temizlenir
+    .replace(/[\u064b-\u0656\u0670]/g, "")
+    // Noktalama — Latin + CJK (Çince/Japonca ASR 。、！？ ile yazar)
+    .replace(/[.,!?;:"'«»“”‘’¿¡…—–·•・、。！？，：；（）「」『』【】〜～〈〉《》“”‘’]/g, "")
     .replace(/\s+/g, " ")
     .trim();
 }
 
-/** Sayı kelimesi ↔ rakam denkliği (ASR "twelve" yazar, ideal "12" olabilir) */
+/** Sayı kelimesi ↔ rakam denkliği (ASR "twelve" yazar, ideal "12" olabilir) — 14 dil.
+ *  Diller arası aynı yazım varsa tek anahtar yeter (değer aynıysa çakışma yok). */
 const NUMBER_WORDS: Record<string, string> = {
+  // İngilizce + ortak Latin (zero/fr/it, six/fr, etc. — değer aynı)
   zero: "0", one: "1", two: "2", three: "3", four: "4", five: "5", six: "6", seven: "7",
   eight: "8", nine: "9", ten: "10", eleven: "11", twelve: "12", thirteen: "13", fourteen: "14",
   fifteen: "15", sixteen: "16", seventeen: "17", eighteen: "18", nineteen: "19", twenty: "20",
-  thirty: "30",
+  thirty: "30", forty: "40", fifty: "50", sixty: "60", seventy: "70", eighty: "80", ninety: "90",
+  hundred: "100",
   // Portekizce (BR + PT yazımları)
-  zero_pt: "0", um: "1", uma: "1", dois: "2", duas: "2", tres: "3", quatro: "4", cinco: "5",
-  seis: "6", sete: "7", oito: "8", nove: "9", dez: "10", onze: "11", doze: "12",
+  um: "1", uma: "1", dois: "2", duas: "2", tres: "3", quatro: "4", cinco: "5",
+  sete: "7", oito: "8", nove: "9", dez: "10", onze: "11", doze: "12",
   treze: "13", catorze: "14", quatorze: "14", quinze: "15", dezasseis: "16", dezesseis: "16",
   dezassete: "17", dezessete: "17", dezoito: "18", dezanove: "19", dezenove: "19", vinte: "20",
   trinta: "30", quarenta: "40", cinquenta: "50", sessenta: "60", setenta: "70", oitenta: "80",
   noventa: "90", cem: "100", cento: "100",
-  // İspanyolca/Fransızca/Almanca sık sayılar
-  uno: "1", dos: "2", drei: "3", vier: "4", funf: "5", un: "1", deux: "2", trois: "3",
+  // İspanyolca (dos: rakam — kısaltma eşlemesi CMAP'te ayrıca durur, sayı kontrolü önce gelir)
+  cero: "0", uno: "1", dos: "2", siete: "7", ocho: "8", diez: "10", once: "11", doce: "12",
+  trece: "13", catorce: "14", dieciseis: "16", diecisiete: "17", dieciocho: "18",
+  diecinueve: "19", veinte: "20", treinta: "30", cuarenta: "40", cincuenta: "50",
+  sesenta: "60", ochenta: "80", cien: "100", ciento: "100",
+  // Fransızca
+  un: "1", une: "1", deux: "2", trois: "3", quatre: "4", cinq: "5",
+  sept: "7", huit: "8", neuf: "9", dix: "10", douze: "12",
+  seize: "16", dixsept: "17", dixhuit: "18", dixneuf: "19",
+  vingt: "20", trente: "30", quarante: "40", cinquante: "50", soixante: "60", cent: "100",
+  // Almanca
+  null: "0", eins: "1", eine: "1", zwei: "2", drei: "3", vier: "4", funf: "5", sechs: "6",
+  sieben: "7", acht: "8", neun: "9", zehn: "10", elf: "11", zwolf: "12", dreizehn: "13",
+  vierzehn: "14", funfzehn: "15", sechzehn: "16", siebzehn: "17", achtzehn: "18", neunzehn: "19",
+  zwanzig: "20", dreissig: "30", vierzig: "40", funfzig: "50", sechzig: "60", siebzig: "70",
+  achtzig: "80", neunzig: "90", hundert: "100",
+  // İtalyanca
+  due: "2", tre: "3", sei: "6", sette: "7", otto: "8", dieci: "10", undici: "11",
+  dodici: "12", tredici: "13", quattordici: "14", quindici: "15", sedici: "16",
+  diciassette: "17", diciotto: "18", diciannove: "19", venti: "20", trenta: "30",
+  sessanta: "60", settanta: "70", ottanta: "80", novanta: "90",
+  // Felemenkçe
+  nul: "0", een: "1", twee: "2", vijf: "5", zes: "6", zeven: "7",
+  negen: "9", tien: "10", twaalf: "12", dertien: "13", veertien: "14",
+  vijftien: "15", zestien: "16", zeventien: "17", achttien: "18", negentien: "19",
+  twintig: "20", dertig: "30", veertig: "40", vijftig: "50", zestig: "60", zeventig: "70",
+  tachtig: "80", negentig: "90", honderd: "100",
+  // Rusça
+  ноль: "0", один: "1", одна: "1", два: "2", две: "2", три: "3", четыре: "4", пять: "5",
+  шесть: "6", семь: "7", восемь: "8", девять: "9", десять: "10", одиннадцать: "11",
+  двенадцать: "12", тринадцать: "13", четырнадцать: "14", пятнадцать: "15", шестнадцать: "16",
+  семнадцать: "17", восемнадцать: "18", девятнадцать: "19", двадцать: "20", тридцать: "30",
+  сорок: "40", пятьдесят: "50", сто: "100",
+  // Türkçe (norm sonrası: ı korunur, ş→s, ö→o, ü→u, ğ→g, ç→c)
+  sıfır: "0", bir: "1", iki: "2", uc: "3", dort: "4", bes: "5", altı: "6", yedi: "7",
+  sekiz: "8", dokuz: "9", on: "10", yirmi: "20", otuz: "30", kırk: "40", elli: "50",
+  altmıs: "60", yetmis: "70", seksen: "80", doksan: "90", yuz: "100",
+  // Lehçe (norm sonrası: ą→a, ć→c, ę→e, ł→l, ń→n, ó→o, ś→s, źż→z)
+  jeden: "1", dwa: "2", trzy: "3", cztery: "4", piec: "5", szesc: "6",
+  siedem: "7", osiem: "8", dziewiec: "9", dziesiec: "10", jedenascie: "11", dwanascie: "12",
+  trzynascie: "13", czternascie: "14", pietnascie: "15", szesnascie: "16",
+  siedemnascie: "17", osiemnascie: "18", dziewietnascie: "19", dwadziescia: "20",
+  trzydziesci: "30", czterdziesci: "40", piecdziesiat: "50",
+  // Çince (basitleştirilmiş — Japonca kanji ile ortak, değer aynı)
+  一: "1", 二: "2", 两: "2", 三: "3", 四: "4", 五: "5", 六: "6", 七: "7", 八: "8",
+  九: "9", 十: "10",
+  // Japonca (yaygın okunuşlar — kanji yukarıda ortak)
+  〇: "0", 零: "0", ゼロ: "0", れい: "0",
+  いち: "1", に: "2", さん: "3", し: "4", よん: "4", ご: "5", ろく: "6", なな: "7",
+  しち: "7", はち: "8", きゅう: "9", く: "9", じゅう: "10",
+  // Arapça (harf + doğu rakamları)
+  صفر: "0", واحد: "1", اثنان: "2", اثنين: "2", ثلاثة: "3", أربعة: "4", خمسة: "5",
+  ستة: "6", سبعة: "7", ثمانية: "8", تسعة: "9", عشرة: "10",
+  "٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4", "٥": "5", "٦": "6", "٧": "7", "٨": "8", "٩": "9",
+  // Korece (Sino + yerli 1-10)
+  일: "1", 이: "2", 삼: "3", 사: "4", 오: "5", 육: "6", 칠: "7", 팔: "8", 구: "9", 십: "10",
+  하나: "1", 둘: "2", 셋: "3", 넷: "4", 다섯: "5", 여섯: "6", 일곱: "7", 여덟: "8", 아홉: "9", 열: "10",
 };
 
 /** Konuşma dilindeki kısaltmalar (ASR doğal yazar, ideal tam yazar) */
@@ -84,21 +151,44 @@ const CONTRACTION_MAP: Record<string, string> = {
   pra: "para", pro: "para", pros: "para", pras: "para", pa: "para",
   ta: "esta", tas: "estas", to: "estou", tou: "estou", tamos: "estamos",
   num: "em", numa: "em", nuns: "em", numas: "em", no: "em", na: "em", nos: "em", nas: "em",
-  dum: "de", duma: "de", duns: "de", dumas: "de", do: "de", da: "de", dos: "de", das: "de",
+  dum: "de", duma: "de", duns: "de", dumas: "de", do: "de", da: "de", dos: "de",
+  // NOT: PT "das" Alman artikeli "das" ile çakışır — Alman tarafı __art'ta durur,
+  // PT tarafı ALT_MAP (de↔__art) üzerinden kabul edilir.
   pelo: "por", pela: "por", pelos: "por", pelas: "por",
   neste: "este", nesta: "esta", nesse: "esse", nessa: "essa",
   // BR ↔ PT kelime varyantları (aynı anlama gelir, ikisi de doğru)
   telemovel: "__phone", celular: "__phone",
   autocarro: "__bus", onibus: "__bus",
   comboio: "__train", trem: "__train",
-  pequeno: "__small", pequenino: "__small",
   // Cinsiyet çekimi (konuşmacıya göre ikisi de doğru)
   obrigado: "__thanks", obrigada: "__thanks",
+  buena: "bueno", mucha: "mucho", toda: "todo", esta: "este", esa: "ese",
+  bonita: "bonito", pequena: "pequeno", une: "un", una: "uno", un: "uno", eine: "ein",
+  // Artikel/cinsiyet karışıklığı yeni başlayan için engel olmasın (doğrusu kararda gösterilir)
+  a: "__art", an: "__art", the: "__art",
+  der: "__art", die: "__art", das: "__art", dem: "__art", den: "__art",
+  einen: "__art", einem: "__art", einer: "__art",
+  el: "__art", la: "__art", lo: "__art", il: "__art", i: "__art", gli: "__art", le: "__art",
   // Evet/hayır — tüm dillerde ASR varyantı (simetrik, eşleşmeyi bozmaz)
   yes: "__yes", sim: "__yes", si: "__yes", oui: "__yes", ja: "__yes",
   nao: "__no", non: "__no", nein: "__no", nee: "__no",
+  // İspanyolca/Fransızca/İtalyanca/Almanca edat birleşmeleri
+  // (del hem ES "de" hem IT "di" yerine geçer — ALT_MAP'te çift yönlü, aşağıda)
+  al: "a",
+  au: "a", aux: "a", du: "de", des: "de",
+  dello: "di", della: "di", dei: "di", degli: "di", allo: "a", alla: "a", ai: "a",
+  agli: "a", dal: "da", dallo: "da", dalla: "da",
+  zum: "zu", zur: "zu", beim: "bei", vom: "von",
   // İngilizce konuşma kısaltmaları
   gonna: "going", wanna: "want", gimme: "give", gotta: "got", dunno: "know",
+};
+
+/** Birden çok forma uyanlar — iki yönlü kabul */
+const ALT_MAP: Record<string, string[]> = {
+  del: ["de", "di"], // ES del≈de, IT del≈di
+  de: ["__art"], // PT das/FR de/ES de artikelle de kabul (das Alman __art'ında)
+  di: ["de"], // IT di≈de
+  da: ["de"], // IT dal/dallo/dalla (≈da) ≈ de
 };
 
 function canonToken(t: string): string {
@@ -106,6 +196,57 @@ function canonToken(t: string): string {
   if (CONTRACTION_MAP[x]) x = CONTRACTION_MAP[x];
   if (NUMBER_WORDS[x]) x = NUMBER_WORDS[x];
   return x;
+}
+
+/** Fransızca/İtalyanca/İspanyolca dişil çekim kökü: grande→grand, petite→petit, bonne→bon */
+function femBase(t: string): string {
+  if (!/^[a-z]+$/.test(t) || t.length <= 4) return t;
+  let x = t;
+  if (x.endsWith("e")) x = x.slice(0, -1);
+  x = x.replace(/(bb|cc|dd|ff|gg|ll|mm|nn|pp|rr|ss|tt)$/, (m) => m[0]);
+  return x;
+}
+
+/** Slav çekim eki toleransı: Moskvu≈Moskve (Rusça), domu≈dom (Lehçe) */
+function slavicStem(t: string): string {
+  if (/[\u0400-\u04ff]/.test(t)) {
+    const ends = ["ого", "его", "ому", "ему", "ыми", "ими", "ах", "ях", "ов", "ев", "ей", "ой", "ом", "ем", "ам", "ям", "а", "я", "у", "ю", "о", "е", "и", "ы", "ь"];
+    for (const e of ends) {
+      if (t.length >= 5 && t.endsWith(e) && t.length - e.length >= 4) return t.slice(0, -e.length);
+    }
+    return t;
+  }
+  if (t.length >= 5) {
+    const ends = ["owie", "ami", "ach", "ow", "om", "em", "am", "ie"];
+    for (const e of ends) {
+      if (t.endsWith(e) && t.length - e.length >= 4) return t.slice(0, -e.length);
+    }
+  }
+  if (t.length >= 4) {
+    for (const e of ["u", "a", "i", "y", "o"]) {
+      if (t.endsWith(e) && t.length - e.length >= 3) return t.slice(0, -e.length);
+    }
+  }
+  return t;
+}
+
+/** Türkçe ek toleransı: evde≈evden≈evim≈ev (kök ≥2 harf korunur) */
+function turkishStem(t: string): string {
+  const ends = [
+    "lerden", "lardan", "lerde", "larda", "leri", "ları", "ler", "lar",
+    "nın", "nin", "nun", "nün", "den", "dan", "ten", "tan",
+    "de", "da", "te", "ta", "in", "ın", "un", "ün",
+    "im", "ım", "um", "üm", "sin", "sın", "sun", "sün",
+    "iz", "ız", "uz", "üz", "si", "sı", "su", "sü",
+    "yi", "yı", "yu", "yü", "ye", "ya",
+    "i", "ı", "u", "ü", "e", "a",
+  ];
+  if (t.length >= 4) {
+    for (const e of ends) {
+      if (t.endsWith(e) && t.length - e.length >= 2) return t.slice(0, -e.length);
+    }
+  }
+  return t;
 }
 
 /** Küçük yazım/ASR farkı (1 harf) — kısa kelimelerde değil */
@@ -132,19 +273,51 @@ function stripPlural(t: string): string {
 }
 
 function tokensMatch(a: string, b: string): boolean {
+  const ra = (a || "").toLowerCase(), rb = (b || "").toLowerCase();
+  if (ra === rb) return true;
+  // Sayı kelimesi ↔ rakam — kısaltma eşlemesinden ÖNCE ham haliyle (dos↔2, twelve↔12)
+  if (NUMBER_WORDS[ra] && NUMBER_WORDS[ra] === rb) return true;
+  if (NUMBER_WORDS[rb] && NUMBER_WORDS[rb] === ra) return true;
   const ca = canonToken(a), cb = canonToken(b);
   if (ca === cb) return true;
+  // Çift yönlüler: ES del≈de, IT del≈di
+  if (ALT_MAP[ca]?.includes(cb) || ALT_MAP[cb]?.includes(ca)) return true;
   if (stripPlural(ca) === stripPlural(cb)) return true; // ticket≈tickets
+  if (femBase(ca) === femBase(cb)) return true; // grand≈grande, petit≈petite
+  const sa = slavicStem(ca), sb = slavicStem(cb);
+  if (sa === cb || sb === ca || sa === sb) return true; // moskvu≈moskve, domu≈dom
+  const ua = turkishStem(ca), ub = turkishStem(cb);
+  if (ua === cb || ub === ca || ua === ub) return true; // evde≈evden≈ev
   if (ca.length >= 4 && cb.length >= 4 && editDistance(ca, cb) <= 1) return true; // 1 harf ASR hatası
   return false;
 }
 
+const CJK_RE = /[\u4e00-\u9fff\u3040-\u30ff]/;
+
 /**
- * Token overlap similarity 0..1 — ASR toleranslı (kısaltma/çoğul/1-harf/sayı).
+ * Token overlap similarity 0..1 — ASR toleranslı (kısaltma/çoğul/çekim/1-harf/sayı).
+ * Çince/Japonca boşluksuz yazılır → karakter-seviyesi benzerlik kullanılır.
  */
 function similarity(a: string, ideal: string): number {
-  const ta = norm(a).split(" ").filter(Boolean);
-  const ti = norm(ideal).split(" ").filter(Boolean);
+  const n = norm(a);
+  const ni = norm(ideal);
+  if (!ni) return 0;
+  // CJK: boşluk yok, karakter çakışması (sıra duyarsız, tekrar duyarlı)
+  if (CJK_RE.test(ni) || CJK_RE.test(n)) {
+    const A = [...n.replace(/\s+/g, "")];
+    const B = [...ni.replace(/\s+/g, "")];
+    if (B.length === 0) return 0;
+    const counts = new Map<string, number>();
+    for (const ch of B) counts.set(ch, (counts.get(ch) || 0) + 1);
+    let hits = 0;
+    for (const ch of A) {
+      const c = counts.get(ch) || 0;
+      if (c > 0) { hits++; counts.set(ch, c - 1); }
+    }
+    return hits / Math.max(A.length, B.length);
+  }
+  const ta = n.split(" ").filter(Boolean);
+  const ti = ni.split(" ").filter(Boolean);
   if (ti.length === 0) return 0;
   const used = new Array(ti.length).fill(false);
   let hits = 0;
@@ -316,12 +489,12 @@ function offlinePersonaReply(
   return `${st.wrong} "${ideal}" — dinle, tekrar et bakayım.`;
 }
 
-// --- Seviye uyarlaması: A1 kısa → C1 zengin (offline statik içerik için) ---
+// --- Seviye uyarlaması: A1 kısa → C2 anadil düzeyi (offline statik içerik için) ---
 export function adaptAnswerToLevel(answer: string, level: string, targetLangName: string = "English"): string {
   const words = (answer || "").split(" ").filter(Boolean);
   if (words.length === 0) return answer;
   // Seviye kelime tavanı — AI uzun saçmalarsa kısalt (tüm dillerde)
-  const cap = level === "A1" ? 6 : level === "A2" ? 10 : level === "B1" ? 16 : level === "B2" ? 22 : 30;
+  const cap = level === "A1" ? 6 : level === "A2" ? 10 : level === "B1" ? 16 : level === "B2" ? 22 : level === "C1" ? 30 : 40;
   const trimmed = words.slice(0, cap).join(" ");
   const isEnglish = targetLangName.toLowerCase().includes("english");
   if (level === "A1" || level === "A2" || level === "B1") return trimmed || answer;
@@ -359,7 +532,8 @@ export function xpForLevel(level: string): number {
   if (level === "A2") return 20;
   if (level === "B1") return 25;
   if (level === "B2") return 25;
-  return 30;
+  if (level === "C1") return 30;
+  return 35; // C2
 }
 
 // Offline: GROQ yokken bile TÜM seriler (18 gün) + TÜM dillerde takılma olmasın diye
@@ -561,13 +735,16 @@ export interface AiStep {
 
 /**
  * Ask the model to generate a FRESH set of conversational NPC prompts + answers
- * (with Turkish translations) for a scenario. Returns null on any failure so the
- * caller can fall back to static content.
+ * (with native-language translations) for a scenario. Returns null on any failure
+ * so the caller can fall back to static content. Fully dynamic: no hardcoded language.
  */
 export async function generateDialog(
   theme: string,
   sampleQ: string,
   sampleA: string,
+  targetLangName: string = "English",
+  nativeLangName: string = "Turkish",
+  level: string = "A1",
 ): Promise<AiStep[] | null> {
   if (!client) return null;
   try {
@@ -579,15 +756,15 @@ export async function generateDialog(
       messages: [
         {
           role: "system",
-          content: `You are a language-game content generator for a Turkish learner learning English.
+          content: `You are a language-game content generator for a ${nativeLangName} learner learning ${targetLangName}, CEFR ${level}.
 Scenario/theme: ${theme}.
-Generate 3 fresh, simple, natural conversational NPC prompts (the thing the NPC says, in English) that fit this real-life scenario, plus the natural short English answer the learner should give, plus a natural Turkish translation of each answer.
+Generate 3 fresh, simple, natural conversational NPC prompts (the thing the NPC says, in ${targetLangName}) that fit this real-life scenario, plus the natural short ${targetLangName} answer the learner should give, plus a natural ${nativeLangName} translation of each answer.
 Vary from the sample so it feels different each time — do NOT copy the sample.
 Return STRICT JSON only:
 {"steps":[{"prompt":"...","answer":"...","turkish":"...","chips":["word1","word2"]}]}
-Rules: exactly 3 steps; answers under 10 words; chips = 1-3 key vocabulary words (English) for the scenario.`,
+Rules: exactly 3 steps; answers appropriate to ${level}; chips = 1-3 key vocabulary words (${targetLangName}) for the scenario.`,
         },
-        { role: "user", content: `Sample prompt: "${sampleQ}". Sample answer: "${sampleA}".` },
+        { role: "user", content: `Sample prompt: "${sampleQ}". Sample answer: "${sampleA}". Generate in ${targetLangName} (translations in ${nativeLangName}).` },
       ],
     };
     const completion = await callGroq(params);
@@ -648,7 +825,7 @@ ASIL CEVAP VE HEDEF DİL KURALLARI (kesin):
 2. Bu yabancı cümle hem yazılı olarak (hedef dilde) hem de o dilin orijinal aksan/fonetik rehberiyle birlikte verilecek.
 3. Asla yabancı dildeki cümleyi ${nativeLangName} kelimelerle kurup yabancı aksanla okumaya çalışmayacaksın. Kelimeler ve gramer tamamen hedef yabancı dilde olacak.
 
-CEFR ${level}: ${level==="A1"?"very short 2-4 words":level==="A2"?"simple 5-8 words":level==="B1"?"connected 8-14 words":level==="B2"?"fluent 12-20 words":"rich 15-25 words with idioms"} in ${targetLangName}.
+CEFR ${level}: ${level==="A1"?"very short 2-4 words":level==="A2"?"simple 5-8 words":level==="B1"?"connected 8-14 words":level==="B2"?"fluent 12-20 words":level==="C1"?"rich 15-25 words with idioms":"native-like mastery 20-35 words with rhetoric and style"} in ${targetLangName}.
 ${hasSecondary ? "For multi-character scene, ALTERNATE speakers: some steps from primary, some from secondary. Include speakerName/speakerRole/speakerEmoji per step." : "Single speaker, all steps from primary NPC."}
 Hızlı pratik, insan gibi.
 
@@ -736,7 +913,7 @@ UYGULAMA DÖNGÜSÜ (4 aşama, tüm bölüm/ortam/seviyelerde geçerli):
 3. DÜZELTME (anadil + yabancı aksan): karakter ${nativeLangName} konuşur ama yabancı aksanla, karakter üslubuyla.
 4. DOĞRU CEVAP (asla anadil değil): answer tamamen ${targetLangName} dilinde + orijinal okunuş.
 
-CEFR ${level}: ${level === "A1" ? "2-4 words" : level === "A2" ? "5-8 words" : level === "B1" ? "8-14 words" : level === "B2" ? "12-20 words" : "15-25 words with idioms"}.
+CEFR ${level}: ${level === "A1" ? "2-4 words" : level === "A2" ? "5-8 words" : level === "B1" ? "8-14 words" : level === "B2" ? "12-20 words" : level === "C1" ? "15-25 words with idioms" : "20-35 words, native-like mastery"}.
 Generate 3 fresh immersive dialog steps. Each step: NPC prompt (${targetLangName}, natural), ideal learner answer (${targetLangName}, ${level} level, NEVER ${nativeLangName}), ${nativeLangName} translation, chips (1-3 ${targetLangName} vocab).
 Return STRICT JSON: {"steps":[{"prompt":"...","answer":"...","turkish":"...","chips":["..."]}]}`
         },
@@ -802,7 +979,7 @@ export async function generateLesson(
           content: `You are a language-course generator. Create a short lesson for a ${nativeLangName} speaker learning ${langName}.
 CEFR level: ${level}. Topic: ${topicName}.
 Native language for translations: ${nativeLangName}.
-Difficulty guide: A1 = 2-4 word simple phrases; A2 = simple everyday sentences; B1 = 2 sentences, more detail; B2 = fluent with opinion; C1 = rich, natural, nuanced.
+Difficulty guide: A1 = 2-4 word simple phrases; A2 = simple everyday sentences; B1 = 2 sentences, more detail; B2 = fluent with opinion; C1 = rich, natural, nuanced; C2 = native-like mastery with style.
 You are a DYNAMIC CHARACTER and LANGUAGE COACH (Anne, arkadaş, patron, esnaf... selectable), native ${langName}, speaking ${nativeLangName} with slight ${langName} accent when correcting.
 
 UYGULAMA DÖNGÜSÜ (4 aşama):
@@ -844,6 +1021,81 @@ Keep answers appropriate to the ${level} level. Do not add explanations.`,
       };
       lessonCache.set(cacheKey, out);
       return out;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export interface DialogueLine {
+  speaker: string;
+  target_text: string;
+  native_text: string;
+}
+
+/**
+ * Diyalog Stüdyosu üretimi — spec Adım 2 evrensel şablon:
+ * uzman {HEDEF} eğitmeni, {SEVİYE} düzeyinde, {KONU} konulu 6-10 satırlık doğal diyalog.
+ * Çıktı: speaker / target_text (hedef dil) / native_text (ana dil). Tamamen dinamik, dil sabitlenmez.
+ */
+export async function generateDialogue(
+  targetLangName: string,
+  nativeLangName: string,
+  level: string,
+  topic: string,
+  seen: string[] = [],
+): Promise<{ lines: DialogueLine[] } | null> {
+  const cacheKey = `dialog:v1:${targetLangName}:${nativeLangName}:${level}:${topic}:${seen.length}`;
+  if (dialogueCache.has(cacheKey)) return dialogueCache.get(cacheKey);
+  if (!client) return null;
+  try {
+    const params: any = {
+      model: MODEL,
+      temperature: 0.9,
+      reasoning_effort: "low",
+      response_format: { type: "json_object" },
+      messages: [
+        {
+          role: "system",
+          content: `You are an expert ${targetLangName} language teacher. The learner's level is ${level} (CEFR) and native language is ${nativeLangName}. Create a natural two-person dialogue about "${topic}".
+Rules:
+- 6-10 lines total, alternating speakers with natural local names (e.g., Spanish: Carlos/Lucía).
+- Grammar and vocabulary STRICTLY at ${level} level (${level === "A1" ? "2-4 word simple phrases" : level === "A2" ? "simple everyday sentences" : level === "B1" ? "connected 8-14 word sentences" : level === "B2" ? "fluent 12-20 word sentences" : level === "C1" ? "rich 15-25 word sentences with idioms" : "native-like 20-35 word sentences"}).
+- "target_text" fully in ${targetLangName} (NEVER ${nativeLangName} words), "native_text" natural ${nativeLangName} translation.
+- Everyday spoken language, no textbook stiffness, no explanations.
+Return STRICT JSON only:
+{"lines":[{"speaker":"...","target_text":"...","native_text":"..."}]}`,
+        },
+        {
+          role: "user",
+          content: `Topic: "${topic}" | Level ${level} | ${targetLangName} with ${nativeLangName} translations. Fresh variant, no repetition.${seen.length ? ` NEVER repeat these already-shown lines: ${seen.map((s) => `"${String(s).slice(0, 120)}"`).join(" | ")}` : ""}`,
+        },
+      ],
+    };
+    const completion = await callGroq(params);
+    const raw = completion.choices[0]?.message?.content || "{}";
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed.lines) && parsed.lines.length >= 4) {
+      const seenSet = new Set<string>();
+      const lines: DialogueLine[] = [];
+      for (const l of parsed.lines) {
+        const speaker = String(l.speaker || "").trim().slice(0, 24) || "A";
+        const target_text = String(l.target_text || l.targetText || "").trim();
+        const native_text = String(l.native_text || l.nativeText || "").trim();
+        if (!target_text || !native_text) continue;
+        if (norm(target_text) === norm(native_text)) continue;
+        const k = norm(target_text);
+        if (seenSet.has(k)) continue;
+        seenSet.add(k);
+        lines.push({ speaker, target_text, native_text });
+        if (lines.length >= 10) break;
+      }
+      if (lines.length >= 4) {
+        const out = { lines };
+        dialogueCache.set(cacheKey, out);
+        return out;
+      }
     }
     return null;
   } catch {

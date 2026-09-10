@@ -123,7 +123,7 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
   const micSupport = typeof window !== "undefined" && (Boolean((window as any).SpeechRecognition) || Boolean((window as any).webkitSpeechRecognition));
 
-  const speak = useCallback((text: string, lang = targetTts) => speakText(text, lang), [targetTts]);
+  const speak = useCallback((text: string, lang = targetTts) => speakText(text, lang, { level: cefr.level }), [targetTts, cefr.level]);
 
   const idx = steps ? Math.min(step, steps.length - 1) : 0;
   const cur = (steps ? steps[idx] : null) as RStep | null;
@@ -185,17 +185,17 @@ export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; bac
       setStatus("correct");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Mükemmel! +${cur.xp} XP`);
       solve(idx);
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts); else speakText(cur.answer, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level }); else speakText(cur.answer, targetTts, { level: cefr.level });
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Yaklaştın! “${cur.answer}”`);
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts); else speakText(cur.answer, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level }); else speakText(cur.answer, targetTts, { level: cefr.level });
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${curPersona.emoji} ${curPersona.name}: ${personaReply}` : `Hayır öyle değil: “${cur.answer}”`);
-      if (personaReply) speakMixed(personaReply, nativeTts, targetTts); else speakText(cur.answer, targetTts);
+      if (personaReply) speakMixed(personaReply, nativeTts, targetTts, { level: cefr.level }); else speakText(cur.answer, targetTts, { level: cefr.level });
     }
   }
 

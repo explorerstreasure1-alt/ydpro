@@ -14,12 +14,14 @@ import { Progress } from "@/views/progressview";
 import { Profile } from "@/views/profile";
 import { Lessons } from "@/views/lessons";
 import { LangSettingsView } from "@/views/langSettings";
+import { Dialogue } from "@/views/dialogue";
 import { SceneDef } from "@/lib/scenes";
 
 export type Tab =
   | "home"
   | "talk"
   | "memory"
+  | "dialogue"
   | "progress"
   | "profile";
 export type Route =
@@ -158,6 +160,8 @@ function Tabbed({
     return <Home gotoTab={navigate} goMission={openMission} goLessons={openLessons} goExplore={openExplore} />;
   if (tab === "memory")
     return <Memory goStart={(d) => openMission(d)} />;
+  if (tab === "dialogue")
+    return <Dialogue back={() => navigate("home")} />;
   if (tab === "talk")
     return <RealLife back={() => navigate("home")} />;
   if (tab === "progress") return <Progress goHome={() => navigate("home")} />;

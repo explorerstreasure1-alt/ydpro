@@ -128,8 +128,23 @@ export function Home({
                 📚
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-black">Seviyeler · A1 – C1</div>
+                <div className="text-sm font-black">Seviyeler · A1 – C2</div>
                 <div className="truncate text-[11px] text-slate-400">14 dil · 18 konu · Her dil çiftinde AI</div>
+              </div>
+              <span className="text-cyan-300 text-lg">›</span>
+            </button>
+
+            {/* Diyalog Stüdyosu — ayrı bölüm: konu+seviye, 6-10 satır, kayıtlı liste */}
+            <button
+              onClick={() => gotoTab("dialogue")}
+              className="glass group flex w-full items-center gap-3 rounded-3xl p-4 text-left transition hover:border-[#ffd52f]/50 active:scale-[0.99] min-h-[72px] touch-manipulation select-none"
+            >
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#00bfff]/20 to-[#0080ff]/10 text-2xl ring-1 ring-cyan-300/30">
+                💬
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-black">Diyalog Stüdyosu</div>
+                <div className="truncate text-[11px] text-slate-400">Konunu yaz · 6-10 satır · Kaydet, dille filtrele</div>
               </div>
               <span className="text-cyan-300 text-lg">›</span>
             </button>
@@ -152,11 +167,11 @@ export function Home({
             {/* Adventure list — 10 günlük kapsamlı A1-C1 */}
             <div className="glass rounded-3xl p-3">
               <div className="flex items-center justify-between px-1">
-                <h2 className="text-base font-black">🗺️ Macera Haritası — A1 → C1</h2>
+                  <h2 className="text-base font-black">🗺️ Macera Haritası — A1 → C2</h2>
                 <span className="text-[11px] text-slate-400">{doneCount}/{order.length}</span>
               </div>
               <div className="mt-1 flex gap-1">
-                {["A1","A2","B1","B2","C1"].map(l=>(
+                {["A1","A2","B1","B2","C1","C2"].map(l=>(
                   <span key={l} className={`text-[8px] font-black px-1.5 py-0.5 rounded ${l==="A1"?"bg-emerald-500/20 text-emerald-300":l==="A2"?"bg-cyan-500/20 text-cyan-300":l==="B1"?"bg-amber-500/20 text-amber-300":l==="B2"?"bg-violet-500/20 text-violet-300":"bg-rose-500/20 text-rose-300"}`}>{l}</span>
                 ))}
                 <span className="ml-auto text-[9px] text-slate-500">{order.length} sahne • 14 dil</span>

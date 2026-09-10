@@ -13,7 +13,25 @@ if (typeof window !== "undefined") {
   } catch {}
 }
 
-export function speakText(text: string, lang: string) {
+export interface SpeakOpts {
+  /** CEFR seviyesi — A1-A2 yavaş, B normal, C akıcı (kullanıcı ayarı varsa o kazanır) */
+  level?: string;
+  /** Açık hız — verilirse seviye kuralını ezer */
+  rate?: number;
+  /** Okuma bitince (veya hatada) çağrılır — zincirleme oynatma için */
+  onEnd?: () => void;
+}
+
+/** Seviyeye göre TTS hızı — spec Adım 3: A1-A2 yavaş, B normal akış, C tam akıcı */
+export function rateForLevel(level?: string): number {
+  if (!level) return 1.12;
+  if (level === "A1" || level === "A2") return 0.9;
+  if (level === "B1") return 1.0;
+  if (level === "B2") return 1.05;
+  return 1.12;
+}
+
+export function speakText(text: string, lang: string, opts?: SpeakOpts) {
   if (typeof window === "undefined") return;
   const synth = window.speechSynthesis as any;
   if (!synth) return;
@@ -22,8 +40,8 @@ export function speakText(text: string, lang: string) {
     setTimeout(() => {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = lang;
-      // Her dil için ayrı ayar — yoksa varsayılan hızlı
-      let rate = 1.12;
+      // Her dil için ayrı ayar — yoksa seviye hızı
+      let rate = opts?.rate ?? rateForLevel(opts?.level);
       try {
         const code = lang.split("-")[0].toLowerCase();
         const map = JSON.parse(localStorage.getItem("yzed_lang_settings") || "{}");
@@ -49,14 +67,29 @@ export function speakText(text: string, lang: string) {
         voices.find((v: any) => v.lang.toLowerCase().startsWith(lang.split("-")[0].toLowerCase())) ||
         voices.find((v: any) => v.name.toLowerCase().includes(lang.split("-")[0].toLowerCase()));
       if (best) (u as any).voice = best;
+      // Zincirleme oynatma: bitince veya hatada tek sefer çöz
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        opts?.onEnd?.();
+      };
+      u.onend = finish;
+      // @ts-ignore
+      u.onerror = finish;
       synth.speak(u);
+      // Güvenlik: sessizlikte takılma olmasın (uzun metin payıyla)
+      const guard = Math.min(15000, 2500 + text.length * 120);
+      setTimeout(finish, guard);
     }, 20);
-  } catch {}
+  } catch {
+    opts?.onEnd?.();
+  }
 }
 
 // Telaffuz: Türkçe konuşuyorsa yabancı aksanla, orijinal telaffuzla
 // Örn: 'Hayır öyle değil, şöyle diyeceksin: "Here is my passport."' → Türkçe kısım tr-TR, tırnak içi en-GB
-export function speakMixed(text: string, nativeLang: string, targetLang: string) {
+export function speakMixed(text: string, nativeLang: string, targetLang: string, opts?: SpeakOpts) {
   if (typeof window === "undefined") return;
   const synth = window.speechSynthesis;
   if (!synth) return;
@@ -79,18 +112,19 @@ export function speakMixed(text: string, nativeLang: string, targetLang: string)
     if (parts.length === 0) parts.push({ text, lang: nativeLang });
     // Tek parça ise direkt
     if (parts.length === 1) {
-      speakText(parts[0].text, parts[0].lang);
+      speakText(parts[0].text, parts[0].lang, opts);
       return;
     }
     // Sırayla, her parça bitince diğeri — her dil kendi orijinal aksanıyla, hızlı
     const voices = voicesCache.length ? voicesCache : (synth as any).getVoices?.() || [];
     if (!voicesCache.length && voices.length) voicesCache = voices;
+    const levelRate = opts?.rate ?? rateForLevel(opts?.level);
     const speakPart = (idx: number) => {
       if (idx >= parts.length) return;
       const p = parts[idx];
       const u = new SpeechSynthesisUtterance(p.text);
       u.lang = p.lang;
-      u.rate = 1.1;
+      u.rate = levelRate;
       u.pitch = 1.0;
       const best =
         voices.find((v: any) => v.lang.toLowerCase() === p.lang.toLowerCase()) ||

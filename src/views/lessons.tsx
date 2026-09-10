@@ -62,7 +62,7 @@ export function Lessons({ back }: { back: () => void }) {
   const cur: Step | undefined = steps ? steps[idx] : undefined;
   const completed = solved.length >= (steps?.length ?? 0);
 
-  const speak = (text: string, lang2 = tts) => speakText(text, lang2);
+  const speak = (text: string, lang2 = tts) => speakText(text, lang2, { level });
 
   useEffect(() => {
     if (cur && phase === "play" && status === "idle") speakText(cur.prompt, tts);
@@ -164,17 +164,17 @@ export function Lessons({ back }: { back: () => void }) {
       setStatus("correct");
       setMsg(personaReply ? `${npc.emoji} ${npc.name}: ${personaReply}` : `Mükemmel! Doğru söyledin. +${xpGain} XP`);
       solve(idx);
-      if (personaReply) speakMixed(personaReply, nativeTts, tts); else speak(cur.answer, tts);
+      if (personaReply) speakMixed(personaReply, nativeTts, tts, { level }); else speak(cur.answer, tts);
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
       setMsg(personaReply ? `${npc.emoji} ${npc.name}: ${personaReply}` : `Yaklaştın! Doğrusu: “${cur.answer}”`);
-      if (personaReply) speakMixed(personaReply, nativeTts, tts); else speak(cur.answer, tts);
+      if (personaReply) speakMixed(personaReply, nativeTts, tts, { level }); else speak(cur.answer, tts);
     } else {
       sfx.wrong();
       setStatus("wrong");
       setMsg(personaReply ? `${npc.emoji} ${npc.name}: ${personaReply}` : `Hayır öyle değil, şöyle diyeceksin: “${cur.answer}” — ${langDef.spoken} orijinal telafuzla dinle`);
-      if (personaReply) speakMixed(personaReply, nativeTts, tts); else speak(cur.answer, tts);
+      if (personaReply) speakMixed(personaReply, nativeTts, tts, { level }); else speak(cur.answer, tts);
     }
     translate(text).then((t) => t && setUserTr(t));
   }

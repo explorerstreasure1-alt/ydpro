@@ -1,10 +1,11 @@
 "use client";
-export type Tab = "home" | "talk" | "memory" | "progress" | "profile";
+export type Tab = "home" | "talk" | "memory" | "dialogue" | "progress" | "profile";
 
 export function BottomNav({ active, onChange }: { active: Tab; onChange: (t: Tab) => void }) {
   const items: { key: Tab; icon: string; label: string }[] = [
     { key: "home", icon: "🎮", label: "Oyun" },
     { key: "memory", icon: "🧠", label: "Hafıza" },
+    { key: "dialogue", icon: "💬", label: "Diyalog" },
     { key: "talk", icon: "🎙", label: "Konuş" },
     { key: "progress", icon: "📊", label: "İlerleme" },
     { key: "profile", icon: "⚙️", label: "Ayarlar" },
