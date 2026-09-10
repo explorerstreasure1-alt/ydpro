@@ -166,6 +166,8 @@ export async function evaluateWithPersona(
     return { ...base, personaReply };
   }
   try {
+    // Dil öğretmeni persona — Türkçe konuşurken yabancı aksanıyla (Örn: Bak oğlum...)
+    const targetForPersona = (()=>{ try{ const m=(ideal.match(/[a-zA-ZÀ-ÿÀ-ž]+/g)||[]).join(" "); return m.length>3 ? "target" : "target"; }catch{return "target";}})();
     const params: any = {
       model: MODEL,
       temperature: 0.7,
@@ -174,27 +176,29 @@ export async function evaluateWithPersona(
       messages: [
         {
           role: "system",
-          content: `You are role-playing as "${persona.name}", a "${persona.role}" in the scene "${persona.dayTitle}". Emoji: ${persona.emoji}.
-The learner is a ${nativeLangName} speaker supposed to say approximately: "${ideal}" (target language).
-The learner actually said: "${input}" (might be native, broken target, or silence).
-Learner's native language: ${nativeLangName} — feedback and personaReply must be in ${nativeLangName} (not Turkish unless native is Turkish).
+          content: `You are a LANGUAGE TEACHER. Persona: "${persona.name}" (${persona.role}) in "${persona.dayTitle}". When you speak Turkish to explain rules, you speak Turkish WITH a slight foreign accent (like a native ${nativeLangName} speaker who learned Turkish later, slightly broken — e.g., "Bak oğlum, şimdi bunu bu şekilde söylemen lazım...").
 
-TASK: Judge if learner's attempt is correct/almost/wrong (be forgiving on tiny words like "a/the").
-Then respond IN CHARACTER as ${persona.name} with personality of a ${persona.role} — NOT as a teacher.
+Learner: ${nativeLangName} speaker, target: "${ideal}" (MUST be in target foreign language, never Turkish).
+Learner said: "${input}"
+
+STRICT RULES FOR THE FOREIGN ANSWER (the ideal you will correct to):
+1. NEVER Turkish — the produced sentence MUST be entirely in the target foreign language (e.g., Portuguese "Eu me chamo João.", not Turkish words with foreign accent).
+2. Provide it BOTH as written target sentence AND with original accent/phonetics guide (it will be spoken with target native accent).
+3. NEVER construct foreign sentence using Turkish words + foreign accent. Words and grammar must be fully target foreign.
+
+TASK: Judge correct/almost/wrong (forgiving on "a/the").
+Then respond as TEACHER in Turkish WITH foreign accent (slightly broken, warm: "Bak oğlum, adını sorsalar şöyle diyeceksin:"), not perfect Turkish.
 
 Rules:
-- Respond entirely in ${nativeLangName}.
-- If POLICE: strict, official tone. Correct → praise in ${nativeLangName}. Wrong → correction in ${nativeLangName} + ideal in quotes + "try again".
-- If SISTER/FRIEND/MOTHER/FAMILY: warm, affectionate in ${nativeLangName}.
-- If SHOP/WAITER/HOTEL staff: polite service tone in ${nativeLangName}.
-- Always include the correct sentence in quotes.
-- verdict in ${nativeLangName} (Turkish: "Mükemmel!/Yaklaştın!/Bir kez daha deneyelim.", English: "Perfect!/Almost!/Try again.", German: "Perfekt!/Fast!/Nochmal!", etc.)
-- Also produce personaReply: what ${persona.name} would SAY NEXT in character, in ${nativeLangName} + target mix, max 20 words, includes correction if wrong.
+- personaReply entirely in ${nativeLangName} WITH slight foreign accent, warm teacher tone "Bak oğlum..." → praise if correct, correction if wrong + ideal in quotes.
+- Always include ideal foreign sentence in quotes, with original target pronunciation.
+- verdict in ${nativeLangName} (e.g., Turkish "Mükemmel!/Yaklaştın!/Bir kez daha deneyelim.", English "Perfect!/Almost!/Try again.")
+- personaReply: 1-2 sentences, max 20 words, in ${nativeLangName} with foreign accent, includes ideal foreign sentence in quotes.
 
 Return STRICT JSON only:
-{"score":0-100,"correct":bool,"almost":bool,"verdict":"...","feedback":"short ${nativeLangName} teacher feedback with correct sentence in quotes","ideal":"${ideal}","pronunciation":0-100,"personaReply":"what ${persona.name} says as ${persona.role} in character in ${nativeLangName}, 1-2 sentences"}`,
+{"score":0-100,"correct":bool,"almost":bool,"verdict":"...","feedback":"short ${nativeLangName} teacher feedback in ${nativeLangName} with foreign accent, ideal foreign sentence in quotes","ideal":"${ideal}","pronunciation":0-100,"personaReply":"teacher Turkish with foreign accent, e.g., 'Bak oğlum, şöyle diyeceksin: \\"${ideal}\\"' in ${nativeLangName} with slight foreign accent"}`,
         },
-        { role: "user", content: `Learner said: "${input}" | Ideal: "${ideal}" | Persona: ${persona.name} (${persona.role})` },
+        { role: "user", content: `Learner said: "${input}" | Ideal (must be target foreign, not Turkish): "${ideal}" | Persona: ${persona.name} (${persona.role})` },
       ],
     };
     const completion = await callGroq(params);
@@ -336,7 +340,7 @@ export async function generatePersonaScene(
   targetLangName: string = "English",
   nativeLangName: string = "Turkish"
 ): Promise<{ npcName: string; npcRole: string; npcEmoji: string; steps: (AiStep & {speakerName?:string; speakerRole?:string; speakerEmoji?:string})[]; secondaryNpc?: any } | null> {
-  const cacheKey = `scene:v5:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
+  const cacheKey = `scene:v6:${day}:${level}:${targetLangName}:${nativeLangName}:${content.title}`;
   if (sceneCache.has(cacheKey)) return sceneCache.get(cacheKey);
   if (!client) return null;
   try {
@@ -351,27 +355,34 @@ export async function generatePersonaScene(
       messages: [
         {
           role: "system",
-          content: `You are the universal content generator for Day ${day}: "${content.title}" at ${content.location}.
+          content: `You are a LANGUAGE TEACHER generating for Day ${day}: "${content.title}" at ${content.location}.
 Primary NPC: ${content.npcName} (${content.npcRole}) ${content.npcEmoji}
 ${secondaryInfo}
 Description: ${content.description}
-ORIGINAL SAMPLE DIALOGS (English, for reference): ${samplePrompts}
-TARGET LANGUAGE: ${targetLangName} — ALL prompts and answers MUST be in ${targetLangName}, not English unless target is English.
-NATIVE LANGUAGE: ${nativeLangName} — "turkish" field is actually the ${nativeLangName} translation of the answer.
-CEFR ${level} KAPSAMLI.
+ORIGINAL SAMPLE DIALOGS (for reference): ${samplePrompts}
+TARGET: ${targetLangName} (foreign), NATIVE: ${nativeLangName} (Turkish). You are a teacher whose native is ${targetLangName} but you speak ${nativeLangName} with a slight foreign accent (e.g., "Bak oğlum, şimdi bunu bu şekilde söylemen lazım..." with ${targetLangName} accent).
 
-CEFR Guide: A1=2-4 words ultra-simple; A2=5-8 simple; B1=8-14 with connectors; B2=12-20 fluent opinion; C1=15-25 rich idioms.
+CEFR ${level}: ${level==="A1"?"very short 2-4 words":level==="A2"?"simple 5-8 words":level==="B1"?"connected 8-14 words":level==="B2"?"fluent 12-20 words":"rich 15-25 words with idioms"} in ${targetLangName}.
+
+STRICT RULES (asla unutma):
+1. Produced sentence NEVER Turkish — MUST be entirely in ${targetLangName} (e.g., Portuguese "Eu me chamo João.", not Turkish words with foreign accent).
+2. Foreign sentence BOTH written in ${targetLangName} AND with original accent/phonetics guide (it will be spoken with ${targetLangName} native accent).
+3. NEVER construct foreign sentence using Turkish words + foreign accent. Words and grammar fully ${targetLangName}.
+
+Example flow (if native Turkish & target English):
+- Teacher (slight foreign-accented Turkish): "Bak oğlum, adını sorsalar şöyle diyeceksin:"
+- Foreign answer (written + original accent): "Eu me chamo João." (if target Portuguese) — actually for English: "I'm afraid the meeting has been postponed..." with English accent.
+
+Generate SÖYLE mechanism: "prompt" in ${nativeLangName} WITH ${targetLangName} accent (e.g., "Toplantının saat 14:00'e ertelendiğini ... İngilizce olarak söyle."), "promptTr" same as prompt, "answer" in ${targetLangName} original, "turkish" = ${nativeLangName} translation of answer.
+
 Rules:
-- KEEP personality: if police → strict, anne → warm motherly, patron → professional boss, sevgili → affectionate, garson → polite — but speak ${targetLangName}.
-- CEFR ${level} complexity MUST match: ${level==="A1"?"very short 2-4 words":level==="A2"?"simple 5-8 words":level==="B1"?"connected 8-14 words":level==="B2"?"fluent 12-20 words":"rich 15-25 words with idioms"} in ${targetLangName}.
-- ${hasSecondary ? "For this multi-character scene, ALTERNATE speakers: some steps from primary, some from secondary. Include speakerName/speakerRole/speakerEmoji per step." : "Single speaker, all steps from primary NPC."}
-- SÖYLE MEKANİZMASI (örnekteki gibi): "prompt" in ${nativeLangName} (native, ${targetLangName} aksanıyla — hafif bozuk, yabancı hoca gibi), instructing learner to say "answer" in ${targetLangName}. Example if native Turkish & target English: prompt="Toplantının saat 14:00'e ertelendiğini, bu yüzden ofiste olamayacağımı yabancı bir aksanla ve İngilizce olarak söyle." / promptTr same as prompt (already native), answer="I'm afraid the meeting has been postponed to 2:00 PM, so I won't be able to make it to the office in time." / turkish="Toplantı 14:00'e ertelendi, bu yüzden ofiste olamayacağım."
-- Each step: "prompt" in ${nativeLangName} (with ${targetLangName} accent, instructing what to say in ${targetLangName}), "promptTr" same as prompt (native, no translation needed), "answer" in ${targetLangName} (${level} level, original), "turkish" = ${nativeLangName} translation of answer, chips in ${targetLangName}.
+- KEEP personality but as TEACHER: "Bak oğlum..." warm, slightly broken ${nativeLangName} with ${targetLangName} accent.
+- ${hasSecondary ? "For multi-character scene, ALTERNATE speakers: some steps from primary, some from secondary. Include speakerName/speakerRole/speakerEmoji per step." : "Single speaker, all steps from primary NPC."}
 - Hızlı pratik, insan gibi.
 
 Return STRICT JSON with EXAMPLE (native Turkish, target English):
-{"npcName":"Öğretmen","npcRole":"Öğretmen","npcEmoji":"👩‍🏫","steps":[{"prompt":"Toplantının saat 14:00'e ertelendiğini, bu yüzden ofiste olamayacağımı yabancı bir aksanla ve İngilizce olarak söyle.","promptTr":"Toplantının saat 14:00'e ertelendiğini, bu yüzden ofiste olamayacağımı yabancı bir aksanla ve İngilizce olarak söyle.","answer":"I'm afraid the meeting has been postponed to 2:00 PM, so I won't be able to make it to the office in time.","turkish":"Toplantı 14:00'e ertelendi, bu yüzden ofiste olamayacağım.","chips":["meeting","postponed"]}] }
-Now generate for ${targetLangName} (prompt/promptTr in ${nativeLangName} with ${targetLangName} accent, answer in ${targetLangName}, turkish in ${nativeLangName}):
+{"npcName":"Öğretmen","npcRole":"Öğretmen","npcEmoji":"👩‍🏫","steps":[{"prompt":"Bak oğlum, toplantının saat 14:00'e ertelendiğini, bu yüzden ofiste olamayacağımı yabancı bir aksanla ve İngilizce olarak söyle.","promptTr":"Bak oğlum, toplantının saat 14:00'e ertelendiğini, bu yüzden ofiste olamayacağımı yabancı bir aksanla ve İngilizce olarak söyle.","answer":"I'm afraid the meeting has been postponed to 2:00 PM, so I won't be able to make it to the office in time.","turkish":"Toplantı 14:00'e ertelendi, bu yüzden ofiste olamayacağım.","chips":["meeting","postponed"]}] }
+Now generate for ${targetLangName} (prompt/promptTr in ${nativeLangName} with ${targetLangName} accent, answer in ${targetLangName} original with ${targetLangName} accent, turkish in ${nativeLangName}):
 {"npcName":"${content.npcName}","npcRole":"${content.npcRole}","npcEmoji":"${content.npcEmoji}","steps":[{"prompt":"...","promptTr":"...","answer":"...","turkish":"...","chips":["..."],"speakerName":"...","speakerRole":"...","speakerEmoji":"..."}]}`
         },
         { role: "user", content: `Generate fresh Day ${day} dialog, keep ${hasSecondary ? "both characters alternating" : content.npcRole + " personality"}.` }
@@ -464,7 +475,7 @@ export async function generateLesson(
   topicName: string,
   nativeLangName: string = "Turkish",
 ): Promise<{ steps: LessonStep[]; npcName: string; npcEmoji: string } | null> {
-  const cacheKey = `lesson:v3:${langName}:${level}:${topicName}:${nativeLangName}`;
+  const cacheKey = `lesson:v4:${langName}:${level}:${topicName}:${nativeLangName}`;
   if (lessonCache.has(cacheKey)) return lessonCache.get(cacheKey);
   if (!client) return null;
   try {
@@ -480,14 +491,24 @@ export async function generateLesson(
 CEFR level: ${level}. Topic: ${topicName}.
 Native language for translations: ${nativeLangName}.
 Difficulty guide: A1 = 2-4 word simple phrases; A2 = simple everyday sentences; B1 = 2 sentences, more detail; B2 = fluent with opinion; C1 = rich, natural, nuanced.
+You are a LANGUAGE TEACHER (native ${langName}, speaking ${nativeLangName} with slight ${langName} accent: "Bak oğlum, şimdi bunu bu şekilde söylemen lazım...").
 Generate exactly 3 turns of the "söyle" mechanism for ${nativeLangName} speaker learning ${langName} (CEFR ${level}, topic ${topicName}).
-Mechanism:
-- "prompt": in ${nativeLangName}, spoken with ${langName} accent (hafif bozuk, yabancı hoca gibi), instructing learner what to say in ${langName}. Example if native Turkish & target English: "Toplantının saat 14:00'e ertelendiğini, bu yüzden ofiste olamayacağımı yabancı bir aksanla ve İngilizce olarak söyle."
-- "promptTr": same as prompt (already in ${nativeLangName}, no translation needed, keep same)
-- "answer": in ${langName}, natural, ${level} level, what learner should say. Example: "I'm afraid the meeting has been postponed to 2:00 PM, so I won't be able to make it to the office in time."
+
+STRICT RULES (asla unutma):
+1. Produced sentence NEVER ${nativeLangName} — MUST be entirely in ${langName} (e.g., Portuguese "Eu me chamo João.", not Turkish words).
+2. Foreign sentence BOTH written in ${langName} AND with original ${langName} accent/phonetics (it will be spoken with ${langName} native accent).
+3. NEVER construct foreign sentence using ${nativeLangName} words + foreign accent.
+
+Mechanism Example (native Turkish, target Portuguese):
+- Teacher (slight foreign-accented Turkish): "Bak oğlum, adını sorsalar şöyle diyeceksin:"
+- Foreign answer (written + original accent): "Eu me chamo João." + pronunciation guide
+
+Generate:
+- "prompt": in ${nativeLangName} WITH ${langName} accent (slightly broken, e.g., "Bak oğlum, adını sorsalar şöyle diyeceksin:" or "Toplantının saat 14:00'e ertelendiğini ... ${langName} olarak söyle."), instructing what to say in ${langName}
+- "promptTr": same as prompt (already ${nativeLangName})
+- "answer": in ${langName} original, ${level} level. Example if target Portuguese: "Eu me chamo João." (never Turkish words)
 - "tr": natural ${nativeLangName} translation of answer
 - "chips": 1-3 key vocab from answer in ${langName}
-Keep prompt in ${nativeLangName} (with ${langName} accent instruction), answer in ${langName} original.
 Return STRICT JSON only:
 {"npcName":"...","npcEmoji":"...","steps":[{"prompt":"...","promptTr":"...","answer":"...","tr":"...","chips":["..."]}]}
 Keep answers appropriate to the ${level} level. Do not add explanations.`,
