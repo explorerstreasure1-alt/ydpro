@@ -23,7 +23,6 @@ type RStep = {
 };
 
 export function SceneMission({ scene, back, onComplete }: { scene: SceneDef; back: () => void; onComplete: () => void }) {
-  console.log("SceneMission mount", scene?.id, scene?.title);
   const store = useStore() as any;
   const { nativeLang, targetLang, nativeDef, targetDef, targetTts, nativeTts } = useLangPair();
   const cefr = cefrForXp(store.user?.xp || 0);
