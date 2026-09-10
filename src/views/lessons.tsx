@@ -135,30 +135,34 @@ export function Lessons({ back }: { back: () => void }) {
   async function evalText(text: string) {
     if (!cur || !text.trim()) return;
     setLoading(true);
+    // Seviyelerde de her dilde yabancı aksanla düzeltme — persona ile
+    const persona = { name: npc.name, role: topicDef.name, emoji: npc.emoji, dayTitle: `${topicDef.name} — ${langDef.spoken}` };
     const res = await fetch("/api/action", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, nativeLang: native, native, targetLang: lang, target: lang }),
+      body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, persona, nativeLang: native, native, targetLang: lang, target: lang }),
     }).then((r) => r.json());
     setLoading(false);
-    const r = res.res;
+    const r = res.res as any;
+    const personaReply: string = r.personaReply || "";
     if (r.correct) {
       sfx.correct();
       await store.post({ type: "answer-free-text-correct", gainedXp: 15 });
       store.addXpFlash(15);
       setStatus("correct");
-      setMsg(`Mükemmel! Doğru söyledin. +15 XP`);
+      setMsg(personaReply ? `${npc.emoji} ${npc.name}: ${personaReply}` : `Mükemmel! Doğru söyledin. +15 XP`);
       solve(idx);
+      if (personaReply) speakText(personaReply, tts); else speak(cur.answer, tts);
     } else if (r.almost) {
       sfx.wrong();
       setStatus("almost");
-      setMsg(`Yaklaştın! Telaffuzun biraz farklı. Doğrusu: “${cur.answer}”`);
-      speak(cur.answer);
+      setMsg(personaReply ? `${npc.emoji} ${npc.name}: ${personaReply}` : `Yaklaştın! Doğrusu: “${cur.answer}”`);
+      if (personaReply) speakText(personaReply, tts); else speak(cur.answer, tts);
     } else {
       sfx.wrong();
       setStatus("wrong");
-      setMsg(`Bu sefer tutmadı 💪 Doğrusu: “${cur.answer}” — dinle, tekrar et.`);
-      speak(cur.answer);
+      setMsg(personaReply ? `${npc.emoji} ${npc.name}: ${personaReply}` : `Hayır öyle değil, şöyle diyeceksin: “${cur.answer}” — ${langDef.spoken} orijinal telafuzla dinle`);
+      if (personaReply) speakText(personaReply, tts); else speak(cur.answer, tts);
     }
     translate(text).then((t) => t && setUserTr(t));
   }
