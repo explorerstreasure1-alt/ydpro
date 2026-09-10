@@ -89,7 +89,7 @@ export function dayBg(day: number): string {
 
 const PORTRAIT = {
   officer: "/characters/officer.jpg",
-  receptionist: "/characters/teacher.jpg",
+  receptionist: "/characters/receptionist.jpg", // otel resepsiyonisti (Pexels)
   waiter: "/characters/waiter.jpg",
   shop: "/characters/warehouse.jpg",
   taxi: "/characters/taxidriver.jpg",
@@ -117,44 +117,83 @@ const PORTRAIT = {
   girlfriend: "/characters/girlfriend.jpg",
   librarian: "/characters/librarian.jpg",
   ticket: "/characters/ticket.jpg",
+  grandmother: "/characters/grandmother.jpg", // yaşlı kadın (Büyükanne/Komşu/Teyze, Pexels)
+  colleague: "/characters/colleague.jpg", // ofis çalışanı kadın (Pexels)
+  cashier: "/characters/cashier.jpg", // kasiyer kadın (Pexels)
+  esnaf: "/characters/esnaf.jpg", // manav/pazar/bakkal esnafı (Pexels)
 };
 
-/** NPC portrait — her seri/sahne için zenginleştirilmiş yerel kaliteli fotolar — 60+ meslek dahil */
+/**
+ * NPC portrait — rol → konu-uyumlu yüz. Sıra ÖNEMLİ: özel roller önce, genel sonra.
+ * Türkçe İ harfi düzeltilir (İ→i), yoksa "İş/İmam/İtfaiyeci" hiç eşleşmez.
+ */
 export function npcPortrait(role: string): string {
-  const r = role.toLowerCase();
-  if (/havaalan|officer|memur|polis|pasaport|customs/i.test(r)) return PORTRAIT.officer;
-  if (/otel|recep/i.test(r)) return PORTRAIT.receptionist;
-  if (/garson|waiter|marco|emre|barista/i.test(r)) return PORTRAIT.waiter;
-  if (/mağaza|shop|asistan|warehouse|satış/i.test(r)) return PORTRAIT.shop;
-  if (/taksi|şoför|ben|taxi/i.test(r)) return PORTRAIT.taxi;
-  if (/anne|mother|ayşe/i.test(r)) return PORTRAIT.mother;
-  if (/baba|father|murat/i.test(r)) return PORTRAIT.father;
-  if (/kız kardeş|sister|elif/i.test(r)) return PORTRAIT.sister;
-  if (/erkek kardeş|brother|can/i.test(r)) return PORTRAIT.brother;
-  if (/patron|boss|smith|müdür|selim|yazılım|veri|tasarım|pazarlama|müdür/i.test(r)) return "/characters/boss.jpg";
-  if (/iş arkadaş|colleague|lena|coworker/i.test(r)) return "/characters/teacher.jpg";
-  if (/sevgili|girlfriend|elif|aşk|lover/i.test(r)) return PORTRAIT.girlfriend;
-  if (/doktor|doctor|miller|hemşire|nurse|diş|psikolog|veteriner|eczacı/i.test(r)) return r.includes("hemşire")||r.includes("nurse") ? PORTRAIT.nurse : r.includes("diş") ? PORTRAIT.dentist : PORTRAIT.doctor;
-  if (/banka|bank|brown|avukat|hakim/i.test(r)) return PORTRAIT.banker;
-  if (/profesör|professor|johnson|öğrenci|student|amy|öğretmen|teacher/i.test(r)) return "/characters/teacher.jpg";
-  if (/antrenör|coach|alex|gym|trainer|spor/i.test(r)) return "/characters/tennis.jpg";
-  if (/berber|barber|murat|kuaför|kuafor/i.test(r)) return PORTRAIT.barber;
-  if (/terzi|tailor|ayşe|kunduracı|terzi/i.test(r)) return PORTRAIT.tailor;
-  if (/fırın|baker|fırın/i.test(r)) return PORTRAIT.baker;
-  if (/kasap|butcher|ali|manav/i.test(r)) return PORTRAIT.butcher;
-  if (/kütüphan|library|green|librarian/i.test(r)) return PORTRAIT.librarian;
-  if (/gişe|clerk|sam|sinema|cinema|ticket/i.test(r)) return "/characters/ticket.jpg";
-  if (/kasiyer|cashier|jane|market|supermarket/i.test(r)) return "/characters/warehouse.jpg";
-  if (/otobüs|bus|şoför|minibüs/i.test(r)) return PORTRAIT.busdriver;
-  if (/kondüktör|conductor|tren/i.test(r)) return PORTRAIT.conductor;
-  if (/şantiye|engineer|kemal|demirci|çömlek|dokumacı|kundur|bakırcı|semer|saraç|kalay|keçe|marangoz|elektrik|tesisat|boyacı|kaynak/i.test(r)) return PORTRAIT.engineer;
-  if (/dişçi|dentist/i.test(r)) return PORTRAIT.dentist;
-  if (/sanat|artist|müzisyen|oyuncu|fotoğraf|gazeteci|yazar|çevirmen/i.test(r)) return PORTRAIT.artist;
-  if (/yönetmen|director/i.test(r)) return PORTRAIT.director;
-  if (/çiftçi|bahçıvan|balıkçı|tarla/i.test(r)) return "/characters/woodworker.jpg";
-  if (/itfaiyeci|pilot|aşçı/i.test(r)) return PORTRAIT.doctor;
-  if (/turist|arkada|mia|social/i.test(r)) return PORTRAIT.friend;
+  const r = role.toLowerCase().replace(/i̇/g, "i");
+  // Üniformalı havacı — hostes (üniforma ≈ görevli)
+  if (/hostes|stewardess|air hostess/i.test(r)) return PORTRAIT.officer;
+  // Otel — resepsiyonist (öğretmen DEĞİL)
+  if (/otel|resepsiyon/i.test(r)) return PORTRAIT.receptionist;
+  // Yaşlı kadın — büyükanne/komşu/teyze (öğretmen DEĞİL)
+  if (/büyükanne|babaanne|anneanne|nine/i.test(r)) return PORTRAIT.grandmother;
+  if (/komşu|teyze|mahalleli/i.test(r)) return PORTRAIT.grandmother;
+  // Ev sahibi — ev hanımı tipi
+  if (/ev sahibi/i.test(r)) return PORTRAIT.mother;
+  if (/anne|mother/i.test(r)) return PORTRAIT.mother;
+  if (/baba|father/i.test(r)) return PORTRAIT.father;
+  if (/imam/i.test(r)) return PORTRAIT.father;
+  if (/kız kardeş|sister/i.test(r)) return PORTRAIT.sister;
+  if (/erkek kardeş|brother/i.test(r)) return PORTRAIT.brother;
+  if (/sevgili|girlfriend|lover/i.test(r)) return PORTRAIT.girlfriend;
+  if (/damat/i.test(r)) return PORTRAIT.friend;
+  // Yönetici/ofis kadrosu — takım elbiseli (ortağı/ortağa çekimleri dahil)
+  if (/patron|boss|müdür|ortağ|ortak|partner|başkan|yönetici|smith|yazılım|veri|tasarım|geliştirici|uzman/i.test(r)) return "/characters/boss.jpg";
+  // Ofis çalışanı kadın — Lena vb. (öğretmen DEĞİL)
+  if (/iş arkadaşı|ofis çalışanı|sekreter|asistan|coworker|colleague/i.test(r)) return PORTRAIT.colleague;
+  // Sağlık — hemşire/dişçi önce (diş doktoru yakalamasın)
+  if (/hemşire|nurse/i.test(r)) return PORTRAIT.nurse;
+  if (/diş/i.test(r)) return PORTRAIT.dentist;
+  if (/doktor|doctor|psikolog|veteriner|eczacı/i.test(r)) return PORTRAIT.doctor;
+  // Banka/resmi — takım elbiseli memur (polis DEĞİL)
+  if (/banka|bank|memur|vezne|noter|avukat|hakim/i.test(r)) return PORTRAIT.banker;
+  // Güvenlik/havalimanı/üniforma
+  if (/havaalan|polis|officer|pasaport|customs|güvenlik/i.test(r)) return PORTRAIT.officer;
+  if (/itfaiye|pilot/i.test(r)) return PORTRAIT.officer;
+  // Yeme-içme servisi
+  if (/garson|waiter|barista/i.test(r)) return PORTRAIT.waiter;
+  if (/aşçı|şef|cook|kantin/i.test(r)) return PORTRAIT.baker;
+  // Kasa — kasiyer kadın (depo görevlisi DEĞİL)
+  if (/kasiyer|cashier/i.test(r)) return PORTRAIT.cashier;
+  // Mağaza satışı
+  if (/mağaza|shop|satış|kırtasiye/i.test(r)) return PORTRAIT.shop;
+  // Mahalle esnafı — manav/pazar/bakkal/kahveci (öğretmen DEĞİL)
+  if (/bakkal|manav|pazar|kahveci|esnaf/i.test(r)) return PORTRAIT.esnaf;
+  if (/kasap|butcher/i.test(r)) return PORTRAIT.butcher;
+  // Eğitim — öğretmen ayrı, öğrenci ayrı (öğrenciye öğretmen fotosu YOK)
+  if (/öğrenci|student/i.test(r)) return PORTRAIT.friend;
+  if (/öğretmen|profesör|professor|hoca|teacher/i.test(r)) return "/characters/teacher.jpg";
+  if (/antrenör|coach|trainer|spor/i.test(r)) return "/characters/tennis.jpg";
+  // Kişisel bakım/terzi
+  if (/berber|kuaför/i.test(r)) return PORTRAIT.barber;
+  if (/terzi|tailor/i.test(r)) return PORTRAIT.tailor;
+  if (/fırın|baker|pastane/i.test(r)) return PORTRAIT.baker;
+  // Kültür
+  if (/kütüphan|library|librarian/i.test(r)) return PORTRAIT.librarian;
+  if (/müze/i.test(r)) return PORTRAIT.guide;
   if (/rehber|guide/i.test(r)) return PORTRAIT.guide;
+  if (/hobi/i.test(r)) return PORTRAIT.artist;
+  if (/sanat|artist|müzisyen|oyuncu|fotoğraf|gazeteci|yazar|çevirmen|yayıncı/i.test(r)) return PORTRAIT.artist;
+  if (/yönetmen|director/i.test(r)) return PORTRAIT.director;
+  // Gişe/görevli — biletçi tipi (öğretmen DEĞİL)
+  if (/gişe|bilet|clerk|ticket|görevli|danışma/i.test(r)) return "/characters/ticket.jpg";
+  // Sürücüler — otobüs ayrı, taksi ayrı
+  if (/otobüs|minibüs|dolmuş/i.test(r)) return PORTRAIT.busdriver;
+  if (/taksi|taksici|şoför|taxi|driver/i.test(r)) return PORTRAIT.taxi;
+  if (/kondüktör|conductor|tren|vagon/i.test(r)) return PORTRAIT.conductor;
+  // Zanaat/atölye
+  if (/şantiye|engineer|usta|başı|kapıcı|marangoz|elektrik|tesisat|boyacı|kaynak|demirci|çömlek|dokumacı|kundur|bakırcı|semer|saraç|kalay|keçe/i.test(r)) return PORTRAIT.engineer;
+  if (/çiftçi|bahçıvan|balıkçı|tarla|orman/i.test(r)) return "/characters/woodworker.jpg";
+  // Genç/serbest roller
+  if (/turist|arkadaş|dost|taraftar|kaptan|takım|social/i.test(r)) return PORTRAIT.friend;
   return PORTRAIT.fallback;
 }
 export const NPC_FALLBACK = PORTRAIT.fallback;
