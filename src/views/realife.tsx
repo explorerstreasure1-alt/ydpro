@@ -40,6 +40,7 @@ export function RealLife({ back }: { back: () => void }) {
   const [busy, setBusy] = useState(false);
   const [report, setReport] = useState<null | any>(null);
   const [speaking, setSpeaking] = useState(false);
+  const [engine, setEngine] = useState<"browser" | "whisper" | null>(null);
   const [transMap, setTransMap] = useState<Record<number, string>>({});
   const rec = useRef<any>(null);
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
@@ -56,6 +57,8 @@ export function RealLife({ back }: { back: () => void }) {
     const handle = await startMic({
       lang: targetTts,
       preferWhisper: true, // aksanlı konuşmada tarayıcı yanlış yazıyor — Whisper birincil
+      whisperPrompt: TALK_TOPICS.find((t) => t.key === topic)?.label || topic,
+      onEngine: (e) => setEngine(e),
       onResult: (text, isFinal) => {
         if (isFinal && text) sendRaw(text);
         else if (text) setInput(text);
@@ -264,7 +267,10 @@ export function RealLife({ back }: { back: () => void }) {
                 ➤
               </button>
             </div>
-            <div className="mt-1.5 text-center text-[10px] text-slate-500">Takılırsan “nasıl derim?” yaz, seni yönlendireyim</div>
+            <div className="mt-1.5 text-center text-[10px] text-slate-500">
+              Takılırsan “nasıl derim?” yaz, seni yönlendireyim
+              {engine ? <span className="ml-1 text-slate-400">• son duyum: {engine === "whisper" ? "🤖 Whisper" : "🌐 Tarayıcı"}</span> : null}
+            </div>
           </div>
         </>
       )}

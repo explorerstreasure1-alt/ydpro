@@ -41,6 +41,7 @@ export function Lessons({ back }: { back: () => void }) {
   const [loading, setLoading] = useState(false);
   const [solved, setSolved] = useState<number[]>([]);
   const [userTr, setUserTr] = useState<string | null>(null);
+  const [engine, setEngine] = useState<"browser" | "whisper" | null>(null);
   const rec = useRef<any>(null);
   const started = useRef(false);
 
@@ -180,6 +181,8 @@ export function Lessons({ back }: { back: () => void }) {
     const handle = await startMic({
       lang: tts,
       preferWhisper: true, // aksanlı konuşmada tarayıcı yanlış yazıyor — Whisper birincil
+      whisperPrompt: cur?.answer,
+      onEngine: (e) => setEngine(e),
       onResult: (text, isFinal) => { if (text) setTyped(text); if (isFinal && text) evalText(text); },
       onError: (type) => { setSpeaking(false); if (type==="not-allowed") setUseTyped(true); },
       onStart: () => setSpeaking(true),
@@ -207,6 +210,7 @@ export function Lessons({ back }: { back: () => void }) {
 
   function next() {
     evalBusy.current = false;
+    setEngine(null);
     setStatus("idle");
     setMsg("");
     setTyped("");
@@ -410,7 +414,7 @@ export function Lessons({ back }: { back: () => void }) {
         {status === "almost" && <div className="w-full max-w-sm rounded-2xl bg-[#0b2940] px-4 py-3 text-sm font-semibold text-cyan-200 ring-1 ring-cyan-300/30">💡 {msg}</div>}
         {status === "wrong" && <div className="w-full max-w-sm rounded-2xl bg-[#0b2940] px-4 py-3 text-sm font-semibold text-slate-200 ring-1 ring-white/10">🎯 {msg}</div>}
         {(status === "wrong" || status === "almost") && typed ? (
-          <div className="w-full max-w-sm rounded-xl bg-white/5 px-3 py-1.5 text-center text-[11px] text-slate-400">🎤 Ben şunu duydum: <span className="font-semibold text-slate-200">“{typed}”</span> — yanlış duyduysam tekrar dene</div>
+          <div className="w-full max-w-sm rounded-xl bg-white/5 px-3 py-1.5 text-center text-[11px] text-slate-400">{engine === "whisper" ? "🤖 Whisper" : engine === "browser" ? "🌐 Tarayıcı" : "🎤"} ile duydum: <span className="font-semibold text-slate-200">“{typed}”</span> — yanlış duyduysam tekrar dene</div>
         ) : null}
         {(status === "wrong" || status === "almost") && cur && (
           <div className="w-full max-w-sm rounded-2xl border border-[#ffd52f]/40 bg-[#0b2940] px-4 py-3 text-left ring-1 ring-white/10">

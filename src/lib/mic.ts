@@ -11,18 +11,23 @@ export interface MicOptions {
   // true ise: tarayıcı sonucu hemen yayınlanmaz, GROQ Whisper yazımı BİRİNCİL olur.
   // Aksanlı/Portekizce konuşmada tarayıcı emin olup yanlış yazabildiği için önerilir.
   preferWhisper?: boolean;
+  // Beklenen cümle — Whisper'a bağlam ipucu (prompt) olarak gider, kısa cümle isabetini artırır.
+  whisperPrompt?: string;
+  // Final yazının hangi motordan geldiği: "browser" | "whisper" (ekranda teşhis için)
+  onEngine?: (engine: "browser" | "whisper", text: string) => void;
 }
 
 let whisperSupported: boolean | null = null;
 
-async function transcribeWithWhisper(blob: Blob, lang: string): Promise<string | null> {
+async function transcribeWithWhisper(blob: Blob, lang: string, prompt?: string): Promise<{ text: string; engine: "whisper" } | null> {
   try {
     const fd = new FormData();
     fd.append("file", blob, "audio.webm");
     fd.append("lang", lang);
+    if (prompt && prompt.trim().length > 1) fd.append("prompt", prompt.trim().slice(0, 200));
     const r = await fetch("/api/transcribe", { method: "POST", body: fd });
     const j = await r.json();
-    if (j?.text && String(j.text).trim().length > 1) return String(j.text).trim();
+    if (j?.text && String(j.text).trim().length > 1) return { text: String(j.text).trim(), engine: "whisper" };
     return null;
   } catch { return null; }
 }
@@ -116,12 +121,13 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
           const blobType = mediaRecorder.mimeType || "audio/webm";
           const blob = new Blob(audioChunks as any, { type: blobType });
           if (blob.size >= 800) {
-            const wt = await transcribeWithWhisper(blob, opts.lang);
-            if (!gotFinal && wt && wt.trim().length > 1) {
+            const wt = await transcribeWithWhisper(blob, opts.lang, opts.whisperPrompt);
+            if (!gotFinal && wt && wt.text.trim().length > 1) {
               whisperDone = true;
               gotFinal = true;
               whisperPendingText = "";
-              opts.onResult(wt.trim(), true);
+              opts.onResult(wt.text.trim(), true);
+              opts.onEngine?.("whisper", wt.text.trim());
               stopMedia();
               return;
             }
@@ -133,6 +139,7 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
       gotFinal = true;
       whisperPendingText = "";
       opts.onResult(srText, true);
+      opts.onEngine?.("browser", srText);
     }
     stopMedia();
   };
@@ -146,12 +153,13 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
       const blobType = mediaRecorder.mimeType || "audio/webm";
       const blob = new Blob(audioChunks as any, { type: blobType });
       if (blob.size < 800) return; // çok kısa, anlamsız
-      const whisperText = await transcribeWithWhisper(blob, opts.lang);
-      if (whisperText && whisperText.trim().length > 1) {
+      const wr = await transcribeWithWhisper(blob, opts.lang, opts.whisperPrompt);
+      if (wr && wr.text.trim().length > 1) {
         whisperDone = true;
         // Whisper daha doğruysa onu kullan
-        if (!srText || whisperText.length > srText.length * 0.8) {
-          opts.onResult(whisperText, true);
+        if (!srText || wr.text.length > srText.length * 0.8) {
+          opts.onResult(wr.text, true);
+          opts.onEngine?.("whisper", wr.text);
           gotFinal = true;
         }
       }
@@ -210,6 +218,7 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
           return;
         }
         gotFinal = true;
+        opts.onEngine?.("browser", text);
         // Düşük güvenliyse Whisper ile teyit et
         if (lowConf) doWhisperFallback(true, text);
         if (mediaRecorder && mediaRecorder.state !== "inactive") { try { mediaRecorder.stop(); } catch {} }
@@ -246,9 +255,10 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
               const blobType = mediaRecorder.mimeType || "audio/webm";
               const blob = new Blob(audioChunks as any, { type: blobType });
               if (blob.size < 2000) return;
-              const whisperText = await transcribeWithWhisper(blob, opts.lang);
-              if (!gotFinal && whisperText && whisperText.trim().length > 1) {
-                opts.onResult(whisperText.trim(), true);
+              const wr2 = await transcribeWithWhisper(blob, opts.lang, opts.whisperPrompt);
+              if (!gotFinal && wr2 && wr2.text.trim().length > 1) {
+                opts.onResult(wr2.text.trim(), true);
+                opts.onEngine?.("whisper", wr2.text.trim());
               }
             } catch {}
           }, 400);
@@ -269,8 +279,8 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
         clear();
         const blobType = (mediaRecorder as any).mimeType || "audio/webm";
         const blob = new Blob(audioChunks as any, { type: blobType });
-        const txt = await transcribeWithWhisper(blob, opts.lang);
-        if (txt) { opts.onResult(txt, true); gotFinal = true; }
+        const txt = await transcribeWithWhisper(blob, opts.lang, opts.whisperPrompt);
+        if (txt) { opts.onResult(txt.text, true); opts.onEngine?.("whisper", txt.text); gotFinal = true; }
         else opts.onError?.("no-match");
         opts.onEnd?.();
         stopMedia();

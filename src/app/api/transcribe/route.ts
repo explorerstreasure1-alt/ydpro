@@ -8,6 +8,8 @@ export async function POST(req: NextRequest) {
     const form = await req.formData();
     const file = form.get("file") as File | null;
     const lang = String(form.get("lang") || "en");
+    // Beklenen cümle ipucu (öğrenilen cevap) — kısa öğrenci cümlelerinde isabeti artırır
+    const hint = String(form.get("prompt") || "").trim().slice(0, 200);
     const langCode = lang.split("-")[0].toLowerCase();
     if (!file) return Response.json({ error: "no file" }, { status: 400 });
 
@@ -29,6 +31,7 @@ export async function POST(req: NextRequest) {
       file: new File([arrayBuffer], ext, { type: mime }),
       model: "whisper-large-v3",
       ...(safeLang ? { language: safeLang } : {}),
+      ...(hint ? { prompt: hint } : {}),
       response_format: "json",
       temperature: 0,
     } as any);
