@@ -57,11 +57,18 @@ export function Dialogue({ back }: { back: () => void }) {
   const [loopMode, setLoopMode] = useState(false);
   const [playPos, setPlayPos] = useState<{ i: number; s: number } | null>(null);
   const playCtl = useRef({ stop: false });
+  // Üretim oturumu — konu/seviye/dil değişiminde artar, bayat diyalog yeni başlığa yazılmaz
+  const genSession = useRef(0);
   // Arka plan: ekran kapansa da okuma sürsün diye sessiz ses + uyanık kilidi
   const keepAlive = useRef<HTMLAudioElement | null>(null);
   const wakeRef = useRef<any>(null);
 
   const activeTopic = topic.trim() || "Günlük hayat";
+
+  // Konu/seviye/dil değişince havadaki üretim bayatlar
+  useEffect(() => {
+    genSession.current++;
+  }, [topic, level, targetLang, nativeLang]);
 
   function stopLoop() {
     playCtl.current.stop = true;
@@ -234,6 +241,7 @@ export function Dialogue({ back }: { back: () => void }) {
       return;
     }
     stopLoop();
+    const mySession = ++genSession.current;
     setLoading(true);
     setErr(null);
     setLines(null);
@@ -245,6 +253,7 @@ export function Dialogue({ back }: { back: () => void }) {
         body: JSON.stringify({ target: targetLang, native: nativeLang, level, topic: activeTopic, seen }),
       });
       const data = await res.json();
+      if (mySession !== genSession.current) return; // konu/seviye/dil değişti
       if (!res.ok || !Array.isArray(data.lines) || data.lines.length === 0) {
         setErr("Diyalog üretilemedi. Biraz sonra tekrar dene.");
         return;

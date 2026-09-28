@@ -169,7 +169,7 @@ export function RealLife({ back, gotoTab }: { back: () => void; gotoTab: (t: Tab
           {TALK_TOPICS.map((t) => (
             <button
               key={t.key}
-              onClick={() => { chatSession.current++; stopNatural(); setTopic(t.key); setMsgs([{ role: "ai", text: greet(targetLang) }]); setReport(null); setPhase("chat"); }}
+              onClick={() => { chatSession.current++; stopNatural(); setTopic(t.key); setTransMap({}); setMsgs([{ role: "ai", text: greet(targetLang) }]); setReport(null); setPhase("chat"); }}
               className="glass rounded-2xl p-4 text-left hover:border-cyan-300/60"
             >
               <div className="text-3xl">{t.emoji}</div>

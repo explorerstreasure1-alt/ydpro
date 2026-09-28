@@ -981,6 +981,21 @@ export interface LessonStep {
 }
 
 /**
+ * Okunuş denetimi — AI bazen hedef alfabeyi (hanzi/kana/arapça/kiril) veya
+ * cevabın aynısını "reading" diye yazar. Saçma okunuşu ele, boş bırak
+ * (arayüz boşken satırı gizler — yanlış okunuş göstermez).
+ */
+function sanitizeReading(reading: string, answer: string): string {
+  const r = String(reading || "").trim().slice(0, 140);
+  if (!r) return "";
+  // Hedef alfabe kaçmış: CJK, hiragana/katakana, hangul, arapça, kiril
+  if (/[一-鿿぀-ヿ가-힯؀-ۿЀ-џ]/.test(r)) return "";
+  // Cevabın aynısı okunuş değildir
+  if (norm(r) === norm(answer)) return "";
+  return r;
+}
+
+/**
  * Generate a short conversational lesson in any language + CEFR level + topic.
  * Returns null on failure so the caller can show a fallback.
  */
@@ -1028,6 +1043,11 @@ Generate exactly 3 turns:
 - "answer": in ${langName} original, ${level} level, what learner should say (e.g., Portuguese "Vou para Lisboa.", never Turkish words, fully ${langName} grammar)
 - "tr": natural ${nativeLangName} translation of answer
 - "reading": pronunciation of "answer" written in SIMPLE Latin letters a ${nativeLangName} speaker can sound out cold (e.g., English "thought" → "sot", Chinese "你好" → "ni hao", Japanese "こんにちは" → "konnichiwa", Arabic "مرحبا" → "merhaba", Russian "спасибо" → "spasiba"). ALWAYS fill it, even when the answer is already Latin.
+- "reading" STRICT RULES (learners read this aloud — garbage is worse than nothing):
+  Latin letters a-z + spaces/apostrophes/hyphens ONLY. NO hanzi/kana/arabic/cyrillic/hangul, NO IPA symbols, NO tone numbers.
+  Chinese = pinyin WITH tone marks (nǐ hǎo). Japanese = Hepburn (shi not si, chi not ti, tsu not tu, fu not hu, wo=o). Korean = Revised Romanization. Arabic/Russian = plain Latin (sh, ch, zh, kh, yu, ya; NO ʿ ʾ ḥ ʃ ʒ).
+  Latin-script targets: respell PHONETICALLY, never copy the answer (English "thought"→"sot", French "oiseau"→"wazo", German "ich"→"ih", Spanish "llamo"→"yamo", Italian "ciao"→"chao", Portuguese "não"→"naung", Dutch "graag"→"hraah", Polish "dziękuję"→"jyenkuye").
+  Lowercase, short, simple. When unsure, simpler wins.
 - "chips": 1-3 key vocab from answer in ${langName}
 Return STRICT JSON only:
 {"npcName":"...","npcEmoji":"...","steps":[{"prompt":"...","promptTr":"...","answer":"...","tr":"...","reading":"...","chips":["..."]}]}
@@ -1051,7 +1071,7 @@ ${fresh ? "This must be a FRESH variant — new questions, new answers, new deta
             promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
             answer: String(s.answer || ""),
             tr: String(s.tr || (s as any).translation || ""),
-            reading: String(s.reading || ""),
+            reading: sanitizeReading(String(s.reading || ""), String(s.answer || "")),
             chips: Array.isArray(s.chips) ? s.chips.map((c: any) => String(c)) : [],
           }));
           const valid = sanitizeAiSteps(mapped, level, langName);

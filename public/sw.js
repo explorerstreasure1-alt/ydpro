@@ -1,5 +1,5 @@
-// 7DİL — Telefon uygulama altyapısı (PWA) — offline cache v3 (Diyalog Stüdyosu + taze navigasyon)
-const CACHE = "7dil-v3";
+// 7DİL — Telefon uygulama altyapısı (PWA) — offline cache v4 (Seviyeler-merkez + prozodi + olgun sesler)
+const CACHE = "7dil-v4";
 const CORE = ["/", "/manifest.json", "/logo.svg", "/icons/icon-192.png", "/icons/icon-512.png", "/icons/apple-touch-icon.png"];
 
 self.addEventListener("install", (e) => {
