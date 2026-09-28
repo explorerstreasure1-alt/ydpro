@@ -459,6 +459,9 @@ export function Lessons({ back }: { back: () => void }) {
               {cur.reading && cur.reading.trim() && cur.reading.trim().toLowerCase() !== cur.answer.trim().toLowerCase() ? (
                 <div className="mt-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-sm font-semibold text-cyan-100">📖 Okunuşu: {cur.reading}</div>
               ) : null}
+              {cur.tr ? (
+                <div className="mt-1.5 flex items-center gap-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-xs font-medium text-slate-300"><span className="flex-1">{nativeFlag} Anlamı: {cur.tr}</span><button onClick={() => speakNatural(cur.tr!, nativeTts, { level })} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white/10 text-[10px]" title="Anlamı dinle">🔊</button></div>
+              ) : null}
             </div>
             <button
               onClick={handleAnswer}
@@ -478,8 +481,6 @@ export function Lessons({ back }: { back: () => void }) {
               </button>
               <button onClick={() => speak(cur.answer, tts)} className="ghost-btn rounded-xl px-3 py-2 text-xs font-semibold text-slate-200">🔊</button>
             </div>
-
-            {cur.tr && <div className="mt-1.5 flex items-center gap-1.5 justify-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20"><span className="flex-1 text-center">{nativeFlag} {cur.tr}</span><button onClick={()=>speakNatural(cur.tr!, tts, { level })} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white/10 text-[10px]">🔊</button></div>}
 
             {useTyped && (
               <div className="mt-2 flex gap-2">
