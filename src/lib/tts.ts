@@ -288,6 +288,15 @@ export function speakMixed(text: string, nativeLang: string, targetLang: string,
     const levelRate = opts?.rate ?? rateForLevel(opts?.level);
     // Ortak prozodi kuyruğu: vurgu + duraklama + cümle melodisi
     const queue = buildSpeechQueue(parts, levelRate, 400, 200);
+    // Türkçe düzeltme AKICI + HIZLI: ana dil kısmı bir vites yukarı, hedef dil yavaş kalır.
+    // Vurgu oranları korunur, soluklar hafif kısalır.
+    const fluentNative = Math.min(1.2, levelRate + 0.1);
+    for (const q of queue) {
+      if (q.lang === nativeLang && levelRate > 0) {
+        q.rate = Math.min(1.25, Math.max(0.7, (fluentNative * q.rate) / levelRate));
+        if (q.gapAfter > 0) q.gapAfter = Math.round(q.gapAfter * 0.85);
+      }
+    }
     const speakNext = (idx: number) => {
       if (my !== speechGen || idx >= queue.length) return;
       const q = queue[idx];
