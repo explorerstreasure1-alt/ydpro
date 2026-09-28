@@ -89,7 +89,7 @@ export function rateForLevel(level?: string): number {
  */
 export const PREFERRED_VOICES: Record<string, string[]> = {
   en: ["google us english", "google uk english female", "google uk english male", "aria", "jenny", "guy", "christopher", "natasha", "libby", "ryan", "sonia", "olivia", "amelia", "george", "samantha", "zira", "david", "mark", "daniel", "moira", "tessa", "karen", "susan", "kate", "serena", "fiona", "alex", "oliver", "thomas", "aaron", "zoe", "evie", "martha", "louisa"],
-  tr: ["emel", "ahmet", "google türkçe", "google turkish"],
+  tr: ["emel online", "emel natural", "emel", "google türkçe", "google turkish"],
   de: ["katja", "conrad", "anna", "hedda", "google deutsch", "google german"],
   fr: ["amelie", "amélie", "thomas", "hortense", "eloise", "denise", "google français", "google francais"],
   es: ["monica", "mónica", "jorge", "paulina", "sabina", "alvaro", "elvira", "google español", "google espanol"],
@@ -110,7 +110,7 @@ export const PREFERRED_VOICES: Record<string, string[]> = {
  */
 export const MATURE_VOICES: Record<string, string[]> = {
   en: ["daniel", "david", "mark", "christopher", "oliver", "thomas", "george", "aaron", "fred", "samantha", "karen", "susan", "kate", "serena", "fiona", "moira", "tessa", "zira", "natasha", "sonia", "libby", "ryan", "martha", "louisa", "google uk english male"],
-  tr: ["ahmet", "emel"],
+  tr: ["emel"],
   de: ["conrad", "anna", "katja", "hedda"],
   fr: ["thomas", "amelie", "amélie", "hortense", "eloise", "denise"],
   es: ["jorge", "monica", "mónica", "alvaro", "elvira", "sabina", "paulina"],
