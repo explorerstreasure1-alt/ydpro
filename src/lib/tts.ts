@@ -87,30 +87,42 @@ export function rateForLevel(level?: string): number {
  * Dil başına bilinen en net sesler (Apple/Windows/Android kaliteli ses adları).
  * Cihazda hangisi kuruluysa o kazanır — yoksa genel neural puanlamaya düşer.
  */
-const PREFERRED_VOICES: Record<string, string[]> = {
+export const PREFERRED_VOICES: Record<string, string[]> = {
   en: ["google us english", "google uk english female", "google uk english male", "aria", "jenny", "guy", "christopher", "natasha", "libby", "ryan", "sonia", "olivia", "amelia", "george", "samantha", "zira", "david", "mark", "daniel", "moira", "tessa", "karen", "susan", "kate", "serena", "fiona", "alex", "oliver", "thomas", "aaron", "zoe", "evie", "martha", "louisa"],
   tr: ["emel", "ahmet", "google türkçe", "google turkish"],
-  de: ["katja", "conrad", "anna", "google deutsch", "hedda"],
-  fr: ["amelie", "amélie", "thomas", "google français", "google francais", "hortense"],
-  es: ["monica", "mónica", "jorge", "paulina", "google español", "google espanol", "sabina"],
-  it: ["alice", "luca", "google italiano", "elsa", "isabella"],
-  pt: ["joana", "luciana", "google português", "google portugues", "ines", "inês"],
-  ru: ["milena", "yuri", "google русский", "google russkiy", "katya"],
-  nl: ["xander", "ellen", "google nederlands", "frank"],
-  pl: ["zosia", "paulina", "google polski"],
-  zh: ["tingting", "xiaoxiao", "yunxi", "meijia", "yaoyao", "google 普通话", "google putonghua"],
-  ja: ["kyoko", "otoya", "haruka", "nanami", "google 日本語", "google nihongo"],
-  ko: ["yuna", "sunhi", "injoon", "google 한국어"],
-  ar: ["maged", "tarik", "laila", "hoda", "salim", "google العربية"],
+  de: ["katja", "conrad", "anna", "hedda", "google deutsch", "google german"],
+  fr: ["amelie", "amélie", "thomas", "hortense", "eloise", "denise", "google français", "google francais"],
+  es: ["monica", "mónica", "jorge", "paulina", "sabina", "alvaro", "elvira", "google español", "google espanol"],
+  it: ["alice", "luca", "elsa", "isabella", "diego", "google italiano"],
+  pt: ["joana", "luciana", "francisca", "antonio", "brenda", "ines", "inês", "google português", "google portugues"],
+  ru: ["milena", "yuri", "svetlana", "dmitry", "katya", "google русский", "google russkiy"],
+  nl: ["xander", "ellen", "frank", "google nederlands", "google dutch"],
+  pl: ["zosia", "agnieszka", "marek", "paulina", "google polski", "google polish"],
+  zh: ["tingting", "xiaoxiao", "yunxi", "yunjian", "meijia", "yaoyao", "google 普通话", "google putonghua", "google chinese"],
+  ja: ["kyoko", "otoya", "haruka", "nanami", "keita", "google 日本語", "google nihongo", "google japanese"],
+  ko: ["yuna", "sunhi", "injoon", "google 한국어", "google korean"],
+  ar: ["maged", "tarik", "laila", "hoda", "salim", "google العربية", "google arabic"],
 };
 
 /**
  * Olgun/yetişkin tınısı — genç ince ses değil, ders anlatan hoca hissi.
  * Çocuk/küçük sesler ayrıca cezalı (aşağıda).
  */
-const MATURE_VOICES: Record<string, string[]> = {
+export const MATURE_VOICES: Record<string, string[]> = {
   en: ["daniel", "david", "mark", "christopher", "oliver", "thomas", "george", "aaron", "fred", "samantha", "karen", "susan", "kate", "serena", "fiona", "moira", "tessa", "zira", "natasha", "sonia", "libby", "ryan", "martha", "louisa", "google uk english male"],
   tr: ["ahmet", "emel"],
+  de: ["conrad", "anna", "katja", "hedda"],
+  fr: ["thomas", "amelie", "amélie", "hortense", "eloise", "denise"],
+  es: ["jorge", "monica", "mónica", "alvaro", "elvira", "sabina", "paulina"],
+  it: ["luca", "alice", "diego", "elsa", "isabella"],
+  pt: ["antonio", "joana", "francisca", "brenda", "luciana", "ines", "inês"],
+  ru: ["yuri", "dmitry", "milena", "svetlana"],
+  nl: ["xander", "frank", "ellen"],
+  pl: ["marek", "agnieszka", "zosia"],
+  zh: ["yunjian", "tingting", "yunxi", "xiaoxiao"],
+  ja: ["otoya", "keita", "kyoko", "nanami"],
+  ko: ["injoon", "yuna", "sunhi"],
+  ar: ["maged", "tarik", "salim", "laila", "hoda"],
 };
 
 /**
