@@ -53,6 +53,9 @@ export function Lessons({ back }: { back: () => void }) {
   const nativeTts = LANGS.find((l) => l.code === native)?.tts || "tr-TR";
   const nativeFlag = LANGS.find((l) => l.code === native)?.flag || "";
   const evalBusy = useRef(false);
+  // Ders oturumu — konu değişimi/"yeni sorular"/geri dönüşte artar.
+  // Havada kalmış eski fetch'ler (ders + değerlendirme) bayat içeriği konuşamaz/yazamaz.
+  const lessonSession = useRef(0);
 
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
   const micSupport =
@@ -95,6 +98,8 @@ export function Lessons({ back }: { back: () => void }) {
   async function start() {
     const fresh = true;
     if (native === lang) { setErr("Ana dil ile hedef dil aynı olamaz."); return; }
+    const mySession = ++lessonSession.current;
+    stopNatural(); // eski dersin sesi yeni derse sarkmasın
     setPhase("loading");
     setErr(null);
     setSteps(null);
@@ -116,6 +121,7 @@ export function Lessons({ back }: { back: () => void }) {
         body: JSON.stringify({ lang, native, level, topic: topicDef.name, topicKey: topic, fresh, seen }),
       });
       const data = await res.json();
+      if (mySession !== lessonSession.current) return; // kullanıcı yeni ders başlattı/geri döndü
       if (!res.ok || !data.steps) {
         setPhase("select");
         setErr("Ders oluşturulamadı. Biraz sonra tekrar dene.");
@@ -149,6 +155,7 @@ export function Lessons({ back }: { back: () => void }) {
     if (evalBusy.current) return;
     evalBusy.current = true;
     setLoading(true);
+    const mySession = lessonSession.current;
     // Seviyelerde de her dilde yabancı aksanla düzeltme — persona ile
     const persona = { name: npc.name, role: topicDef.name, emoji: npc.emoji, dayTitle: `${topicDef.name} — ${langDef.spoken}` };
     const res = await fetch("/api/action", {
@@ -156,6 +163,7 @@ export function Lessons({ back }: { back: () => void }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "answer-free-text", answerText: text, ideal: cur.answer, persona, nativeLang: native, native, targetLang: lang, target: lang }),
     }).then((r) => r.json()).finally(() => { evalBusy.current = false; setLoading(false); });
+    if (mySession !== lessonSession.current) return; // ders değişti — bayat düzeltmeyi konuşma/yazma
     const r = res.res as any;
     const personaReply: string = r.personaReply || "";
     const xpGain = level === "C1" ? 25 : level === "B2" || level === "B1" ? 20 : 15;
@@ -210,11 +218,11 @@ export function Lessons({ back }: { back: () => void }) {
     sfx.tap();
     store.post({ type: "learn-words", gainedXp: 5 });
     store.addXpFlash(5);
-    speak(cur?.answer || "", tts);
     setStatus("correct");
     setMsg("Doğrusunu dinledin ✓");
     solve(idx);
-    next();
+    // Doğru cevabı sonuna kadar dinlet, bitince ilerle (hemen next() sesi öldürürdü)
+    speakNatural(cur?.answer || "", tts, { level, onEnd: () => next() });
   }
 
   function next() {
@@ -390,7 +398,7 @@ export function Lessons({ back }: { back: () => void }) {
       <div className="absolute inset-0 bg-gradient-to-b from-[#03111d]/85 via-[#061827]/35 to-[#03111d]" />
 
       <div className="relative z-10 flex items-center justify-between px-4 pt-4">
-        <button onClick={() => setPhase("select")} className="glass flex h-10 w-10 items-center justify-center rounded-full text-xl">←</button>
+        <button onClick={() => { stopNatural(); setPhase("select"); }} className="glass flex h-10 w-10 items-center justify-center rounded-full text-xl">←</button>
         <div className="text-center">
           <div className="text-sm font-black text-white">{langDef.flag} {langDef.name} · {level}</div>
           <div className="text-[10px] text-slate-300">{topicDef.emoji} {topicDef.name}</div>

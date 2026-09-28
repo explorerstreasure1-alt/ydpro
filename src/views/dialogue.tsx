@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import { LANGS, CEFR, TOPICS, cefrForXp, ttsRateForLevel } from "@/lib/levels";
 import { useLangPair } from "@/lib/useLangPair";
-import { speakText } from "@/lib/tts";
+import { speakText, stopNatural } from "@/lib/tts";
 import { sfx } from "@/lib/sfx";
 import { getSeen, addSeen } from "@/lib/seen";
 import type { DialogueLine } from "@/lib/ai";
@@ -306,7 +306,7 @@ export function Dialogue({ back }: { back: () => void }) {
       <div className="absolute inset-0 bg-[#061827]" />
       <div className="relative z-10 flex flex-1 flex-col">
         <div className="flex items-center justify-between">
-          <button onClick={back} className="glass h-10 w-10 rounded-full">←</button>
+          <button onClick={() => { stopNatural(); back(); }} className="glass h-10 w-10 rounded-full">←</button>
           <div className="text-center">
             <div className="text-sm font-black text-white">💬 Diyalog Stüdyosu</div>
             <div className="text-[10px] text-slate-400">

@@ -1092,13 +1092,18 @@ export async function generateDialogue(
   topic: string,
   seen: string[] = [],
 ): Promise<{ lines: DialogueLine[] } | null> {
-  const cacheKey = `dialog:v1:${targetLangName}:${nativeLangName}:${level}:${topic}:${seen.length}`;
+  const { pickDialogueVariety } = await import("@/lib/variety");
+  const variety = pickDialogueVariety();
+  const cacheKey = `dialog:v2:${targetLangName}:${nativeLangName}:${level}:${topic}:${variety.twist}:${variety.seedWord}:${seen.length}`;
   if (dialogueCache.has(cacheKey)) return dialogueCache.get(cacheKey);
   if (!client) return null;
   try {
+    const forbidden = seen.length
+      ? `FORBIDDEN — these lines were ALREADY SHOWN. Repeating any of them or a close paraphrase is a FAILURE:\n${seen.map((s, i) => `${i + 1}. "${String(s).slice(0, 120)}"`).join("\n")}`
+      : "";
     const params: any = {
       model: MODEL,
-      temperature: 0.9,
+      temperature: 0.9 + Math.random() * 0.15,
       reasoning_effort: "low",
       response_format: { type: "json_object" },
       messages: [
@@ -1107,6 +1112,9 @@ export async function generateDialogue(
           content: `You are an expert ${targetLangName} language teacher. The learner's level is ${level} (CEFR) and native language is ${nativeLangName}. Create a natural two-person dialogue about "${topic}".
 Rules:
 - 6-10 lines total, alternating speakers with natural local names (e.g., Spanish: Carlos/Lucía).
+- This dialogue happens ${variety.twist} — let the situation shape the lines.
+- The word "${variety.seedWord}" must inspire one small concrete detail somewhere (an object, a place, a name).
+- Use speaker names you have NOT used before for this topic.
 - Grammar and vocabulary STRICTLY at ${level} level (${level === "A1" ? "2-4 word simple phrases" : level === "A2" ? "simple everyday sentences" : level === "B1" ? "connected 8-14 word sentences" : level === "B2" ? "fluent 12-20 word sentences" : level === "C1" ? "rich 15-25 word sentences with idioms" : "native-like 20-35 word sentences"}).
 - "target_text" fully in ${targetLangName} (NEVER ${nativeLangName} words), "native_text" natural ${nativeLangName} translation.
 - Everyday spoken language, no textbook stiffness, no explanations.
@@ -1115,7 +1123,7 @@ Return STRICT JSON only:
         },
         {
           role: "user",
-          content: `Topic: "${topic}" | Level ${level} | ${targetLangName} with ${nativeLangName} translations. Fresh variant, no repetition.${seen.length ? ` NEVER repeat these already-shown lines: ${seen.map((s) => `"${String(s).slice(0, 120)}"`).join(" | ")}` : ""}`,
+          content: `Topic: "${topic}" | Level ${level} | ${targetLangName} with ${nativeLangName} translations. Fresh variant, no repetition.${forbidden ? `\n${forbidden}` : ""}`,
         },
       ],
     };

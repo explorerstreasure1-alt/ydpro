@@ -234,3 +234,25 @@ export function pickLessonVariety(
   const seedWords = ["river", "lantern", "harbor", "meadow", "compass", "window", "garden", "bridge"];
   return { angle, npcRole: rand(NPC_ROLES), seedWord: rand(seedWords) };
 }
+
+/** Diyalog Stüdyosu konuları serbest metin — her üretime rastgele durum bükümü + tohum */
+const DIALOG_TWISTS = [
+  "at a cozy cafe",
+  "in the rain without an umbrella",
+  "over the phone",
+  "meeting for the first time",
+  "a small friendly disagreement",
+  "planning something for the weekend",
+  "one of them is in a hurry",
+  "reminiscing about last summer",
+  "one of them has surprising news",
+  "saying goodbye at the door",
+  "waiting in a long queue",
+  "celebrating good news",
+];
+
+const SEED_WORDS = ["river", "lantern", "harbor", "meadow", "compass", "window", "garden", "bridge", "letter", "market", "train", "song"];
+
+export function pickDialogueVariety(): { twist: string; seedWord: string } {
+  return { twist: rand(DIALOG_TWISTS), seedWord: rand(SEED_WORDS) };
+}

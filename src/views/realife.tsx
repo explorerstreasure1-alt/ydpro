@@ -44,6 +44,10 @@ export function RealLife({ back, gotoTab }: { back: () => void; gotoTab: (t: Tab
   const [engine, setEngine] = useState<"browser" | "whisper" | null>(null);
   const [transMap, setTransMap] = useState<Record<number, string>>({});
   const rec = useRef<any>(null);
+  // Sohbet oturumu — konu değişiminde artar, havada kalmış eski yanıt yeni konuya yazılamaz/okunamaz
+  const chatSession = useRef(0);
+  const topicRef = useRef(topic);
+  topicRef.current = topic;
 
   useEffect(() => {
     return () => {
@@ -84,6 +88,8 @@ export function RealLife({ back, gotoTab }: { back: () => void; gotoTab: (t: Tab
   function sendRaw(text: string) {
     const clean = text.trim();
     if (!clean || busy) return;
+    const mySession = chatSession.current;
+    const myTopic = topic;
     setMsgs((p) => [...p, { role: "user", text: clean }]);
     setInput("");
     setBusy(true);
@@ -101,6 +107,8 @@ export function RealLife({ back, gotoTab }: { back: () => void; gotoTab: (t: Tab
       .then((r) => r.json())
       .catch(() => null)
       .then((data) => {
+        // Konu değiştiyse bayat yanıtı yeni sohbete yazma/okuma
+        if (mySession !== chatSession.current || myTopic !== topicRef.current) { setBusy(false); return; }
         const reply = data?.reply || "That's great! Tell me more.";
         setMsgs((p) => [...p, { role: "ai", text: reply }]);
         setBusy(false);
@@ -161,7 +169,7 @@ export function RealLife({ back, gotoTab }: { back: () => void; gotoTab: (t: Tab
           {TALK_TOPICS.map((t) => (
             <button
               key={t.key}
-              onClick={() => { setTopic(t.key); setMsgs([{ role: "ai", text: greet(targetLang) }]); setReport(null); setPhase("chat"); }}
+              onClick={() => { chatSession.current++; stopNatural(); setTopic(t.key); setMsgs([{ role: "ai", text: greet(targetLang) }]); setReport(null); setPhase("chat"); }}
               className="glass rounded-2xl p-4 text-left hover:border-cyan-300/60"
             >
               <div className="text-3xl">{t.emoji}</div>
@@ -213,7 +221,7 @@ export function RealLife({ back, gotoTab }: { back: () => void; gotoTab: (t: Tab
       ) : (
         <>
           <div className="flex items-center gap-2 px-3 pt-3">
-            <button onClick={() => setPhase("topic")} className="glass h-9 w-9 rounded-full">←</button>
+            <button onClick={() => { stopNatural(); setPhase("topic"); }} className="glass h-9 w-9 rounded-full">←</button>
             <div className="glass flex-1 rounded-xl px-3 py-1.5 text-xs font-bold">
               {TALK_TOPICS.find((t) => t.key === topic)?.emoji} Gerçek Hayat · {TALK_TOPICS.find((t) => t.key === topic)?.label}
             </div>

@@ -14,6 +14,9 @@ if (typeof window !== "undefined") {
   } catch {}
 }
 
+/** Tekil konuşma nesli — her yeni ses çağrısı sayacı artırır, eski zincirler susar */
+let speechGen = 0;
+
 export interface SpeakOpts {
   /** CEFR seviyesi — A1-A2 yavaş, B normal, C akıcı (kullanıcı ayarı varsa o kazanır) */
   level?: string;
@@ -95,9 +98,12 @@ export function speakText(text: string, lang: string, opts?: SpeakOpts) {
   if (!synth) return;
   text = cleanForSpeech(text);
   if (!text) { opts?.onEnd?.(); return; }
+  // Tekil konuşma nesli — bu çağrıdan sonra başlayan her ses öncekileri öldürür
+  const my = ++speechGen;
   try {
     synth.cancel();
     setTimeout(() => {
+      if (my !== speechGen) return;
       const u = new SpeechSynthesisUtterance(text);
       u.lang = lang;
       // Her dil için ayrı ayar — yoksa seviye hızı
@@ -124,10 +130,10 @@ export function speakText(text: string, lang: string, opts?: SpeakOpts) {
       // Neural/doğal ses öncelikli seçim (robotik tonlardan uzak)
       const best = pickBestVoice(voices, lang);
       if (best) (u as any).voice = best;
-      // Zincirleme oynatma: bitince veya hatada tek sefer çöz
+      // Zincirleme oynatma: bitince veya hatada tek sefer çöz (bayatsa sus)
       let done = false;
       const finish = () => {
-        if (done) return;
+        if (done || my !== speechGen) return;
         done = true;
         opts?.onEnd?.();
       };
@@ -154,22 +160,22 @@ export function cleanForSpeech(text: string): string {
     .trim();
 }
 
-let mixedToken = 0;
-
 // Telaffuz: Türkçe konuşuyorsa yabancı aksanla, orijinal telaffuzla
 // Örn: 'Hayır öyle değil, şöyle diyeceksin: "Here is my passport."' → Türkçe kısım tr-TR, tırnak içi en-US
 export function speakMixed(text: string, nativeLang: string, targetLang: string, opts?: SpeakOpts) {
   if (typeof window === "undefined") return;
   const synth = window.speechSynthesis;
   if (!synth) return;
-  const my = ++mixedToken;
+  const my = ++speechGen;
   try {
     synth.cancel();
     text = cleanForSpeech(text);
     if (!text) return;
-    // Tırnak içlerini ayır: " ", “ ”, ' ', « »  → hedef dil orijinal telaffuz
+    // Tırnak içlerini ayır — SADECE çift tırnak grubu dil değiştirir: " ", “ ”, « », „ ”.
+    // Kesme işareti (don't, I'm, l'amour) TIRNAK DEĞİLDİR: tek tırnaklar akışta kalır,
+    // yoksa İngilizce kısaltmalar paramparça olup yanlış aksanla okunur.
     const parts: { text: string; lang: string }[] = [];
-    const regex = /([“"«'‘`„»”'])([^“"«'‘`„»”']+)([“"«'‘`„»”'])/g;
+    const regex = /([“”"«»„])([^“”"«»„]+)([“”"«»„])/g;
     let lastIdx = 0;
     let m: RegExpExecArray | null;
     while ((m = regex.exec(text)) !== null) {
@@ -210,7 +216,7 @@ export function speakMixed(text: string, nativeLang: string, targetLang: string,
       }
     }
     const speakNext = (idx: number) => {
-      if (my !== mixedToken || idx >= queue.length) return;
+      if (my !== speechGen || idx >= queue.length) return;
       const q = queue[idx];
       const u = new SpeechSynthesisUtterance(q.t);
       u.lang = q.lang;
@@ -223,7 +229,7 @@ export function speakMixed(text: string, nativeLang: string, targetLang: string,
       const next = () => {
         if (done) return;
         done = true;
-        if (my !== mixedToken) return;
+        if (my !== speechGen) return;
         if (q.gapAfter > 0) setTimeout(() => speakNext(idx + 1), q.gapAfter);
         else speakNext(idx + 1);
       };
@@ -251,11 +257,9 @@ export function splitPhrases(sentence: string): string[] {
   return parts.length ? parts : [String(sentence || "")];
 }
 
-let naturalToken = 0;
-
-/** Vurgulu okumayı durdur (yeni okuma otomatik durdurur, bu ek güvenlik/temizlik için) */
+/** Okumayı durdur — bekleyen tüm ses zincirleri susar (yeni okuma otomatik durdurur zaten) */
 export function stopNatural() {
-  naturalToken++;
+  speechGen++;
   try {
     (window.speechSynthesis as any)?.cancel();
   } catch {}
@@ -281,7 +285,7 @@ export function speakNatural(text: string, lang: string, opts?: NaturalOpts) {
   if (!synth || !text) return;
   text = cleanForSpeech(text);
   if (!text) return;
-  const my = ++naturalToken;
+  const my = ++speechGen;
   try {
     synth.cancel();
   } catch {}
@@ -294,7 +298,7 @@ export function speakNatural(text: string, lang: string, opts?: NaturalOpts) {
 
   const speakOne = (t: string, pitch: number) =>
     new Promise<void>((res) => {
-      if (my !== naturalToken) return res();
+      if (my !== speechGen) return res();
       try {
         const u = new SpeechSynthesisUtterance(t);
         u.lang = lang;
@@ -322,7 +326,7 @@ export function speakNatural(text: string, lang: string, opts?: NaturalOpts) {
     new Promise<void>((res) => {
       const t0 = Date.now();
       const tick = () => {
-        if (my !== naturalToken || Date.now() - t0 >= ms) res();
+        if (my !== speechGen || Date.now() - t0 >= ms) res();
         else setTimeout(tick, 80);
       };
       tick();
@@ -331,20 +335,20 @@ export function speakNatural(text: string, lang: string, opts?: NaturalOpts) {
   (async () => {
     const sents = splitSentences(text);
     for (let s = 0; s < sents.length; s++) {
-      if (my !== naturalToken) return;
+      if (my !== speechGen) return;
       const t = sents[s];
       const pitch = /[?？]$/.test(t) ? 1.15 : /[!！]$/.test(t) ? 1.1 : 1.0;
       const phrases = splitPhrases(t);
       for (let p = 0; p < phrases.length; p++) {
-        if (my !== naturalToken) return;
+        if (my !== speechGen) return;
         await speakOne(phrases[p], pitch);
-        if (my !== naturalToken) return;
+        if (my !== speechGen) return;
         if (p < phrases.length - 1) await wait(breathMs);
       }
       if (s < sents.length - 1) await wait(gapMs);
     }
-    if (my === naturalToken) opts?.onDone?.();
-    if (my === naturalToken) opts?.onEnd?.();
+    if (my === speechGen) opts?.onDone?.();
+    if (my === speechGen) opts?.onEnd?.();
   })();
 }
 

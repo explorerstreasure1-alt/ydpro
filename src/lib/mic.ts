@@ -103,10 +103,18 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
   let gotFinal = false;
   let timeout: any = null;
   let whisperDone = false;
+  let emitting = false; // Whisper yarışı: aynı finali iki kez yazma
+  let session = 0; // stop/abort sonrası geç gelen Whisper cevabını çöpe at
   const clear = () => { if (timeout) { clearTimeout(timeout); timeout = null; } };
   const stopMedia = () => {
     try { mediaRecorder?.stop(); } catch {}
     try { mediaStream?.getTracks().forEach((t: any) => t.stop()); } catch {}
+  };
+  // Final verildi: her şeyi kapat (mic göstergesi takılı kalmasın, pil/mahremiyet)
+  const shutdown = () => {
+    clear();
+    try { rec?.stop(); } catch {}
+    try { if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop(); } catch {}
   };
 
   // preferWhisper bekleyen SR finali (henüz yayınlanmadı)
@@ -114,7 +122,9 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
 
   // Whisper-birincil final: kaydı yazıya çevir, boşsa SR metnine düş
   const emitPreferredFinal = async (srText: string) => {
-    if (gotFinal) return;
+    if (gotFinal || emitting) return;
+    emitting = true;
+    const mySession = session;
     if (mediaRecorder) {
       try {
         if (audioChunks.length > 0) {
@@ -122,12 +132,15 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
           const blob = new Blob(audioChunks as any, { type: blobType });
           if (blob.size >= 800) {
             const wt = await transcribeWithWhisper(blob, opts.lang, opts.whisperPrompt);
+            if (mySession !== session) { emitting = false; return; } // kullanıcı durdurdu/yeni kayıt
             if (!gotFinal && wt && wt.text.trim().length > 1) {
               whisperDone = true;
               gotFinal = true;
               whisperPendingText = "";
+              emitting = false;
               opts.onResult(wt.text.trim(), true);
               opts.onEngine?.("whisper", wt.text.trim());
+              shutdown();
               stopMedia();
               return;
             }
@@ -135,12 +148,13 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
         }
       } catch {}
     }
-    if (!gotFinal) {
-      gotFinal = true;
-      whisperPendingText = "";
-      opts.onResult(srText, true);
-      opts.onEngine?.("browser", srText);
-    }
+    emitting = false;
+    if (mySession !== session || gotFinal) return;
+    gotFinal = true;
+    whisperPendingText = "";
+    opts.onResult(srText, true);
+    opts.onEngine?.("browser", srText);
+    shutdown();
     stopMedia();
   };
 
@@ -161,6 +175,8 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
           opts.onResult(wr.text, true);
           opts.onEngine?.("whisper", wr.text);
           gotFinal = true;
+          shutdown();
+          stopMedia();
         }
       }
     } catch {}
@@ -221,7 +237,8 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
         opts.onEngine?.("browser", text);
         // Düşük güvenliyse Whisper ile teyit et
         if (lowConf) doWhisperFallback(true, text);
-        if (mediaRecorder && mediaRecorder.state !== "inactive") { try { mediaRecorder.stop(); } catch {} }
+        shutdown();
+        stopMedia();
       }
     };
     rec.onerror = (e: any) => {
@@ -257,8 +274,11 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
               if (blob.size < 2000) return;
               const wr2 = await transcribeWithWhisper(blob, opts.lang, opts.whisperPrompt);
               if (!gotFinal && wr2 && wr2.text.trim().length > 1) {
+                gotFinal = true;
                 opts.onResult(wr2.text.trim(), true);
                 opts.onEngine?.("whisper", wr2.text.trim());
+                shutdown();
+                stopMedia();
               }
             } catch {}
           }, 400);
@@ -267,7 +287,9 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
       opts.onEnd?.();
       // stopMedia mediaRecorder.onstop içinde yapılıyor
     };
-    rec.onspeechend = () => { clear(); try { rec.stop(); } catch {} };
+    // Duraklamada KESME — yavaş/kelime kelime konuşan öğrenci yarım cümlede kalmasın.
+    // continuous modda dinleme sürer; bitişe 12sn sessizlik zamanlayıcısı + finaller karar verir.
+    rec.onspeechend = () => { resetTimeout(); };
     rec.onnomatch = () => { doWhisperFallback(false, ""); opts.onError?.("no-match"); };
   } else {
     // SR yok (iOS) — direkt Whisper
@@ -285,8 +307,8 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
         opts.onEnd?.();
         stopMedia();
       };
-      // iOS için 6sn sonra otomatik durdur ve gönder (yavaş konuşmaya pay)
-      setTimeout(() => { if (mediaRecorder && mediaRecorder.state === "recording") { try { mediaRecorder.stop(); } catch {} } }, 6000);
+      // iOS için 10sn sonra otomatik durdur ve gönder (yavaş konuşmaya pay)
+      setTimeout(() => { if (mediaRecorder && mediaRecorder.state === "recording") { try { mediaRecorder.stop(); } catch {} } }, 10000);
     }
   }
 
@@ -314,6 +336,7 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
   return {
     stop: () => {
       clear();
+      session++;
       whisperPendingText = "";
       try { rec?.stop(); } catch {}
       try { mediaRecorder?.stop(); } catch {}
@@ -321,6 +344,7 @@ export async function startMic(opts: MicOptions): Promise<{ stop: () => void; ab
     },
     abort: () => {
       clear();
+      session++;
       whisperPendingText = "";
       try { rec?.abort?.(); } catch {}
       try { mediaRecorder?.stop(); } catch {}

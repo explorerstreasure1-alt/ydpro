@@ -3,6 +3,39 @@ import Groq from "groq-sdk";
 
 export const dynamic = "force-dynamic";
 
+// Whisper sessizliğe/gürültüye ünlü "halüsinasyon" cevaplar yazar
+// (Thank you, Altyazı M.K...). Bunlar öğrencinin cevabı DEĞİL — filtrele,
+// yoksa sessizlik "doğru/yanlış" diye değerlendirilir.
+const HALLUCINATIONS = new Set([
+  "thank you",
+  "thanks",
+  "thank you very much",
+  "thanks for watching",
+  "thank you for watching",
+  "thank you for watching this video",
+  "please",
+  "bye",
+  "...",
+  "m k",
+  "mk",
+  "altyazi m k",
+  "soustitres",
+  "subtitles",
+  "sous titres",
+]);
+
+function isHallucination(text: string): boolean {
+  const n = String(text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[.,!?;:"'«»“”‘’¿¡…—–·•♪♫]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!n || n.length > 40) return false;
+  return HALLUCINATIONS.has(n);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const form = await req.formData();
@@ -37,7 +70,10 @@ export async function POST(req: NextRequest) {
     } as any);
 
     const text = (transcription as any).text || "";
-    return Response.json({ text: String(text).trim(), lang });
+    const clean = String(text).trim();
+    // Halüsinasyon = boş döndür, arayan tarayıcı sonucuna/tekrar istemeye düşsün
+    if (!clean || isHallucination(clean)) return Response.json({ text: "", lang, hallucination: true });
+    return Response.json({ text: clean, lang });
   } catch (e: any) {
     return Response.json({ error: e?.message || "transcribe failed", text: "" }, { status: 500 });
   }
