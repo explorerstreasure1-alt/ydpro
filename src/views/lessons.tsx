@@ -14,6 +14,7 @@ interface Step {
   promptTr?: string;
   answer: string;
   tr: string;
+  reading?: string;
   chips: string[];
 }
 
@@ -448,13 +449,24 @@ export function Lessons({ back }: { back: () => void }) {
 
         {!correct && cur && (
           <div className="w-full max-w-sm">
+            {/* Söylemen gereken — hep görünür, konuşurken kaybolmaz: yazılış + okunuş */}
+            <div className="mb-2 rounded-2xl border border-[#ffd52f]/40 bg-[#0b2940]/90 px-4 py-3">
+              <div className="text-[10px] font-black uppercase tracking-widest text-[#ffd52f]">🎯 Söylemen gereken</div>
+              <div className="mt-1 flex items-start gap-2">
+                <p className="flex-1 text-base font-bold leading-snug text-white">“{cur.answer}”</p>
+                <button onClick={() => speak(cur.answer, tts)} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-sm" title="Dinle">🔊</button>
+              </div>
+              {cur.reading && cur.reading.trim() && cur.reading.trim().toLowerCase() !== cur.answer.trim().toLowerCase() ? (
+                <div className="mt-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-sm font-semibold text-cyan-100">📖 Okunuşu: {cur.reading}</div>
+              ) : null}
+            </div>
             <button
               onClick={handleAnswer}
               disabled={speaking || loading}
               className="flex w-full items-center gap-3 rounded-2xl border border-cyan-300/40 bg-[#0b2940]/90 px-3 py-3 transition hover:border-cyan-300/70"
             >
               <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xl ${speaking ? "animate-glowpulse" : "glow-cyan"}`}>🎙</span>
-              <span className="flex-1 text-left text-base font-semibold text-white">{speaking ? "Dinliyorum..." : typed || cur.answer}</span>
+              <span className="flex-1 text-left text-base font-semibold text-white">{speaking ? "Dinliyorum..." : (typed || "Dokun, mikrofona söyle")}</span>
             </button>
 
             <div className="mt-2 flex items-center gap-2">

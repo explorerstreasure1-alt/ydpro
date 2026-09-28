@@ -581,7 +581,7 @@ export function offlineLessonSteps(
   topicName: string,
   level: string = "A1",
   seed: number = 0,
-): { prompt: string; promptTr: string; answer: string; tr: string; chips: string[] }[] {
+): { prompt: string; promptTr: string; answer: string; tr: string; reading: string; chips: string[] }[] {
   // AI yoksa bile aynı 3 soruya düşme — konuya gömülü 3 ayrı mini set arasında dön
   const pools = [
     [
@@ -606,6 +606,7 @@ export function offlineLessonSteps(
     promptTr: "",
     answer: adaptAnswerToLevel(s.answer, level),
     tr: "",
+    reading: "",
     chips: s.chips,
   }));
 }
@@ -975,6 +976,7 @@ export interface LessonStep {
   promptTr?: string; // prompt's translation in native
   answer: string;   // learner target answer (in target language)
   tr: string;       // answer's translation in native
+  reading?: string; // pronunciation of answer in simple Latin letters (mic'ten okumalık)
   chips: string[];  // key vocab (target language)
 }
 
@@ -1025,9 +1027,10 @@ Generate exactly 3 turns:
 - "promptTr": natural ${nativeLangName} translation of prompt (e.g., "Nereye gidiyorsun?")
 - "answer": in ${langName} original, ${level} level, what learner should say (e.g., Portuguese "Vou para Lisboa.", never Turkish words, fully ${langName} grammar)
 - "tr": natural ${nativeLangName} translation of answer
+- "reading": pronunciation of "answer" written in SIMPLE Latin letters a ${nativeLangName} speaker can sound out cold (e.g., English "thought" → "sot", Chinese "你好" → "ni hao", Japanese "こんにちは" → "konnichiwa", Arabic "مرحبا" → "merhaba", Russian "спасибо" → "spasiba"). ALWAYS fill it, even when the answer is already Latin.
 - "chips": 1-3 key vocab from answer in ${langName}
 Return STRICT JSON only:
-{"npcName":"...","npcEmoji":"...","steps":[{"prompt":"...","promptTr":"...","answer":"...","tr":"...","chips":["..."]}]}
+{"npcName":"...","npcEmoji":"...","steps":[{"prompt":"...","promptTr":"...","answer":"...","tr":"...","reading":"...","chips":["..."]}]}
 Keep answers appropriate to the ${level} level. Do not add explanations.`,
         },
         { role: "user", content: `Generate the ${topicName} lesson at ${level} in ${langName}.
@@ -1048,6 +1051,7 @@ ${fresh ? "This must be a FRESH variant — new questions, new answers, new deta
             promptTr: String(s.promptTr || (s as any).prompt_tr || ""),
             answer: String(s.answer || ""),
             tr: String(s.tr || (s as any).translation || ""),
+            reading: String(s.reading || ""),
             chips: Array.isArray(s.chips) ? s.chips.map((c: any) => String(c)) : [],
           }));
           const valid = sanitizeAiSteps(mapped, level, langName);
