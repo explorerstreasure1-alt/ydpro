@@ -3,7 +3,7 @@
 // sunucuya gönderilir, AI aynısını tekrar üretmez. Kişi başı cihazda saklanır.
 
 const PREFIX = "yzed_seen:v1:";
-const CAP = 15;
+const CAP = 30;
 
 function key(kind: string, id: string, level: string, lang: string): string {
   return `${PREFIX}${kind}:${id}:${level}:${lang}`;

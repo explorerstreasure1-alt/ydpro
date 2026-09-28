@@ -2,12 +2,13 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { BottomNav } from "@/components/nav";
+import type { Tab } from "@/components/nav";
 import { IMG, LANG_PHOTO } from "@/lib/img";
 import { LevelPill } from "@/lib/ui";
 import { LANGS } from "@/lib/levels";
 import { useLangPair } from "@/lib/useLangPair";
 
-export function Profile({ goProgress, goHome, goLangSettings }: { goProgress: () => void; goHome: () => void; goLangSettings: () => void }) {
+export function Profile({ goProgress, goHome, goLangSettings, gotoTab }: { goProgress: () => void; goHome: () => void; goLangSettings: () => void; gotoTab: (t: Tab) => void }) {
   const store = useStore();
   const u = store.user;
   const [name, setName] = useState(u?.name || "Yolcu");
@@ -115,7 +116,7 @@ export function Profile({ goProgress, goHome, goLangSettings }: { goProgress: ()
 
         <button onClick={goHome} className="mt-4 text-xs text-slate-500 hover:text-slate-300">‹ Ana ekran</button>
       </div>
-      <BottomNav active="profile" onChange={() => {}} />
+      <BottomNav active="profile" onChange={gotoTab} />
     </>
   );
 }

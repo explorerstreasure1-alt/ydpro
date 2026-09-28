@@ -6,7 +6,7 @@ import { sfx } from "@/lib/sfx";
 import { speakText, speakMixed, speakNatural, stopNatural } from "@/lib/tts";
 import { getSeen, addSeen } from "@/lib/seen";
 import { useLangPair } from "@/lib/useLangPair";
-import { NPC_FALLBACK, LANG_PHOTO, TOPIC_PHOTO } from "@/lib/img";
+import { LANG_PHOTO, TOPIC_PHOTO } from "@/lib/img";
 import { IMG } from "@/lib/img";
 
 interface Step {
@@ -51,6 +51,7 @@ export function Lessons({ back }: { back: () => void }) {
   // cefrDef used in UI below via CEFR.find
   const tts = langDef.tts;
   const nativeTts = LANGS.find((l) => l.code === native)?.tts || "tr-TR";
+  const nativeFlag = LANGS.find((l) => l.code === native)?.flag || "";
   const evalBusy = useRef(false);
 
   const synth = typeof window !== "undefined" ? window.speechSynthesis : null;
@@ -112,7 +113,7 @@ export function Lessons({ back }: { back: () => void }) {
       const res = await fetch("/api/lesson", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lang, native, level, topic: topicDef.name, fresh, seen }),
+        body: JSON.stringify({ lang, native, level, topic: topicDef.name, topicKey: topic, fresh, seen }),
       });
       const data = await res.json();
       if (!res.ok || !data.steps) {
@@ -294,7 +295,7 @@ export function Lessons({ back }: { back: () => void }) {
 
         <div className="glass mt-3 p-3">
           <div className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Seviye (CEFR) — A1'den C1'e kapsamlı</div>
-          <div className="mt-2 grid grid-cols-5 gap-2">
+          <div className="mt-2 grid grid-cols-6 gap-2">
             {CEFR.map((c) => (
               <button
                 key={c.level}
@@ -412,7 +413,7 @@ export function Lessons({ back }: { back: () => void }) {
           <div className="relative -mt-1 max-w-sm rounded-2xl bg-white px-4 py-2.5 text-left text-slate-900 shadow-xl">
             <span className="absolute -top-1.5 left-8 h-3 w-3 rotate-45 bg-white" />
             <p className="text-base font-semibold leading-snug">{cur?.prompt}</p>
-            {cur?.promptTr ? <div className="mt-1 flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1"><span className="flex-1">🇹 {cur.promptTr}</span><button onClick={()=>speakNatural(cur.promptTr!, tts, { level })} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white border text-[10px]">🔊</button></div> : null}
+            {cur?.promptTr ? <div className="mt-1 flex items-center gap-1 text-[11px] font-medium text-slate-600 bg-slate-50 rounded-lg px-2 py-1"><span className="flex-1">{nativeFlag} {cur.promptTr}</span><button onClick={()=>speakNatural(cur.promptTr!, tts, { level })} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white border text-[10px]">🔊</button></div> : null}
             <button onClick={() => speak(cur?.prompt || "", tts)} className="mt-1 flex items-center gap-1 text-[10px] font-bold text-slate-500 hover:text-slate-700">🔊 Hızlı dinle — {langDef.spoken}</button>
           </div>
         )}
@@ -433,7 +434,7 @@ export function Lessons({ back }: { back: () => void }) {
               <button onClick={() => speakNatural(cur.answer, tts, { level })} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bfff] text-xs" title="Orijinal aksanla dinle">🔊</button>
             </div>
             <div className="mt-1 text-[11px] text-cyan-200">🔊 Orijinal okunuşla dinle + tekrar et — kelimeler tamamen {langDef.spoken}.</div>
-            {cur.tr ? <div className="mt-1 text-[11px] text-slate-400">🇹 Anlamı: {cur.tr}</div> : null}
+            {cur.tr ? <div className="mt-1 text-[11px] text-slate-400">{nativeFlag} Anlamı: {cur.tr}</div> : null}
           </div>
         )}
 
@@ -458,7 +459,7 @@ export function Lessons({ back }: { back: () => void }) {
               <button onClick={() => speak(cur.answer, tts)} className="ghost-btn rounded-xl px-3 py-2 text-xs font-semibold text-slate-200">🔊</button>
             </div>
 
-            {cur.tr && <div className="mt-1.5 flex items-center gap-1.5 justify-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20"><span className="flex-1 text-center">🇹 {cur.tr}</span><button onClick={()=>speakNatural(cur.tr!, tts, { level })} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white/10 text-[10px]">🔊</button></div>}
+            {cur.tr && <div className="mt-1.5 flex items-center gap-1.5 justify-center text-xs font-medium text-cyan-100 bg-[#0b2940]/70 rounded-lg px-3 py-1.5 border border-cyan-300/20"><span className="flex-1 text-center">{nativeFlag} {cur.tr}</span><button onClick={()=>speakNatural(cur.tr!, tts, { level })} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white/10 text-[10px]">🔊</button></div>}
 
             {useTyped && (
               <div className="mt-2 flex gap-2">
@@ -473,7 +474,7 @@ export function Lessons({ back }: { back: () => void }) {
               </div>
             )}
 
-            {userTr && <div className="mt-1.5 text-center text-xs text-slate-300">🇹 Söylediğin: <span className="text-cyan-200">{userTr}</span></div>}
+            {userTr && <div className="mt-1.5 text-center text-xs text-slate-300">{nativeFlag} Söylediğin: <span className="text-cyan-200">{userTr}</span></div>}
 
             {(status === "wrong" || status === "almost") && (
               <div className="mt-2 flex gap-2">

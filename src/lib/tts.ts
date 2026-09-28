@@ -1,4 +1,5 @@
 "use client";
+import { LANGS } from "@/lib/levels";
 // Merkezi TTS — tüm dillerde doğru aksan, tek yer — hızlı, aktif, insan gibi
 let voicesCache: any[] = [];
 if (typeof window !== "undefined") {
@@ -38,8 +39,8 @@ export function rateForLevel(level?: string): number {
  * Cihazda hangisi kuruluysa o kazanır — yoksa genel neural puanlamaya düşer.
  */
 const PREFERRED_VOICES: Record<string, string[]> = {
-  en: ["google us english", "aria", "jenny", "guy", "samantha", "daniel", "moira", "tessa", "google uk english"],
-  tr: ["emel", "google türkçe", "google turkish"],
+  en: ["google us english", "google uk english female", "google uk english male", "aria", "jenny", "guy", "christopher", "natasha", "libby", "ryan", "sonia", "olivia", "amelia", "george", "samantha", "zira", "david", "mark", "daniel", "moira", "tessa", "karen", "susan", "kate", "serena", "fiona", "alex", "oliver", "thomas", "aaron", "zoe", "evie", "martha", "louisa"],
+  tr: ["emel", "ahmet", "google türkçe", "google turkish"],
   de: ["katja", "conrad", "anna", "google deutsch", "hedda"],
   fr: ["amelie", "amélie", "thomas", "google français", "google francais", "hortense"],
   es: ["monica", "mónica", "jorge", "paulina", "google español", "google espanol", "sabina"],
@@ -69,15 +70,17 @@ export function pickBestVoice(voices: any[], lang: string): any | null {
     const vl = String(v.lang || "").toLowerCase();
     const nm = String(v.name || "").toLowerCase();
     let s = 0;
-    if (vl === full) s += 4;
+    if (vl === full) s += 2;
     else if (vl.startsWith(code)) s += 2;
     else if (nm.includes(code)) s += 1;
     else continue; // başka dilin sesi asla
-    if (preferred.some((p) => nm.includes(p))) s += 5;
-    if (/neural|natural|premium|enhanced|high quality/.test(nm)) s += 3;
+    // Bilinen kaliteli ses her şeyden önce — robotik "tam eşleşme" locale tuzağına düşme
+    if (preferred.some((p) => nm.includes(p))) s += 6;
+    if (/neural|natural|premium|enhanced|high quality|online/.test(nm)) s += 3;
     if (/google/.test(nm)) s += 2;
     if (/microsoft|apple|samsung/.test(nm)) s += 1;
-    if (/compact|legacy|basic|robot|espeak|festival/.test(nm)) s -= 3;
+    // Eski robotik motorlar — özellikle Windows SAPI "Desktop" sesleri (Hazel Desktop vb.)
+    if (/compact|legacy|basic|robot|espeak|festival|desktop/.test(nm)) s -= 5;
     if (s > bestScore) {
       bestScore = s;
       best = v;
@@ -90,6 +93,8 @@ export function speakText(text: string, lang: string, opts?: SpeakOpts) {
   if (typeof window === "undefined") return;
   const synth = window.speechSynthesis as any;
   if (!synth) return;
+  text = cleanForSpeech(text);
+  if (!text) { opts?.onEnd?.(); return; }
   try {
     synth.cancel();
     setTimeout(() => {
@@ -103,8 +108,7 @@ export function speakText(text: string, lang: string, opts?: SpeakOpts) {
         const found = Object.values(map as any).find((v:any)=> v.code===code || v.tts===lang) as any;
         // LANGS'tan da bul
         if (!found) {
-          const { LANGS } = require("@/lib/levels");
-          const def = LANGS.find((l:any)=> l.tts===lang);
+          const def = LANGS.find((l) => l.tts === lang);
           if (def) {
             const m2 = JSON.parse(localStorage.getItem("yzed_lang_settings") || "{}");
             const s2 = m2[def.code];
@@ -140,14 +144,29 @@ export function speakText(text: string, lang: string, opts?: SpeakOpts) {
   }
 }
 
+/** Konuşmadan önce metni temizle — emoji, markdown, link okunmasın (robot hissinin yarısı bu) */
+export function cleanForSpeech(text: string): string {
+  return String(text || "")
+    .replace(/\p{Extended_Pictographic}/gu, "")
+    .replace(/[*_~#>|]/g, "")
+    .replace(/https?:\/\/\S+/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+let mixedToken = 0;
+
 // Telaffuz: Türkçe konuşuyorsa yabancı aksanla, orijinal telaffuzla
-// Örn: 'Hayır öyle değil, şöyle diyeceksin: "Here is my passport."' → Türkçe kısım tr-TR, tırnak içi en-GB
+// Örn: 'Hayır öyle değil, şöyle diyeceksin: "Here is my passport."' → Türkçe kısım tr-TR, tırnak içi en-US
 export function speakMixed(text: string, nativeLang: string, targetLang: string, opts?: SpeakOpts) {
   if (typeof window === "undefined") return;
   const synth = window.speechSynthesis;
   if (!synth) return;
+  const my = ++mixedToken;
   try {
     synth.cancel();
+    text = cleanForSpeech(text);
+    if (!text) return;
     // Tırnak içlerini ayır: " ", “ ”, ' ', « »  → hedef dil orijinal telaffuz
     const parts: { text: string; lang: string }[] = [];
     const regex = /([“"«'‘`„»”'])([^“"«'‘`„»”']+)([“"«'‘`„»”'])/g;
@@ -168,25 +187,53 @@ export function speakMixed(text: string, nativeLang: string, targetLang: string,
       speakText(parts[0].text, parts[0].lang, opts);
       return;
     }
-    // Sırayla, her parça bitince diğeri — her dil kendi orijinal aksanıyla, hızlı
+    // İnsan gibi: her parçayı cümle + virgül nefeslerine böl, soru/ünlem perdesi ver.
+    // Tek nefeste robot okuma yerine soluklu akış — her dil kendi orijinal aksanıyla.
     const voices = voicesCache.length ? voicesCache : (synth as any).getVoices?.() || [];
     if (!voicesCache.length && voices.length) voicesCache = voices;
     const levelRate = opts?.rate ?? rateForLevel(opts?.level);
-    const speakPart = (idx: number) => {
-      if (idx >= parts.length) return;
-      const p = parts[idx];
-      const u = new SpeechSynthesisUtterance(p.text);
-      u.lang = p.lang;
+    const queue: { t: string; lang: string; pitch: number; gapAfter: number }[] = [];
+    for (const p of parts) {
+      const sents = splitSentences(p.text);
+      for (let s = 0; s < sents.length; s++) {
+        const pitch = /[?？]$/.test(sents[s]) ? 1.15 : /[!！]$/.test(sents[s]) ? 1.1 : 1.0;
+        const phrases = splitPhrases(sents[s]);
+        for (let q = 0; q < phrases.length; q++) {
+          const last = s === sents.length - 1 && q === phrases.length - 1;
+          queue.push({
+            t: phrases[q],
+            lang: p.lang,
+            pitch,
+            gapAfter: last ? 0 : q < phrases.length - 1 ? 200 : 400,
+          });
+        }
+      }
+    }
+    const speakNext = (idx: number) => {
+      if (my !== mixedToken || idx >= queue.length) return;
+      const q = queue[idx];
+      const u = new SpeechSynthesisUtterance(q.t);
+      u.lang = q.lang;
       u.rate = levelRate;
-      u.pitch = 1.0;
-      const best = pickBestVoice(voices, p.lang);
+      u.pitch = q.pitch;
+      u.volume = 1;
+      const best = pickBestVoice(voices, q.lang);
       if (best) (u as any).voice = best;
-      u.onend = () => setTimeout(()=>speakPart(idx + 1), 60);
+      let done = false;
+      const next = () => {
+        if (done) return;
+        done = true;
+        if (my !== mixedToken) return;
+        if (q.gapAfter > 0) setTimeout(() => speakNext(idx + 1), q.gapAfter);
+        else speakNext(idx + 1);
+      };
+      u.onend = next;
       // @ts-ignore
-      u.onerror = () => setTimeout(()=>speakPart(idx + 1), 60);
+      u.onerror = next;
       synth.speak(u);
+      setTimeout(next, Math.min(12000, 2000 + q.t.length * 120));
     };
-    speakPart(0);
+    speakNext(0);
   } catch {}
 }
 
@@ -232,6 +279,8 @@ export function speakNatural(text: string, lang: string, opts?: NaturalOpts) {
   if (typeof window === "undefined") return;
   const synth = window.speechSynthesis as any;
   if (!synth || !text) return;
+  text = cleanForSpeech(text);
+  if (!text) return;
   const my = ++naturalToken;
   try {
     synth.cancel();
@@ -299,11 +348,10 @@ export function speakNatural(text: string, lang: string, opts?: NaturalOpts) {
   })();
 }
 
-export function getTtsFor(code: string, fallback = "en-GB") {
+export function getTtsFor(code: string, fallback = "en-US") {
   // LANGS'tan tts bul, yoksa fallback
   try {
-    const { LANGS } = require("@/lib/levels");
-    return LANGS.find((l: any) => l.code === code)?.tts || fallback;
+    return LANGS.find((l) => l.code === code)?.tts || fallback;
   } catch {
     return fallback;
   }

@@ -1,17 +1,19 @@
-# 7DİL — Her Dilde Her Dil | A1–C1
+# 7DİL — Her Dilde Her Dil | A1–C2
 
-> 18 ortamda 14 dilde A1'den C1'e AI kişilikli sohbet. Ana dil → hedef dil evrensel. Telefona uygulama olarak yüklenir, offline çalışır.
+> 14 dilde A1'den C2'ye AI ile konuşarak dil öğren. Seviyeni seç, konunu seç, konuş. Ana dil → hedef dil evrensel. Telefona uygulama olarak yüklenir.
 
 ![7DİL Logo](public/logo.svg)
 
 **Canlı:** `http://localhost:3000` — PWA installable
 
 ### Özellikler
-- **18 ortam:** Havaalanı, Otel, Restoran, Alışveriş, Şehir, Sosyal, Ev (Anne), İş Yeri (Patron+Lena), Randevu (Sevgili+Garson), Hastane, Banka, Üniversite, Spor, Park, Sinema, Market, Kütüphane + 1 büyük macera
+- **Seviyeler (A1–C2 dersleri):** seviyeni + 18 konudan birini seç, AI her seferinde farklı senaryoda taze ders üretir (144 mikro-senaryo, tekrar yok)
 - **14 dil:** 🇬🇧 İngilizce, 🇩🇪 Almanca, 🇫🇷 Fransızca, 🇪🇸 İspanyolca, 🇮🇹 İtalyanca, 🇷🇺 Rusça, 🇨🇳 Çince, 🇯🇵 Japonca, 🇵🇹 Portekizce, 🇸🇦 Arapça, 🇰🇷 Korece, 🇳🇱 Felemenkçe, 🇹🇷 Türkçe, 🇵🇱 Lehçe — **her dilde her dil**: ana dili İngilizce seçip hedef Rusça öğrenebilirsin
-- **A1–C1 kapsamlı:** A1 2-4 kelime → C1 25 kelime idiom, AI seviyene göre üretir
-- **AI kişilik:** Polis ise polis, Anne ise anne, Sevgili ise sevgili — her sahne ayrı sohbet, hızlı pratik (çipe dokun → cümleye ekle), Telaffuz: “Tamam / Hayır öyle değil, şöyle: …”
-- **Görsel:** Her dil ülke foto, her konu ortam foto, `dayBg` 18 foto — saçma animasyon yok
+- **A1–C2 kapsamlı:** A1 2-4 kelime → C1 25 kelime idiom, AI seviyene göre üretir
+- **AI kişilik + düzeltme:** anne, arkadaş, patron üslubuyla ana dilinde düzeltme, doğru cevap hedef dilde orijinal aksanla — hızlı pratik (çipe dokun → cümleye ekle)
+- **Diyalog Stüdyosu:** konunu yaz, 6-10 satırlık diyalog üret, kaydet, dille filtrele
+- **Gerçek Hayat Modu:** serbest sohbet + konuşma raporu (skor, telaffuz, akıcılık)
+- **Görsel:** Her dil ülke foto, her konu ortam foto — saçma animasyon yok
 - **PWA:** `manifest.json` + `sw.js` + `icons` — telefona “Ana Ekrana Ekle” → uygulama gibi açılır, offline cache
 
 ### Telefona Uygulama Olarak Yükleme (Altyapı Kurulu)
@@ -64,9 +66,9 @@ git push -u origin main
 src/app/layout.tsx → manifest + sw register
 public/manifest.json, sw.js, logo.svg, icons/
 src/lib/ai.ts → GROQ gpt-oss-20b, cache, persona
-src/lib/levels.ts → 14 LANGS, CEFR A1-C1, 18 TOPICS
-src/lib/content.ts → 18 DAYS (A1-C1)
-src/views/mission.tsx → persona + hızlı pratik chips tappable
+src/lib/levels.ts → 14 LANGS, CEFR A1-C2, 18 TOPICS
+src/lib/variety.ts → 144 konu-senaryosu + NPC rolleri (tekrarsız ders)
+src/views/lessons.tsx → seviye+konu seçimi, sesli/yazılı pratik, chips
 ```
 
 Lisans: MIT

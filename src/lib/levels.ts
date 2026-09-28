@@ -7,7 +7,7 @@ export interface LangDef {
 }
 
 export const LANGS: LangDef[] = [
-  { code: "en", name: "İngilizce", flag: "🇬🇧", tts: "en-GB", spoken: "English" },
+  { code: "en", name: "İngilizce", flag: "🇬🇧", tts: "en-US", spoken: "English" },
   { code: "de", name: "Almanca", flag: "🇩🇪", tts: "de-DE", spoken: "German" },
   { code: "fr", name: "Fransızca", flag: "🇫🇷", tts: "fr-FR", spoken: "French" },
   { code: "es", name: "İspanyolca", flag: "🇪🇸", tts: "es-ES", spoken: "Spanish" },

@@ -12,21 +12,22 @@ export async function POST(req: NextRequest) {
   const nativeCode = String(body.native || body.nativeLang || "tr");
   const level = String(body.level || "A1");
   const topic = String(body.topic || "Günlük hayat");
+  const topicKey = String(body.topicKey || "");
   const fresh = body.fresh === true || body.fresh === 1 || body.fresh === "1";
-  const seen = Array.isArray(body.seen) ? body.seen.filter((x: any) => typeof x === "string").map((x: string) => x.slice(0, 120)).slice(0, 15) : [];
+  const seen = Array.isArray(body.seen) ? body.seen.filter((x: any) => typeof x === "string").map((x: string) => x.slice(0, 120)).slice(0, 25) : [];
   const lang = LANGS.find((l) => l.code === langCode);
   const native = LANGS.find((l) => l.code === nativeCode);
   const langName = lang?.spoken || "English";
   const nativeName = native?.spoken || "Turkish";
 
-  const lesson = await generateLesson(langName, level, topic, nativeName, fresh, seen);
+  const lesson = await generateLesson(langName, level, topic, nativeName, fresh, seen, topicKey);
   if (!lesson) {
     // Offline/AI yoksa: ders bölümü ölmesin — seviyeye uyarlanmış taban + offline bayrağı
     const { offlineLessonSteps } = await import("@/lib/ai");
     return Response.json({
       npcName: "Rehber",
       npcEmoji: "🗣️",
-      steps: offlineLessonSteps(topic, level),
+      steps: offlineLessonSteps(topic, level, seen.length),
       offline: true,
     });
   }

@@ -74,7 +74,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           {step === 1 && (
             <div className="animate-pop">
               <h2 className="text-2xl font-black text-grad">Neden dil öğreniyorsun?</h2>
-              <p className="mt-1 text-sm text-slate-400">Görevler buna göre şekillenecek.</p>
+              <p className="mt-1 text-sm text-slate-400">Dersler ve diyaloglar buna göre şekillenecek.</p>
               <div className="mt-5 space-y-2.5">
                 {GOALS.map((g) => (
                   <button
@@ -122,7 +122,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           {step === 3 && (
             <div className="animate-pop">
               <h2 className="text-2xl font-black text-grad">Günde ne kadar zamanın var?</h2>
-              <p className="mt-1 text-sm text-slate-400">Küçük ama düzenli günlük görevler oyunun anahtarı.</p>
+              <p className="mt-1 text-sm text-slate-400">Küçük ama düzenli günlük pratik oyunun anahtarı.</p>
               <div className="mt-5 grid grid-cols-2 gap-3">
                 {TIMES.map((t) => (
                   <button
@@ -147,7 +147,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           }}
           className="gold-btn w-full rounded-2xl py-4 text-base"
         >
-          {step < 3 ? "Devam →" : "Maceraya Başla 🎮"}
+          {step < 3 ? "Devam →" : "Öğrenmeye Başla 🎮"}
         </button>
       </div>
     </div>

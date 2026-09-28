@@ -1,10 +1,11 @@
 "use client";
 import { useStore } from "@/lib/store";
 import { BottomNav } from "@/components/nav";
+import type { Tab } from "@/components/nav";
 import { LevelPill, Stat } from "@/lib/ui";
 import { ACHIEVEMENT_DEFS } from "@/lib/content";
 
-export function Progress({ goHome }: { goHome: () => void }) {
+export function Progress({ goHome, gotoTab }: { goHome: () => void; gotoTab: (t: Tab) => void }) {
   const store = useStore();
   const u = store.user;
 
@@ -75,7 +76,7 @@ export function Progress({ goHome }: { goHome: () => void }) {
           ‹ Ana ekrana dön
         </button>
       </div>
-      <BottomNav active="progress" onChange={() => {}} />
+      <BottomNav active="progress" onChange={gotoTab} />
     </>
   );
 }

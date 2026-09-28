@@ -580,12 +580,27 @@ export function offlineSceneSteps(
 export function offlineLessonSteps(
   topicName: string,
   level: string = "A1",
+  seed: number = 0,
 ): { prompt: string; promptTr: string; answer: string; tr: string; chips: string[] }[] {
-  const base = [
-    { prompt: `Hello! What do you like about ${topicName}?`, answer: "I like it very much.", chips: ["like", "very"] },
-    { prompt: "Can you tell me more?", answer: "Yes, of course.", chips: ["yes", "course"] },
-    { prompt: "What do you do every day?", answer: "I practice every day.", chips: ["practice", "every"] },
+  // AI yoksa bile aynı 3 soruya düşme — konuya gömülü 3 ayrı mini set arasında dön
+  const pools = [
+    [
+      { prompt: `Hello! What do you like about ${topicName}?`, answer: "I like it very much.", chips: ["like", "very"] },
+      { prompt: "Can you tell me more?", answer: "Yes, of course.", chips: ["yes", "course"] },
+      { prompt: "What do you do every day?", answer: "I practice every day.", chips: ["practice", "every"] },
+    ],
+    [
+      { prompt: `Hi there! How often do you deal with ${topicName}?`, answer: "Almost every week.", chips: ["almost", "week"] },
+      { prompt: "Who usually helps you with that?", answer: "My friend helps me.", chips: ["friend", "helps"] },
+      { prompt: "What will you try next time?", answer: "I will try something new.", chips: ["try", "new"] },
+    ],
+    [
+      { prompt: `Excuse me, one quick question about ${topicName}?`, answer: "Sure, go ahead.", chips: ["sure", "ahead"] },
+      { prompt: "Is it difficult or easy for you?", answer: "It is easy for me.", chips: ["easy"] },
+      { prompt: "What do you recommend?", answer: "I recommend starting today.", chips: ["recommend", "today"] },
+    ],
   ];
+  const base = pools[Math.abs(seed) % pools.length];
   return base.map((s) => ({
     prompt: s.prompt,
     promptTr: "",
@@ -974,14 +989,20 @@ export async function generateLesson(
   nativeLangName: string = "Turkish",
   fresh: boolean = false,
   seen: string[] = [],
+  topicKey: string = "",
 ): Promise<{ steps: LessonStep[]; npcName: string; npcEmoji: string } | null> {
-  const cacheKey = `lesson:v6:${langName}:${level}:${topicName}:${nativeLangName}`;
+  const { pickLessonVariety } = await import("@/lib/variety");
+  const variety = pickLessonVariety(topicKey || topicName.toLowerCase(), seen.length);
+  const cacheKey = `lesson:v7:${langName}:${level}:${topicKey || topicName}:${nativeLangName}:${variety.angle}:${seen.length}`;
   if (!fresh && lessonCache.has(cacheKey)) return lessonCache.get(cacheKey);
   if (!client) return null;
   try {
+    const forbidden = seen.length
+      ? `FORBIDDEN — these answers were ALREADY SHOWN to this learner. Repeating any of them, or a close paraphrase with the same meaning, is a FAILURE. Every step below must use a situation and wording NOT in this list:\n${seen.map((s, i) => `${i + 1}. "${String(s).slice(0, 120)}"`).join("\n")}`
+      : "";
     const params: any = {
       model: MODEL,
-      temperature: 0.85,
+      temperature: 0.9 + Math.random() * 0.15,
       reasoning_effort: "low",
       response_format: { type: "json_object" },
       messages: [
@@ -1009,7 +1030,11 @@ Return STRICT JSON only:
 {"npcName":"...","npcEmoji":"...","steps":[{"prompt":"...","promptTr":"...","answer":"...","tr":"...","chips":["..."]}]}
 Keep answers appropriate to the ${level} level. Do not add explanations.`,
         },
-        { role: "user", content: `Generate the ${topicName} lesson at ${level} in ${langName}.${fresh ? " Make it a DIFFERENT variant than before — new questions and answers, no repetition." : ""}${seen.length ? ` NEVER repeat these already-shown answers (nor close paraphrases): ${seen.map((s) => `"${String(s).slice(0, 120)}"`).join(" | ")}` : ""}` },
+        { role: "user", content: `Generate the ${topicName} lesson at ${level} in ${langName}.
+THIS LESSON'S SCENARIO (all 3 turns MUST happen inside this exact situation, nowhere else): ${variety.angle}.
+THIS LESSON'S CHARACTER (npcName/npcEmoji must fit this role): a ${variety.npcRole} (native ${langName} speaker).
+Session seed word "${variety.seedWord}" — let it inspire one small concrete detail (an object, a place, a name) somewhere in the 3 turns, so this lesson can never be identical to another.
+${fresh ? "This must be a FRESH variant — new questions, new answers, new details." : ""}${forbidden ? `\n${forbidden}` : ""}` },
       ],
     };
     for (let attempt = 1; attempt <= 2; attempt++) {

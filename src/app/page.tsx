@@ -1,37 +1,27 @@
 "use client";
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StoreProvider, useStore } from "@/lib/store";
 
 import { Splash } from "@/views/Splash";
 import { Onboarding } from "@/views/Onboarding";
 import { Home } from "@/views/home";
-import { Mission } from "@/views/mission";
-import { SceneMission } from "@/views/sceneMission";
-import { Explore } from "@/views/explore";
-import { Memory } from "@/views/memory";
 import { RealLife } from "@/views/realife";
 import { Progress } from "@/views/progressview";
 import { Profile } from "@/views/profile";
 import { Lessons } from "@/views/lessons";
 import { LangSettingsView } from "@/views/langSettings";
 import { Dialogue } from "@/views/dialogue";
-import { SceneDef } from "@/lib/scenes";
 
 export type Tab =
   | "home"
   | "talk"
-  | "memory"
   | "dialogue"
   | "progress"
   | "profile";
 export type Route =
   | { t: "app"; tab: Tab }
-  | { t: "mission"; day: number }
-  | { t: "scene"; scene: SceneDef }
-  | { t: "explore" }
   | { t: "lessons" }
   | { t: "langSettings" }
-  | { t: "completion" }
   | { t: "splash" }
   | { t: "onboard" };
 
@@ -76,35 +66,11 @@ function Shell() {
           />
         );
       case "app":
-        return <Tabbed tab={route.tab} navigate={gotoTab} openMission={(d) => setRoute({ t: "mission", day: d })} openExplore={() => setRoute({ t: "explore" })} openScene={(s) => setRoute({ t: "scene", scene: s })} openLessons={() => setRoute({ t: "lessons" })} goLangSettings={goLangSettings} />;
-      case "explore":
-        return <Explore onBack={() => setRoute({ t: "app", tab: "home" })} onStartScene={(s) => setRoute({ t: "scene", scene: s })} />;
-      case "scene":
-        return <SceneMission scene={route.scene} back={() => setRoute({ t: "explore" })} onComplete={() => { store.reload().catch(()=>{}); setRoute({ t: "explore" }); }} />;
+        return <Tabbed tab={route.tab} navigate={gotoTab} openLessons={() => setRoute({ t: "lessons" })} goLangSettings={goLangSettings} />;
       case "langSettings":
         return <LangSettingsView back={() => setRoute({ t: "app", tab: "profile" })} />;
       case "lessons":
         return <Lessons back={() => setRoute({ t: "app", tab: "home" })} />;
-      case "mission":
-        return (
-          <Mission
-            day={route.day}
-            back={() => setRoute({ t: "app", tab: "home" })}
-            onComplete={(d) => {
-              store.reload().catch(() => {});
-              if (d === 7) setRoute({ t: "completion" });
-              else setRoute({ t: "app", tab: "home" });
-            }}
-          />
-        );
-      case "completion":
-        return (
-          <Completion
-            onStart={() => gotoTab("talk")}
-            onHome={() => gotoTab("home")}
-            onAgain={() => setRoute({ t: "app", tab: "home" })}
-          />
-        );
       default:
         return <Splash />;
     }
@@ -142,90 +108,23 @@ function Shell() {
 function Tabbed({
   tab,
   navigate,
-  openMission,
   openLessons,
-  openExplore,
-  openScene,
   goLangSettings,
 }: {
   tab: Tab;
   navigate: (t: Tab) => void;
-  openMission: (d: number) => void;
   openLessons: () => void;
-  openExplore: () => void;
-  openScene: (s: SceneDef) => void;
   goLangSettings: () => void;
 }) {
   if (tab === "home")
-    return <Home gotoTab={navigate} goMission={openMission} goLessons={openLessons} goExplore={openExplore} />;
-  if (tab === "memory")
-    return <Memory goStart={(d) => openMission(d)} />;
+    return <Home gotoTab={navigate} goLessons={openLessons} />;
   if (tab === "dialogue")
     return <Dialogue back={() => navigate("home")} />;
   if (tab === "talk")
-    return <RealLife back={() => navigate("home")} />;
-  if (tab === "progress") return <Progress goHome={() => navigate("home")} />;
-  if (tab === "profile") return <Profile goProgress={() => navigate("progress")} goHome={() => navigate("home")} goLangSettings={goLangSettings} />;
-  return <Home gotoTab={navigate} goMission={openMission} goLessons={openLessons} goExplore={openExplore} />;
-}
-
-function Screen({ children }: { children: ReactNode }) {
-  return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col">{children}</div>
-  );
-}
-
-export function Completion({
-  onStart,
-  onHome,
-  onAgain,
-}: {
-  onStart: () => void;
-  onHome: () => void;
-  onAgain: () => void;
-}) {
-  const store = useStore();
-  return (
-    <Screen>
-      <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-5 py-8">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-25"
-          style={{
-            backgroundImage:
-              "url('https://images.pexels.com/photos/15156234/pexels-photo-15156234.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=900')",
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#03111d] via-[#061827]/60 to-[#03111d]" />
-        <div className="glass animate-pop relative z-10 flex w-full flex-col items-center rounded-3xl p-6 text-center">
-          <div className="text-6xl drop-shadow-[0_0_20px_rgba(255,211,47,0.4)]">🏆</div>
-          <h1 className="mt-2 text-3xl font-black text-grad">Tebrikler!</h1>
-          <p className="mt-1 text-white/75">7 günlük maceranı tamamladın!</p>
-          <div className="mt-4 w-full space-y-2 text-left">
-            {[
-              `${store.user?.wordsLearned || 347} kelime öğrendin`,
-              `${store.user?.patterns || 68} konuşma kalıbı kazandın`,
-              `${store.user?.missionsDone || 43} görevi tamamladın`,
-              "Artık temel seviyede İngilizce konuşabiliyorsun!",
-            ].map((t) => (
-              <div key={t} className="glass flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-200">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#16c784] text-[11px] font-black text-[#03111d]">✓</span>
-                {t}
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 text-sm font-black uppercase tracking-[0.2em] text-[#00bfff]">ARTIK SAHNE SENİN.</div>
-          <button onClick={onStart} className="gold-btn mt-4 w-full rounded-2xl py-4 text-lg">
-            Şimdi Gerçek Hayat Modu →
-          </button>
-          <button onClick={onAgain} className="ghost-btn mt-3 w-full rounded-2xl py-3 text-sm text-cyan-100">
-            ↺ Macerayı tekrar oyna
-          </button>
-          <p className="mt-3 text-xs italic text-slate-400">“Artık Londra’ya yalnız değilsin.”</p>
-          <button onClick={onHome} className="mt-2 text-xs text-slate-500 hover:text-slate-300">Ana ekrana dön</button>
-        </div>
-      </div>
-    </Screen>
-  );
+    return <RealLife back={() => navigate("home")} gotoTab={navigate} />;
+  if (tab === "progress") return <Progress goHome={() => navigate("home")} gotoTab={navigate} />;
+  if (tab === "profile") return <Profile goProgress={() => navigate("progress")} goHome={() => navigate("home")} goLangSettings={goLangSettings} gotoTab={navigate} />;
+  return <Home gotoTab={navigate} goLessons={openLessons} />;
 }
 
 export default function Root() {

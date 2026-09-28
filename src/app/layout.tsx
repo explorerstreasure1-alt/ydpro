@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "7DİL — Her Dilde Her Dil | 18 Ortam, 14 Dil, A1–C1",
+  title: "7DİL — Her Dilde Her Dil | 14 Dil, A1–C2",
   description:
-    "18 ortamda 14 dilde A1'den C1'e AI kişilikli sohbet. Ana dil → hedef dil evrensel. Telefona uygulama olarak yükle, offline çalış.",
+    "14 dilde A1'den C2'ye AI ile konuşarak dil öğren. Seviyeni seç, konunu seç, konuş. Ana dil → hedef dil evrensel. Telefona uygulama olarak yükle.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

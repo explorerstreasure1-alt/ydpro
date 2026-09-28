@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/lib/store";
 import { BottomNav } from "@/components/nav";
+import type { Tab } from "@/components/nav";
 import { IMG } from "@/lib/img";
 import { TALK_TOPICS } from "@/lib/content";
 import { useLangPair } from "@/lib/useLangPair";
@@ -27,7 +28,7 @@ const GREETINGS: Record<string, string> = {
   pl: "Cześć! Witaj — porozmawiajmy po polsku. Pomogę ci! ✨",
 };
 
-export function RealLife({ back }: { back: () => void }) {
+export function RealLife({ back, gotoTab }: { back: () => void; gotoTab: (t: Tab) => void }) {
   const store = useStore();
   const { targetLang, nativeLang, targetDef, nativeDef, targetTts, nativeTts } = useLangPair();
   const greet = (code: string) => GREETINGS[code] || GREETINGS.en;
@@ -145,7 +146,7 @@ export function RealLife({ back }: { back: () => void }) {
 
   if (phase === "topic") {
     return (
-      <RealShell>
+      <RealShell gotoTab={gotoTab}>
         <div
           className="absolute inset-0 bg-cover bg-center opacity-35"
           style={{ backgroundImage: `url('${IMG.cityBgWide}')` }}
@@ -177,7 +178,7 @@ export function RealLife({ back }: { back: () => void }) {
   }
 
   return (
-    <RealShell>
+    <RealShell gotoTab={gotoTab}>
       {report ? (
         <div className="glass m-3 flex-1 rounded-3xl p-5">
           <h3 className="text-center text-xl font-black text-grad">Konuşma Raporu</h3>
@@ -241,7 +242,7 @@ export function RealLife({ back }: { back: () => void }) {
                           🔁 Çevir
                         </button>
                       ) : (
-                        <span className="text-[11px] font-semibold text-slate-600">🇹 {transMap[i]}</span>
+                        <span className="text-[11px] font-semibold text-slate-600">{nativeDef.flag} {transMap[i]}</span>
                       )}
                     </div>
                   )}
@@ -287,12 +288,12 @@ export function RealLife({ back }: { back: () => void }) {
   );
 }
 
-function RealShell({ children }: { children: React.ReactNode }) {
+function RealShell({ children, gotoTab }: { children: React.ReactNode; gotoTab: (t: Tab) => void }) {
   return (
     <div className="relative mx-auto flex min-h-dvh w-full max-w-md flex-col">
       {children}
       <div className="mt-auto sticky bottom-0 z-20">
-        <BottomNav active="talk" onChange={() => {}} />
+        <BottomNav active="talk" onChange={gotoTab} />
       </div>
     </div>
   );
