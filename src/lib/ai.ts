@@ -9,7 +9,7 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY || "";
 const client = GROQ_API_KEY ? new Groq({ apiKey: GROQ_API_KEY }) : null;
 
 const MODEL = "openai/gpt-oss-20b";
-const FALLBACK_MODEL = "llama-3.1-8b-instant";
+const FALLBACK_MODEL = "openai/gpt-oss-120b"; // llama-3.1-8b-instant Groq'tan kaldirildi (404)
 
 // AI Orchestrator: tüm yapıdan AI sorumlu — her içerik AI üzerinden üretilir/değerlendirilir
 export const AI_ORCHESTRATOR = {
@@ -1020,6 +1020,7 @@ export async function generateLesson(
     const params: any = {
       model: MODEL,
       temperature: 0.9 + Math.random() * 0.15,
+      max_tokens: 2500, // gpt-oss akil yurutme de bu tavandan yer — kisa kesilmesin
       reasoning_effort: "low",
       response_format: { type: "json_object" },
       messages: [
@@ -1074,7 +1075,19 @@ ${fresh ? "This must be a FRESH variant — new questions, new answers, new deta
             reading: sanitizeReading(String(s.reading || ""), String(s.answer || "")),
             chips: Array.isArray(s.chips) ? s.chips.map((c: any) => String(c)) : [],
           }));
-          const valid = sanitizeAiSteps(mapped, level, langName);
+          // Uyumsuz adım eleme: cevap yarım kesilmişse anlam/okunuş başka telden çalar.
+          // Çeviri kabaca cevap boyunda olur — 2.5x aşan = kesik/uyumsuz üretim, yeniden dene.
+          // Bitmemiş cümle eleme: kısa cevaplar hariç noktalama ile bitmeli ("...turn left at" çöp).
+          const aligned = mapped.filter((s) => {
+            if (!s.answer || !s.tr) return false;
+            const a = s.answer.trim();
+            if (a.length > 12 && !/[.!?…。！？…]$/.test(a)) return false;
+            return s.tr.length <= Math.max(40, s.answer.length * 2.5);
+          });
+          if (aligned.length < mapped.length) {
+            console.error(`lesson misaligned steps dropped topic=${topicName} attempt=${attempt}`);
+          }
+          const valid = sanitizeAiSteps(aligned, level, langName);
           if (!valid) {
             console.error(`lesson invalid steps topic=${topicName} attempt=${attempt}`);
             continue;

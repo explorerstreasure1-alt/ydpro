@@ -33,6 +33,7 @@ export function Lessons({ back }: { back: () => void }) {
   const [steps, setSteps] = useState<Step[] | null>(null);
   const [npc, setNpc] = useState({ name: "Rehber", emoji: "🗣️" });
   const [err, setErr] = useState<string | null>(null);
+  const [offlineMode, setOfflineMode] = useState(false);
 
   const [step, setStep] = useState(0);
   const [status, setStatus] = useState<"idle" | "correct" | "almost" | "wrong">("idle");
@@ -101,6 +102,7 @@ export function Lessons({ back }: { back: () => void }) {
     if (native === lang) { setErr("Ana dil ile hedef dil aynı olamaz."); return; }
     const mySession = ++lessonSession.current;
     stopNatural(); // eski dersin sesi yeni derse sarkmasın
+    setOfflineMode(false);
     setPhase("loading");
     setErr(null);
     setSteps(null);
@@ -129,6 +131,7 @@ export function Lessons({ back }: { back: () => void }) {
         return;
       }
       setSteps(data.steps);
+      setOfflineMode(!!data.offline);
       addSeen("lesson", topic, level, lang, (data.steps as any[]).map((s: any) => s.answer));
       setNpc({ name: data.npcName || "Rehber", emoji: data.npcEmoji || "🗣️" });
       setPhase("play");
@@ -411,6 +414,11 @@ export function Lessons({ back }: { back: () => void }) {
         {Math.min(step + 1, steps?.length || 1)} / {steps?.length}
         <button onClick={() => start()} className="ml-2 rounded-full border border-cyan-300/30 bg-white/5 px-2 py-0.5 text-[10px] text-cyan-200 hover:bg-white/10" title="Taze ders üret (önbelleği atla)">🔄 Yeni sorular</button>
       </div>
+      {offlineMode && (
+        <div className="relative z-10 mx-4 mt-2 rounded-xl border border-amber-300/40 bg-amber-400/10 px-3 py-2 text-center text-[11px] font-semibold text-amber-200">
+          ⚠️ AI'ya ulaşılamadı — basit çevrimdışı ders. Anlam/okunuş bu derste yok, birazdan tekrar dene.
+        </div>
+      )}
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-3 px-4 pb-3">
         <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#0e3048] to-[#0b2940] text-4xl ring-1 ring-cyan-300/30">
