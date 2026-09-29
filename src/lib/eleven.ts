@@ -6,6 +6,12 @@ let audio: HTMLAudioElement | null = null;
 let curRes: ((v: boolean) => void) | null = null;
 let elevenOff = false; // bu oturumda ElevenLabs yok — bir daha deneme
 let unlocked: boolean | null = null; // null = bilinmiyor, sunucuya sorulacak
+let lastError: string | null = null; // son başarısızlık sebebi (teşhis kartı için)
+
+/** Son ElevenLabs hatası (kısa kod): NO_KEY, LOCKED, QUOTA, VOICE_404, NET ... */
+export function elevenLastError(): string | null {
+  return lastError;
+}
 
 export function stopEleven() {
   try {
@@ -22,6 +28,7 @@ export function stopEleven() {
 export async function refreshEleven(): Promise<boolean> {
   unlocked = null;
   elevenOff = false;
+  lastError = null;
   return checkUnlocked();
 }
 
@@ -31,15 +38,14 @@ async function checkUnlocked(): Promise<boolean> {
     const r = await fetch("/api/tts");
     const j = await r.json().catch(() => ({}));
     unlocked = !!(j?.ok && j?.unlocked);
+    if (!j?.ok) lastError = "NO_KEY";
+    else if (!j?.unlocked) lastError = "LOCKED";
   } catch {
     unlocked = false;
+    lastError = "NET";
   }
+  if (!unlocked) elevenOff = true; // boşuna her seste sorma, yenilemede tekrar bakılır
   return unlocked;
-}
-
-async function elevenAvailable(): Promise<boolean> {
-  if (elevenOff) return false;
-  return checkUnlocked();
 }
 
 export interface ElevenOpts {
@@ -55,8 +61,10 @@ export async function elevenSpeak(text: string, opts: ElevenOpts): Promise<boole
   const clean = String(text || "").trim();
   if (!clean || elevenOff) return false;
   if (opts.isAlive && !opts.isAlive()) return false;
-  if (!(await elevenAvailable())) return false;
-  if (opts.isAlive && !opts.isAlive()) return false;
+  if (!(await checkUnlocked())) {
+    lastError = "LOCKED";
+    return false;
+  }
   stopEleven();
   try {
     const ctl = new AbortController();
@@ -74,13 +82,26 @@ export async function elevenSpeak(text: string, opts: ElevenOpts): Promise<boole
     if (!r.ok) {
       // Anahtar yok / kota bitti / limit / yetkisiz → oturumluk normal (tarayıcı) moda dön.
       // Her seferinde denemek yok: takılma ve kota israfı olmaz, sayfa yenilenince tekrar bakılır.
-      if (r.status === 503 || r.status === 401 || r.status === 402 || r.status === 429) elevenOff = true;
-      if (r.status === 403) unlocked = false;
+      if (r.status === 503) {
+        elevenOff = true;
+        lastError = "NO_KEY";
+      } else if (r.status === 401 || r.status === 402 || r.status === 429) {
+        elevenOff = true;
+        lastError = r.status === 402 ? "QUOTA" : r.status === 429 ? "LIMIT" : "KEY";
+      } else if (r.status === 403) {
+        unlocked = false;
+        lastError = "LOCKED";
+      } else {
+        lastError = `HTTP_${r.status}`;
+      }
       return false;
     }
     if (opts.isAlive && !opts.isAlive()) return false;
     const blob = await r.blob();
-    if (!blob || blob.size < 1000) return false;
+    if (!blob || blob.size < 1000) {
+      lastError = "AUDIO";
+      return false;
+    }
     const url = URL.createObjectURL(blob);
     const el = new Audio(url);
     audio = el;
@@ -109,8 +130,10 @@ export async function elevenSpeak(text: string, opts: ElevenOpts): Promise<boole
       });
     });
     if (opts.isAlive && !opts.isAlive()) return false;
+    if (!played) lastError = "PLAY";
     return played;
   } catch {
+    lastError = "NET";
     return false;
   }
 }

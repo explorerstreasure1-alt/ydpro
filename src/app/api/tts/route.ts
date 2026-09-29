@@ -19,7 +19,10 @@ const audioCache = new Map<string, Buffer>();
 const CACHE_CAP = 50;
 
 export async function GET(req: NextRequest) {
-  return Response.json({ ok: !!process.env.ELEVENLABS_API_KEY, unlocked: await isAppUnlocked(req.cookies.get("yd_app")?.value) });
+  const keyPresent = !!process.env.ELEVENLABS_API_KEY;
+  const passSet = !!process.env.ELEVENLABS_TTS_PASSWORD;
+  const unlocked = await isAppUnlocked(req.cookies.get("yd_app")?.value);
+  return Response.json({ ok: keyPresent, keyPresent, passSet, unlocked });
 }
 
 export async function POST(req: NextRequest) {

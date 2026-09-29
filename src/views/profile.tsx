@@ -16,6 +16,7 @@ export function Profile({ goProgress, goHome, goLangSettings, gotoTab }: { goPro
   const [ttsState, setTtsState] = useState<"unknown" | "on" | "off">("unknown");
   const [ttsErr, setTtsErr] = useState<string | null>(null);
   const [ttsBusy, setTtsBusy] = useState(false);
+  const [ttsDiag, setTtsDiag] = useState<{ keyPresent?: boolean; passSet?: boolean; last?: string | null }>({});
   const { nativeLang, targetLang, nativeDef, targetDef, setNativeLang, setTargetLang } = useLangPair();
 
   async function save() {
@@ -27,8 +28,12 @@ export function Profile({ goProgress, goHome, goLangSettings, gotoTab }: { goPro
   useEffect(() => {
     fetch("/api/tts")
       .then((r) => r.json())
-      .then((j) => setTtsState(j?.unlocked ? "on" : "off"))
+      .then((j) => {
+        setTtsState(j?.unlocked ? "on" : "off");
+        setTtsDiag({ keyPresent: !!j?.keyPresent, passSet: !!j?.passSet });
+      })
       .catch(() => setTtsState("off"));
+    import("@/lib/eleven").then((m) => setTtsDiag((d) => ({ ...d, last: m.elevenLastError() }))).catch(() => {});
   }, []);
 
   async function unlockStudio() {
@@ -170,6 +175,16 @@ export function Profile({ goProgress, goHome, goLangSettings, gotoTab }: { goPro
                 </div>
                 {ttsErr && <div className="mt-1.5 text-xs font-semibold text-[#ffb0a0]">{ttsErr}</div>}
                 <div className="mt-1 text-[10px] text-slate-500">Açıkken ElevenLabs stüdyo sesiyle okur, kapalıyken tarayıcı sesi.</div>
+                {(ttsDiag.keyPresent === false || ttsDiag.passSet === false || ttsDiag.last) && (
+                  <div className="mt-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-[10px] leading-relaxed text-slate-400">
+                    {ttsDiag.keyPresent === false && <div>⚠️ Anahtar yok (Vercel: ELEVENLABS_API_KEY + redeploy)</div>}
+                    {ttsDiag.passSet === false && <div>⚠️ Şifre değişkeni yok (Vercel: ELEVENLABS_TTS_PASSWORD + redeploy)</div>}
+                    {ttsDiag.last === "QUOTA" && <div>⚠️ Stüdyo kotası bitti — tarayıcı sesindeyiz</div>}
+                    {ttsDiag.last === "LIMIT" && <div>⚠️ Hız limiti — birazdan stüdyoya dönülür</div>}
+                    {(ttsDiag.last === "KEY" || ttsDiag.last === "HTTP_401") && <div>⚠️ Anahtarda ses izni yok (ElevenLabs panelinden Text-to-Speech izni aç)</div>}
+                    {ttsDiag.last && !["QUOTA", "LIMIT", "KEY", "HTTP_401"].includes(ttsDiag.last) && <div>⚠️ Son durum: {ttsDiag.last}</div>}
+                  </div>
+                )}
               </div>
             )}
           </div>
