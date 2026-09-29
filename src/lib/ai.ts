@@ -489,19 +489,22 @@ function offlinePersonaReply(
   return `${st.wrong} "${ideal}" — dinle, tekrar et bakayım.`;
 }
 
-// --- Seviye uyarlaması: A1 kısa → C2 anadil düzeyi (offline statik içerik için) ---
+// --- Seviye uyarlaması: A1 kısa → C2 anadil düzeyi ---
+// HİZALAMA KURALI: cevabı cümle ortasında ASLA doğrama — anlam/okunuş tam cümleye
+// göre üretilir, budanmış cevapla eşleşmezse kullanıcı yanlış öğrenir.
 export function adaptAnswerToLevel(answer: string, level: string, targetLangName: string = "English"): string {
-  const words = (answer || "").split(" ").filter(Boolean);
-  if (words.length === 0) return answer;
+  void targetLangName;
+  const text = String(answer || "").trim();
+  if (!text) return answer;
+  const words = text.split(" ").filter(Boolean);
   // Seviye kelime tavanı — AI uzun saçmalarsa kısalt (tüm dillerde)
   const cap = level === "A1" ? 6 : level === "A2" ? 10 : level === "B1" ? 16 : level === "B2" ? 22 : level === "C1" ? 30 : 40;
-  const trimmed = words.slice(0, cap).join(" ");
-  const isEnglish = targetLangName.toLowerCase().includes("english");
-  if (level === "A1" || level === "A2" || level === "B1") return trimmed || answer;
-  // B2/C1 deyim eki SADECE İngilizce hedefte — başka dilde İngilizce ek saçmalık olur
-  if (!isEnglish) return trimmed || answer;
-  if (level === "B2") return trimmed.endsWith(".") ? `${trimmed.slice(0, -1)}, in my opinion.` : `${trimmed}, in my opinion.`;
-  return trimmed.endsWith(".") ? `${trimmed.slice(0, -1)}, to be honest, that's exactly what I mean.` : `${trimmed}, to be honest.`;
+  if (words.length <= cap) return text;
+  // Tavını aşarsa SON TAM CÜMLEDE kes — sınır yoksa bütün bırak (bütünlük > kısalık)
+  const capped = words.slice(0, cap).join(" ");
+  const m = capped.match(/[\s\S]*[.!?…。！？…]/);
+  if (m && m[0].trim()) return m[0].trim();
+  return text;
 }
 
 /** AI adımlarını doğrula: boş/aynı/tekrarı ele, seviyeye kısalt. Geçersizse null (caller tabana düşer). */
@@ -990,6 +993,9 @@ function sanitizeReading(reading: string, answer: string): string {
   if (!r) return "";
   // Hedef alfabe kaçmış: CJK, hiragana/katakana, hangul, arapça, kiril
   if (/[一-鿿぀-ヿ가-힯؀-ۿЀ-џ]/.test(r)) return "";
+  // IPA/fonetik sembol kaçmış (aɪ ðə hoʊˈtɛl): öğrenci okuyamaz
+  // eslint-disable-next-line no-misleading-character-class
+  if (/[ɐ-ɯᴁ-ᴟᵃ-ᵿˠ-˿̀-ͯ]/.test(r)) return "";
   // Cevabın aynısı okunuş değildir
   if (norm(r) === norm(answer)) return "";
   return r;
@@ -1043,6 +1049,13 @@ Generate exactly 3 turns:
 - "promptTr": natural ${nativeLangName} translation of prompt (e.g., "Nereye gidiyorsun?")
 - "answer": in ${langName} original, ${level} level, what learner should say (e.g., Portuguese "Vou para Lisboa.", never Turkish words, fully ${langName} grammar)
 - "tr": natural ${nativeLangName} translation of answer
+TRANSLATION FIDELITY (promptTr/tr are the learner's lifeline — mistakes here teach wrong Turkish):
+- Translate EXACTLY the sentence in front of you — every word accounted for, nothing added, nothing dropped.
+- promptTr translates ONLY "prompt". "tr" translates ONLY "answer". NEVER cross them, NEVER invent people/places/names that aren't in the sentence.
+- Natural ${nativeLangName}, not word-for-wordrobotic. Watch cases/plurals/tense (e.g., "to the hotel" = "otele", not "otelleri").
+- If the sentence is short, the translation is short. No explanations inside translations.
+- Format example ONLY (do NOT copy its content):
+  {"prompt":"Where is the bus stop?","promptTr":"Otobüs durağı nerede?","answer":"It is near the bank.","tr":"Bankanın yanında.","reading":"it iz niir dhuh bengk","chips":["near","bank"]}
 - "reading": pronunciation of "answer" written in SIMPLE Latin letters a ${nativeLangName} speaker can sound out cold (e.g., English "thought" → "sot", Chinese "你好" → "ni hao", Japanese "こんにちは" → "konnichiwa", Arabic "مرحبا" → "merhaba", Russian "спасибо" → "spasiba"). ALWAYS fill it, even when the answer is already Latin.
 - "reading" STRICT RULES (learners read this aloud — garbage is worse than nothing):
   Latin letters a-z + spaces/apostrophes/hyphens ONLY. NO hanzi/kana/arabic/cyrillic/hangul, NO IPA symbols, NO tone numbers.
