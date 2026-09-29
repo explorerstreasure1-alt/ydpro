@@ -225,7 +225,7 @@ export function Dialogue({ back }: { back: () => void }) {
   // Döngü çalıyorsa önce o durdurulur (sesler üst üste binmesin).
   function playTurkish(text: string) {
     if (playing) stopLoop();
-    speakText(text, nativeTts, { level });
+    speakText(text, nativeTts, { level, voice: "native" });
   }
 
   // 🗑 Metni sil (vazgeç)

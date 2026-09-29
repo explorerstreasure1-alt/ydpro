@@ -468,7 +468,7 @@ export function Lessons({ back }: { back: () => void }) {
                 <div className="mt-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-sm font-semibold text-cyan-100">📖 Okunuşu: {cur.reading}</div>
               ) : null}
               {cur.tr ? (
-                <div className="mt-1.5 flex items-center gap-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-xs font-medium text-slate-300"><span className="flex-1">{nativeFlag} Anlamı: {cur.tr}</span><button onClick={() => speakNatural(cur.tr!, nativeTts, { level })} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white/10 text-[10px]" title="Anlamı dinle">🔊</button></div>
+                <div className="mt-1.5 flex items-center gap-1.5 rounded-lg bg-white/5 px-2.5 py-1.5 text-xs font-medium text-slate-300"><span className="flex-1">{nativeFlag} Anlamı: {cur.tr}</span><button onClick={() => speakNatural(cur.tr!, nativeTts, { level, voice: "native" })} className="shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-white/10 text-[10px]" title="Anlamı dinle">🔊</button></div>
               ) : null}
             </div>
             <button

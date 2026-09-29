@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "@/lib/store";
 import { BottomNav } from "@/components/nav";
 import type { Tab } from "@/components/nav";
@@ -12,12 +12,50 @@ export function Profile({ goProgress, goHome, goLangSettings, gotoTab }: { goPro
   const store = useStore();
   const u = store.user;
   const [name, setName] = useState(u?.name || "Yolcu");
+  const [ttsPass, setTtsPass] = useState("");
+  const [ttsState, setTtsState] = useState<"unknown" | "on" | "off">("unknown");
+  const [ttsErr, setTtsErr] = useState<string | null>(null);
+  const [ttsBusy, setTtsBusy] = useState(false);
   const { nativeLang, targetLang, nativeDef, targetDef, setNativeLang, setTargetLang } = useLangPair();
 
   async function save() {
     await store.post({ type: "onboard", input: `${name || "Yolcu"}\n${u?.goal || "Seyahat"}\n${u?.dailyMinutes || "10 dakika"}\n${targetDef.name}` });
     store.setToast(`Kaydedildi ✅ ${nativeDef.flag} → ${targetDef.flag}`);
     setTimeout(() => store.setToast(null), 1800);
+  }
+
+  useEffect(() => {
+    fetch("/api/tts")
+      .then((r) => r.json())
+      .then((j) => setTtsState(j?.unlocked ? "on" : "off"))
+      .catch(() => setTtsState("off"));
+  }, []);
+
+  async function unlockStudio() {
+    if (!ttsPass || ttsBusy) return;
+    setTtsBusy(true);
+    setTtsErr(null);
+    try {
+      const r = await fetch("/api/tts/unlock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: ttsPass }),
+      });
+      if (r.ok) {
+        setTtsPass("");
+        setTtsState("on");
+        const { refreshEleven } = await import("@/lib/eleven");
+        await refreshEleven();
+        store.setToast("🎙 Stüdyo sesi açıldı");
+        setTimeout(() => store.setToast(null), 2000);
+      } else {
+        setTtsErr("Hatalı şifre");
+      }
+    } catch {
+      setTtsErr("Bağlantı hatası");
+    } finally {
+      setTtsBusy(false);
+    }
   }
 
   return (
@@ -105,6 +143,35 @@ export function Profile({ goProgress, goHome, goLangSettings, gotoTab }: { goPro
             {["🗣️ Yavaş konuşma", "💬 Altyazı", "🔁 Çeviri"].map((s) => (
               <span key={s} className="ghost-btn rounded-full px-3 py-1.5 text-xs text-slate-200">{s} · Açık</span>
             ))}
+          </div>
+          {/* Stüdyo sesi — şifreyle açılır, şifre koda yazılmaz, noktayla gizlenir */}
+          <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold">🎙 Stüdyo sesi</span>
+              <span className={`rounded-full px-3 py-1 text-xs font-bold ${ttsState === "on" ? "bg-emerald-500/20 text-emerald-300" : "bg-white/10 text-slate-400"}`}>
+                {ttsState === "on" ? "Açık" : ttsState === "off" ? "Kapalı" : "..."}
+              </span>
+            </div>
+            {ttsState !== "on" && (
+              <div className="mt-2">
+                <div className="flex gap-2">
+                  <input
+                    type="password"
+                    value={ttsPass}
+                    onChange={(e) => setTtsPass(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && unlockStudio()}
+                    placeholder="Özel şifre"
+                    autoComplete="off"
+                    className="glass flex-1 rounded-xl px-3 py-2.5 text-sm text-white outline-none placeholder:text-slate-500"
+                  />
+                  <button onClick={unlockStudio} disabled={ttsBusy || !ttsPass} className="gold-btn rounded-xl px-4 text-sm disabled:opacity-50">
+                    {ttsBusy ? "..." : "Aç"}
+                  </button>
+                </div>
+                {ttsErr && <div className="mt-1.5 text-xs font-semibold text-[#ffb0a0]">{ttsErr}</div>}
+                <div className="mt-1 text-[10px] text-slate-500">Açıkken ElevenLabs stüdyo sesiyle okur, kapalıyken tarayıcı sesi.</div>
+              </div>
+            )}
           </div>
           <button onClick={goLangSettings} className="gold-btn mt-4 w-full rounded-2xl py-3 text-sm">
             🌍 Tüm Diller — Ayrı Ayarlar (14 dil)

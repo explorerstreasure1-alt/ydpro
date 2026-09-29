@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { StoreProvider, useStore } from "@/lib/store";
 
 import { Splash } from "@/views/Splash";
+import { LockScreen } from "@/views/lock";
 import { Onboarding } from "@/views/Onboarding";
 import { Home } from "@/views/home";
 import { RealLife } from "@/views/realife";
@@ -28,7 +29,16 @@ export type Route =
 function Shell() {
   const [route, setRoute] = useState<Route>({ t: "splash" });
   const [onboarding, setOnboarding] = useState<boolean | null>(null);
+  const [locked, setLocked] = useState<boolean | null>(null);
   const store = useStore();
+
+  // Ana giriş kilidi — sunucu çerezi sorulur, şüphede kapalı (fail-closed)
+  useEffect(() => {
+    fetch("/api/auth")
+      .then((r) => r.json())
+      .then((j) => setLocked(!j?.unlocked))
+      .catch(() => setLocked(true));
+  }, []);
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).has("skipSplash")) {
@@ -52,6 +62,16 @@ function Shell() {
   const goLangSettings = () => setRoute({ t: "langSettings" } as any);
 
   function render() {
+    if (locked === null) return <Splash />;
+    if (locked)
+      return (
+        <LockScreen
+          onUnlock={() => {
+            setLocked(false);
+            import("@/lib/eleven").then((m) => m.refreshEleven().catch(() => {}));
+          }}
+        />
+      );
     switch (route.t) {
       case "splash":
         return <Splash />;

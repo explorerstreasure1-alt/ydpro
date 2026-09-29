@@ -1,5 +1,6 @@
 "use client";
 import { LANGS } from "@/lib/levels";
+import { elevenSpeak, stopEleven } from "@/lib/eleven";
 // Merkezi TTS — tüm dillerde doğru aksan, tek yer — hızlı, aktif, insan gibi
 let voicesCache: any[] = [];
 if (typeof window !== "undefined") {
@@ -72,6 +73,8 @@ export interface SpeakOpts {
   pitch?: number;
   /** Okuma bitince (veya hatada) çağrılır — zincirleme oynatma için */
   onEnd?: () => void;
+  /** ElevenLabs ses seçimi: teacher = ders/hoca, native = ana dil/düzeltme */
+  voice?: "teacher" | "native";
 }
 
 /** Seviyeye göre TTS hızı — spec Adım 3: A1-A2 yavaş, B normal akış, C tam akıcı */
@@ -167,7 +170,7 @@ export function pickBestVoice(voices: any[], lang: string): any | null {
   return best;
 }
 
-export function speakText(text: string, lang: string, opts?: SpeakOpts) {
+export async function speakText(text: string, lang: string, opts?: SpeakOpts) {
   if (typeof window === "undefined") return;
   const synth = window.speechSynthesis as any;
   if (!synth) return;
@@ -175,6 +178,16 @@ export function speakText(text: string, lang: string, opts?: SpeakOpts) {
   if (!text) { opts?.onEnd?.(); return; }
   // Tekil konuşma nesli — bu çağrıdan sonra başlayan her ses öncekileri öldürür
   const my = ++speechGen;
+  stopEleven();
+  // ElevenLabs öncelikli (stüdyo sesi) — anahtar yoksa/başarısızsa tarayıcıya düşer
+  try {
+    const ok = await elevenSpeak(text, { lang, voice: opts?.voice ?? "teacher", isAlive: () => my === speechGen });
+    if (ok) {
+      if (my === speechGen) opts?.onEnd?.();
+      return;
+    }
+  } catch {}
+  if (my !== speechGen) return;
   try {
     synth.cancel();
     setTimeout(async () => {
@@ -240,7 +253,7 @@ export function cleanForSpeech(text: string): string {
 
 // Telaffuz: Türkçe konuşuyorsa yabancı aksanla, orijinal telaffuzla
 // Örn: 'Hayır öyle değil, şöyle diyeceksin: "Here is my passport."' → Türkçe kısım tr-TR, tırnak içi en-US
-export function speakMixed(text: string, nativeLang: string, targetLang: string, opts?: SpeakOpts) {
+export async function speakMixed(text: string, nativeLang: string, targetLang: string, opts?: SpeakOpts) {
   if (typeof window === "undefined") return;
   const synth = window.speechSynthesis;
   if (!synth) return;
@@ -271,6 +284,32 @@ export function speakMixed(text: string, nativeLang: string, targetLang: string,
       speakText(parts[0].text, parts[0].lang, opts);
       return;
     }
+    // ElevenLabs öncelikli: her parça tek istek — Türkçe parça ana dil sesiyle,
+    // hedef dil parçası hoca sesiyle (aksan ayrımı korunur)
+    stopEleven();
+    let elevenFailed = false;
+    for (const p of parts) {
+      if (my !== speechGen) return;
+      try {
+        const ok = await elevenSpeak(p.text, {
+          lang: p.lang,
+          voice: p.lang === nativeLang ? "native" : "teacher",
+          isAlive: () => my === speechGen,
+        });
+        if (!ok) {
+          elevenFailed = true;
+          break;
+        }
+      } catch {
+        elevenFailed = true;
+        break;
+      }
+    }
+    if (!elevenFailed) {
+      if (my === speechGen) opts?.onEnd?.();
+      return;
+    }
+    if (my !== speechGen) return;
     // Liste hazır olunca başla — yoksa varsayılan robot ses araya girer
     void ensureVoices().then(() => {
       if (my !== speechGen) return;
@@ -424,6 +463,7 @@ export function buildSpeechQueue(
 /** Okumayı durdur — bekleyen tüm ses zincirleri susar (yeni okuma otomatik durdurur zaten) */
 export function stopNatural() {
   speechGen++;
+  stopEleven();
   try {
     (window.speechSynthesis as any)?.cancel();
   } catch {}
@@ -443,13 +483,26 @@ export interface NaturalOpts extends SpeakOpts {
  * cümle cümle + virgül nefesleri, soru/ünlem perdesi, cümle sonu bekleme,
  * dile özel en net ses. Yeni çağrı öncekini keser (üst üste binme yok).
  */
-export function speakNatural(text: string, lang: string, opts?: NaturalOpts) {
+export async function speakNatural(text: string, lang: string, opts?: NaturalOpts) {
   if (typeof window === "undefined") return;
   const synth = window.speechSynthesis as any;
   if (!synth || !text) return;
   text = cleanForSpeech(text);
   if (!text) return;
   const my = ++speechGen;
+  stopEleven();
+  // ElevenLabs öncelikli (stüdyo sesi) — anahtar yoksa/başarısızsa tarayıcıya düşer
+  try {
+    const ok = await elevenSpeak(text, { lang, voice: opts?.voice ?? "teacher", isAlive: () => my === speechGen });
+    if (ok) {
+      if (my === speechGen) {
+        opts?.onDone?.();
+        opts?.onEnd?.();
+      }
+      return;
+    }
+  } catch {}
+  if (my !== speechGen) return;
   try {
     synth.cancel();
   } catch {}
