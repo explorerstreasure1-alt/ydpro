@@ -17,6 +17,8 @@ export function Profile({ goProgress, goHome, goLangSettings, gotoTab }: { goPro
   const [ttsErr, setTtsErr] = useState<string | null>(null);
   const [ttsBusy, setTtsBusy] = useState(false);
   const [ttsDiag, setTtsDiag] = useState<{ keyPresent?: boolean; passSet?: boolean; last?: string | null }>({});
+  const [vh, setVh] = useState<{ ready: boolean | null; enName: string | null; trName: string | null; platform: string }>({ ready: null, enName: null, trName: null, platform: "desktop" });
+  const [vhBusy, setVhBusy] = useState(false);
   const { nativeLang, targetLang, nativeDef, targetDef, setNativeLang, setTargetLang } = useLangPair();
 
   async function save() {
@@ -34,7 +36,21 @@ export function Profile({ goProgress, goHome, goLangSettings, gotoTab }: { goPro
       })
       .catch(() => setTtsState("off"));
     import("@/lib/eleven").then((m) => setTtsDiag((d) => ({ ...d, last: m.elevenLastError() }))).catch(() => {});
+    refreshVoiceHealth();
   }, []);
+
+  async function refreshVoiceHealth() {
+    setVhBusy(true);
+    try {
+      const { checkVoiceHealth } = await import("@/lib/voiceSetup");
+      const h = await checkVoiceHealth();
+      setVh({ ready: h.ready, enName: h.enName, trName: h.trName, platform: h.platform });
+    } catch {
+      setVh((v) => ({ ...v, ready: false }));
+    } finally {
+      setVhBusy(false);
+    }
+  }
 
   async function unlockStudio() {
     if (!ttsPass || ttsBusy) return;
@@ -182,6 +198,7 @@ export function Profile({ goProgress, goHome, goLangSettings, gotoTab }: { goPro
                     {ttsDiag.last === "QUOTA" && <div>⚠️ Stüdyo kotası bitti — tarayıcı sesindeyiz</div>}
                     {ttsDiag.last === "LIMIT" && <div>⚠️ Hız limiti — birazdan stüdyoya dönülür</div>}
                     {(ttsDiag.last === "KEY" || ttsDiag.last === "HTTP_401") && <div>⚠️ Anahtarda ses izni yok (ElevenLabs panelinden Text-to-Speech izni aç)</div>}
+                    {ttsDiag.last === "EDGE" && <div>⚠️ Stüdyo + ücretsiz ses yanıt vermedi — tarayıcı sesindeyiz</div>}
                     {ttsDiag.last && !["QUOTA", "LIMIT", "KEY", "HTTP_401"].includes(ttsDiag.last) && <div>⚠️ Son durum: {ttsDiag.last}</div>}
                   </div>
                 )}
@@ -191,6 +208,55 @@ export function Profile({ goProgress, goHome, goLangSettings, gotoTab }: { goPro
           <button onClick={goLangSettings} className="gold-btn mt-4 w-full rounded-2xl py-3 text-sm">
             🌍 Tüm Diller — Ayrı Ayarlar (14 dil)
           </button>
+          {/* Ses Kurulumu — ElevenLabs'sız muazzam sesin düğmesi */}
+          <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold">🔊 Ses Kurulumu</span>
+              <span className={`rounded-full px-3 py-1 text-xs font-bold ${vh.ready ? "bg-emerald-500/20 text-emerald-300" : "bg-white/10 text-slate-400"}`}>
+                {vh.ready === null ? "..." : vh.ready ? "Hazır ✓" : "Kurulum gerekli"}
+              </span>
+            </div>
+            {(vh.enName || vh.trName) && (
+              <div className="mt-1 text-[10px] text-slate-500">EN: {vh.enName || "—"} · TR: {vh.trName || "—"}</div>
+            )}
+            {vh.ready === false && (
+              <div className="mt-2">
+                {vh.platform === "android" && (
+                  <>
+                    <div className="text-[11px] text-slate-300">Google ses motoru + İngilizce/Türkçe ses verisi kurulu değil. Tek dokunuşla ayar sayfasına git:</div>
+                    <button
+                      onClick={async () => {
+                        const { openVoiceSettings, detectPlatform } = await import("@/lib/voiceSetup");
+                        openVoiceSettings(detectPlatform());
+                      }}
+                      className="gold-btn mt-2 w-full rounded-2xl py-3 text-sm"
+                    >
+                      ⚙️ Ses Ayarını Aç →
+                    </button>
+                    <div className="mt-1.5 text-[10px] leading-relaxed text-slate-500">
+                      • Tercih Edilen Motor: Google Metin-Konuşma<br />
+                      • Dişli → İngilizce + Türkçe ses verisini indir<br />
+                      • Dönüp Tekrar Dene'ye bas
+                    </div>
+                  </>
+                )}
+                {vh.platform === "ios" && (
+                  <div className="mt-1.5 text-[11px] leading-relaxed text-slate-300">
+                    Ayarlar → Erişilebilirlik → Konuşulan İçerik → Sesler → İngilizce (Siri Enhanced) + Türkçe (Emel Geliştirilmiş) indir.
+                  </div>
+                )}
+                {vh.platform === "desktop" && (
+                  <div className="mt-1.5 text-[11px] text-slate-300">Chrome kullanıyorsan Google sesleri otomatik gelir. Edge/Safari'de kalite düşük olabilir.</div>
+                )}
+                <button onClick={refreshVoiceHealth} disabled={vhBusy} className="ghost-btn mt-2 w-full rounded-2xl py-2.5 text-xs text-cyan-100 disabled:opacity-50">
+                  {vhBusy ? "..." : "↻ Tekrar Dene"}
+                </button>
+              </div>
+            )}
+            {vh.ready === true && (
+              <div className="mt-1 text-[10px] text-slate-500">Cihaz sesleri yeterli — ElevenLabs'sız muazzam okur.</div>
+            )}
+          </div>
           <button onClick={goProgress} className="ghost-btn mt-2 w-full rounded-2xl py-3 text-sm text-cyan-100">
             📊 İlerlememi gör
           </button>

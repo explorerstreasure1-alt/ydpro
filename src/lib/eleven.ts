@@ -7,6 +7,7 @@ let curRes: ((v: boolean) => void) | null = null;
 let elevenOff = false; // bu oturumda ElevenLabs yok — bir daha deneme
 let unlocked: boolean | null = null; // null = bilinmiyor, sunucuya sorulacak
 let lastError: string | null = null; // son başarısızlık sebebi (teşhis kartı için)
+let edgeOffUntil = 0; // Edge kısıtlaması — süre dolmadan tekrar deneme
 
 /** Son ElevenLabs hatası (kısa kod): NO_KEY, LOCKED, QUOTA, VOICE_404, NET ... */
 export function elevenLastError(): string | null {
@@ -28,6 +29,7 @@ export function stopEleven() {
 export async function refreshEleven(): Promise<boolean> {
   unlocked = null;
   elevenOff = false;
+  edgeOffUntil = 0;
   lastError = null;
   return checkUnlocked();
 }
@@ -52,8 +54,79 @@ export interface ElevenOpts {
   lang: string;
   /** teacher = ders/hoca sesi, native = ana dil/düzeltme sesi */
   voice?: "teacher" | "native";
+  /** prozodi seviyesi (Edge SSML hızı için) */
+  level?: string;
   /** çağrı sırasında başka ses başladıysa çalmadan vazgeç */
   isAlive?: () => boolean;
+}
+
+/** Ücretsiz Edge sinirsel sesi (SSML yönetmenli) — anahtarsız. Başarısızsa false. */
+export async function edgeSpeak(text: string, opts: ElevenOpts): Promise<boolean> {
+  const clean = String(text || "").trim();
+  if (!clean) return false;
+  if (Date.now() < edgeOffUntil) return false;
+  if (opts.isAlive && !opts.isAlive()) return false;
+  stopEleven();
+  try {
+    const ctl = new AbortController();
+    const to = setTimeout(() => {
+      try {
+        ctl.abort();
+      } catch {}
+    }, 15000);
+    const r = await fetch("/api/tts/edge", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: clean.slice(0, 1000), lang: opts.lang, voice: opts.voice || "teacher", level: opts.level }),
+      signal: ctl.signal,
+    }).finally(() => clearTimeout(to));
+    if (!r.ok) {
+      // Kısıt/arıza → 5 dk dokunma (tarayıcı sesi devrede)
+      edgeOffUntil = Date.now() + 5 * 60 * 1000;
+      lastError = "EDGE";
+      return false;
+    }
+    if (opts.isAlive && !opts.isAlive()) return false;
+    const blob = await r.blob();
+    if (!blob || blob.size < 1000) {
+      lastError = "EDGE";
+      return false;
+    }
+    const url = URL.createObjectURL(blob);
+    const el = new Audio(url);
+    audio = el;
+    const played = await new Promise<boolean>((res) => {
+      curRes = res;
+      el.onended = () => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch {}
+        if (audio === el) audio = null;
+        curRes = null;
+        res(true);
+      };
+      el.onerror = () => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch {}
+        if (audio === el) audio = null;
+        curRes = null;
+        res(false);
+      };
+      el.play().catch(() => {
+        if (audio === el) audio = null;
+        curRes = null;
+        res(false);
+      });
+    });
+    if (opts.isAlive && !opts.isAlive()) return false;
+    if (!played) lastError = "EDGE";
+    return played;
+  } catch {
+    edgeOffUntil = Date.now() + 5 * 60 * 1000;
+    lastError = "EDGE";
+    return false;
+  }
 }
 
 /** Metni ElevenLabs ile çal. Sonuna kadar çalındıysa true, her türlü sorunda false. */

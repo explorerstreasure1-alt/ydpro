@@ -15,6 +15,7 @@
 - **Gerçek Hayat Modu:** serbest sohbet + konuşma raporu (skor, telaffuz, akıcılık)
 - **Görsel:** Her dil ülke foto, her konu ortam foto — saçma animasyon yok
 - **Ses:** ElevenLabs stüdyo sesi öncelikli (`ELEVENLABS_API_KEY` Vercel env'de; yoksa tarayıcı sesi) — ders Adam (olgun erkek), ana dil Bella
+- **Ses zinciri:** ElevenLabs (kilitli) → Edge sinirsel (ücretsiz, SSML vurgulu) → tarayıcı — kota bitse de kalite düşmez
 - **PWA:** `manifest.json` + `sw.js` + `icons` — telefona “Ana Ekrana Ekle” → uygulama gibi açılır, offline cache
 
 ### Telefona Uygulama Olarak Yükleme (Altyapı Kurulu)
