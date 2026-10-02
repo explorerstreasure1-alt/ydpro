@@ -2389,5 +2389,2320 @@
     ]
    }
   ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "daily",
+  "topic": "Günlük hayat",
+  "npcName": "Tom",
+  "npcEmoji": "🤓",
+  "steps": [
+   {
+    "prompt": "Wie beginnt dein gewöhnlicher Morgen eigentlich?",
+    "promptTr": "Günlük sabahın genellikle nasıl başlıyor?",
+    "answer": "Meiner Morgenroutine entspringt ein sanftes Erwachen, gefolgt von einer Tasse starkem Kaffee, während ich die neuesten Schlagzeilen durchstöbere, bevor ich mich an die Dusche stelle und mein Tagebuch mit den Gedanken des Tages fülle.",
+    "tr": "Gündelik sabah rutini, hafif bir uyanışla başlıyor, ardından güçlü bir kahveyle, en son haberleri okurken, duş almadan önce günlüğü günün düşüncelerini dolduruyorum.",
+    "reading": "moyner morgen-ru-teen ent-spreng-t te sanf-te es-ver-ken, gefolgt von en tasse stark-em ka-fey, während ich die nej-vest schlag-zeilen dur-s",
+    "chips": [
+     "morgenroutine",
+     "kauf",
+     "tagesbuch"
+    ]
+   },
+   {
+    "prompt": "Wie beeinflusst das Frühstück deine Stimmung heute?",
+    "promptTr": "Kahvaltı bugün ruh halini nasıl etkiliyor?",
+    "answer": "Die morgendliche Mahlzeit, insbesondere das warme Croissant und die frische Orange, setzen eine entspannte Aura in mein Bewusstsein, die mich motiviert, produktiver zu arbeiten, und gleichzeitig das Bewusstsein für meinen inneren Rhythmus zu schärfen.",
+    "tr": "Sabah kahvaltısı, özellikle sıcak kruvasan ve taze portakal, rahat bir havayı bilinçteye yerleştiriyor, beni daha üretken çalışmaya motive ediyor, aynı zamanda içsel ritmimin farkına varmamı sağlıyor.",
+    "reading": "die morgendliche mahl-zeit, ins-pee-kul-lir das warme kro-vanz ant die frish-eh o-ran-geh, setzen en ent-spann-te a-ru in mein bewus-sung, d",
+    "chips": [
+     "morgendliche",
+     "motiviert",
+     "rhythmus"
+    ]
+   },
+   {
+    "prompt": "Stell dir vor, du verpasst die Brücke zum Café. Wie reagierst du?",
+    "promptTr": "Kahve için köprüyi kaçırdığını düşün. Ne yaparsın?",
+    "answer": "Ich würde mich zunächst über das verpasste Erlebnis schmunzeln, die Zeit nutzen, um einen kurzen Spaziergang durch den Park zu machen, dabei die frische Luft zu genießen und dann, mit neuer Energie, zum Café zu gehen, wobei ich meine Pläne für den Tag noch einmal überdenke.",
+    "tr": "Önce kaçırdığım deneyimle gülümserim, zamanı parkta kısa bir yürüyüş yaparak kullanırım, taze havayı keyfederim ve sonra yeni enerjiyle kahveye giderim, günüm için planlarımı yeniden değerlendiririm.",
+    "reading": "ich wür-d mich zunächst über das ver-passte er-ler-sich schmunz-len, die zeit nut-zen, um einen kurz-en spazier-gang durch den park zu mache",
+    "chips": [
+     "verpasst",
+     "spaziergang",
+     "neuer"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "social",
+  "topic": "Sosyal",
+  "npcName": "Lukas",
+  "npcEmoji": "👫",
+  "steps": [
+   {
+    "prompt": "Wie würdest du das Flair dieses Viertels in einem einzigen Satz zusammenfassen?",
+    "promptTr": "Bu semtin havasını tek bir cümleyle nasıl özetlersin?",
+    "answer": "Das Viertel besticht durch seine lebendige Mischung aus historischer Architektur und zeitgenössischer Kreativität, die sich harmonisch in den verwinkelten Gassen widerspiegelt.",
+    "tr": "Semt, tarihi mimarisiyle modern yaratıcılığın canlı karışımını, kıvrımlı sokaklarda uyumlu bir şekilde yansıtıyor.",
+    "reading": "das veertel besticht durch zine lebende mishung aus historischer architektur unt tsaitgenoessische kreativität, di sich harmonisch in den fe",
+    "chips": [
+     "besticht",
+     "Mischung",
+     "harmonisch"
+    ]
+   },
+   {
+    "prompt": "Hast du schon vom geplanten Straßenfest gehört, das am kommenden Wochenende am alten Steinbogenbrücke stattfinden soll?",
+    "promptTr": "Gelecek hafta sonu eski taş kemer köprüde gerçekleşecek planlanan sokak festivalinden duydun mu?",
+    "answer": "Ja, ich plane, dort nicht nur die lokalen Kunsthandwerker zu bewundern, sondern auch das improvisierte Jazzensemble zu genießen, das auf dem Kopfsteinpflaster auftreten wird.",
+    "tr": "Evet, orada sadece yerel zanaatkarları takdir etmeyi değil, aynı zamanda taş döşeli yollarda çalacak doğaçlama caz topluluğunu da dinlemeyi planlıyorum.",
+    "reading": "",
+    "chips": [
+     "planen",
+     "Kunsthandwerker",
+     "Jazzensemble"
+    ]
+   },
+   {
+    "prompt": "Welches Vorgehen hältst du für am effektivsten, um schnell ein vertrauensvolles Verhältnis zu den Nachbarn aufzubauen, ohne aufdringlich zu wirken?",
+    "promptTr": "Komşularla hızlı bir şekilde güvene dayalı ilişki kurmak için, müdahaleci olmadan, hangi yaklaşımı en etkili buluyorsun?",
+    "answer": "Ich empfehle, zunächst informelle Gespräche bei einer Tasse frisch gebrühten Kaffees zu initiieren und anschließend gemeinsam an kleinen Nachbarschaftsprojekten, etwa einer wöchentlichen Lesestunde im Gemeinschaftsgarten, teilzunehmen.",
+    "tr": "İlk olarak taze demlenmiş bir kahve eşliğinde gayri resmi sohbetler başlatıp, ardından ortak bir bahçede haftalık okuma saati gibi küçük komşuluk projelerine katılmanı öneriyorum.",
+    "reading": "",
+    "chips": [
+     "empfehlen",
+     "informelle",
+     "Nachbarschaftsprojekten"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "hotel",
+  "topic": "Otel",
+  "npcName": "Krankenpflegerin",
+  "npcEmoji": "🤍",
+  "steps": [
+   {
+    "prompt": "Guten Tag, ich habe das Bügeleisen in meinem Zimmer verloren und benötige bitte eine neue.",
+    "promptTr": "İyi günler, odadaki ütüyü kaybettim ve yeni bir tane istiyorum.",
+    "answer": "Ich habe das Bügeleisen in meinem Zimmer verloren und benötige daher eine neue, damit ich meine Kleidung noch heute bügeln kann, da ich morgen zur Arbeit gehen muss.",
+    "tr": "Ben odamdaki ütüyü kaybettim ve bu yüzden yeni bir tane istiyorum, çünkü dün gece çalıştığım için bugün kıyafetlerimi ütülemem gerekiyor, yarın işe gitmem gerekiyor.",
+    "reading": "ik hab das byu-guh-lay-zen in maim zi-mer lost-en und bee-neh-tsee-guh dah-er en-eh new, dam-uhn ig men-kla-guh-keit en-eh-tah hoyt-uh bu-ge",
+    "chips": [
+     "Bügeleisen",
+     "Zimmer",
+     "bevorzugen"
+    ]
+   },
+   {
+    "prompt": "Verstehe ich das richtig, Sie brauchen ein Ersatz-Bügeleisen, weil Ihre Kleidung noch unbügelt ist und Sie morgen arbeiten?",
+    "promptTr": "Doğru anladım, yeni bir ütüye ihtiyacınız var çünkü kıyafetleriniz hâlâ ütülenmemiş durumda ve yarın çalışacaksınız?",
+    "answer": "Ja, genau. Mein Hemd ist noch unbügelt, und ich plane, es heute Abend in der Bücherei zu bügeln, weil ich morgen keine Zeit habe, um die wichtigsten Aufgaben zu erledigen.",
+    "tr": "Evet, doğru. Gömleğim hâlâ ütülenmemiş durumda ve bu akşam kitapçıda ütülemeyi planlıyorum çünkü yarın önemli işlere vakit ayıramayacağım.",
+    "reading": "ya, gah-nyk. mayn hem-t ist noch un-boot-velt, und ik plan-uh es hoyt-uh ah-bend in der byoo-kair-ee zu bu-gel-nen, weil ik mor-gen kainen t",
+    "chips": [
+     "hemd",
+     "bügeln",
+     "Aufgabe"
+    ]
+   },
+   {
+    "prompt": "Wie können Sie das neue Bügeleisen am besten organisieren, damit Sie es rechtzeitig zurückbringen?",
+    "promptTr": "Yeni ütüyü en iyi şekilde nasıl düzenlersiniz, böylece zamanında geri getirebilirsiniz?",
+    "answer": "Ich werde das neue Bügeleisen mit einem Aufbewahrungsbehälter in meinem Handtuchbeutel verstauen, sodass es leicht zugänglich bleibt und ich es jederzeit zur Rezeption zurückgehe.",
+    "tr": "Yeni ütüyü, el çantamda bir saklama kutusunda saklayacağım, böylece her zaman resepsiyona geri götürebileceğim.",
+    "reading": "ik vahr-d e das nyoo-eh bu-guh-lay-zen mit aym-en awf-bay-voh-roongs-beh-ahl-ter in maim hand-toog-bee-tel fer-stow-en, zoh-das es lay-cht t",
+    "chips": [
+     "Aufbewahrungsbehälter",
+     "Handtuchbeutel",
+     "Rezeption"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "travel",
+  "topic": "Seyahat",
+  "npcName": "Marktverkäufer",
+  "npcEmoji": "🧑‍🌾",
+  "steps": [
+   {
+    "prompt": "Entschuldigen Sie, welche Fahrkarte benötigen Sie für die Linie U2?",
+    "promptTr": "Affedersiniz, U2 hattı için hangi bilet lazım?",
+    "answer": "Ich möchte ein Einzelfahrschein für die U2, bitte, und ich frage mich, ob es einen Ermäßigungsrabatt für Studierende gibt.",
+    "tr": "U2 hattı için tek yön bilet istiyorum, lütfen, ve öğrencilere indirim olup olmadığını merak ediyorum.",
+    "reading": "",
+    "chips": [
+     "Einzelfahrschein",
+     "Ermäßigungsrabatt",
+     "Studierende"
+    ]
+   },
+   {
+    "prompt": "Zahlen Sie lieber mit Karte oder mit Bargeld?",
+    "promptTr": "Kredi kartı mı yoksa nakit mi ödemeyi tercih edersiniz?",
+    "answer": "Ich zahle mit meiner kontaktlosen Karte, weil ich die schnelle Abwicklung bevorzugte, außerdem habe ich noch ein paar Euro in bar, falls das System Probleme macht.",
+    "tr": "Temassız kartımla ödüyorum, çünkü hızlı işlemeyi tercih ediyorum, ayrıca hâlâ birkaç euro nakit olarak yanımda var, sistem sorun çıkarsa.",
+    "reading": "",
+    "chips": [
+     "Karte",
+     "Bargeld",
+     "Abwicklung"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie eine Rückfahrkarte zum Hauptbahnhof?",
+    "promptTr": "Ana tren istasyonuna dönüş bileti ister misiniz?",
+    "answer": "Ja, bitte eine Rückfahrkarte zum Hauptbahnhof; ich habe auf dem Weg durch einen kleinen Wiesengrund (meadow) ein schönes Foto gemacht, das mich an meine Heimat erinnert.",
+    "tr": "Evet, lütfen ana tren istasyonuna dönüş bileti; yoldaki küçük çayırda (meadow) güzel bir fotoğraf çektim, bu da beni memleketimi hatırlatıyor.",
+    "reading": "",
+    "chips": [
+     "Rückfahrkarte",
+     "Hauptbahnhof",
+     "Wiesengrund"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "airport",
+  "topic": "Havaalanı",
+  "npcName": "Ärztin",
+  "npcEmoji": "🏥",
+  "steps": [
+   {
+    "prompt": "Wie lautet die Gate-Nummer für meinen Flug nach Berlin?",
+    "promptTr": "Berlin'e uçuşum için kapı numarası nedir?",
+    "answer": "Die Gate-Nummer lautet 27, und Sie müssen die Brücke nehmen, die sich auf dem Weg nach Süden befindet.",
+    "tr": "Kapı numarası 27 ve güney yönünde bulunan köprüyi geçmeniz gerekiyor.",
+    "reading": "",
+    "chips": [
+     "Gate-Nummer",
+     "Brücke",
+     "fliegen"
+    ]
+   },
+   {
+    "prompt": "Ist das die richtige Gate-Nummer?",
+    "promptTr": "Bu doğru kapı numarası mı?",
+    "answer": "Ja, das ist die korrekte Gate-Nummer. Folgen Sie dem Schild, das Sie zur Gate 27 führt.",
+    "tr": "Evet, bu doğru kapı numarasıdır. İşaretlere uyarak Gate 27'ye gidin.",
+    "reading": "",
+    "chips": [
+     "korrekte",
+     "Gate",
+     "führen"
+    ]
+   },
+   {
+    "prompt": "Vielen Dank für Ihre Hilfe.",
+    "promptTr": "Yardımınız için çok teşekkür ederim.",
+    "answer": "Gern geschehen. Gute Reise und bleiben Sie sicher!",
+    "tr": "Memnun oldum. İyi yolculuk ve güvenli kalın!",
+    "reading": "",
+    "chips": [
+     "guten Reise",
+     "sicher",
+     "Hilfe"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "hotel",
+  "topic": "Otel",
+  "npcName": "Felix",
+  "npcEmoji": "🍽️",
+  "steps": [
+   {
+    "prompt": "Guten Tag, haben Sie eine Reservierung auf den Namen Müller?",
+    "promptTr": "İyi günler, Müller ismiyle bir rezervasyonunuz var mı?",
+    "answer": "Ja, ich habe eine Reservierung unter dem Namen Müller für den 12. Juni, Zimmer mit Doppelbett.",
+    "tr": "Evet, 12 Haziran için Müller adıyla çift kişilik bir oda rezervasyonum var.",
+    "reading": "ya, iç habe aine rezervatsiyon onder dem namen müller fy den zwölf juni, tsimmer mit doppelbett",
+    "chips": [
+     "Reservierung",
+     "Doppelbett",
+     "12. Juni"
+    ]
+   },
+   {
+    "prompt": "Könnten Sie mir bitte sagen, wann das Frühstück serviert wird und ob es auch vegetarische Optionen gibt?",
+    "promptTr": "Bana kahvaltının ne zaman servis edildiğini ve vejetaryen seçeneklerin olup olmadığını söyleyebilir misiniz?",
+    "answer": "Das Frühstück wird täglich von 7 bis 10 Uhr im Restaurant serviert, und wir bieten ein umfangreiches vegetarisches Buffet an.",
+    "tr": "Kahvaltı her gün saat 7 ile 10 arasında restoranda servis edilir ve kapsamlı bir vejetaryen büfe sunuyoruz.",
+    "reading": "das frühstück veert täglich fon sieben bis zehn uhr im restoran servirt, unt vi bietet ain umfangreiches vegetarisches buffet an",
+    "chips": [
+     "Frühstück",
+     "vegetarisch",
+     "Buffet"
+    ]
+   },
+   {
+    "prompt": "Ihr Zimmer ist im dritten Stock, hat ein großes Fenster mit Blick auf den Garten und kostet 120 Euro pro Nacht inklusive Frühstück. Gibt es noch etwas, das Sie benötigen?",
+    "promptTr": "Odanız üçüncü katta, bahçeye bakan büyük bir pencere var ve kahvaltı dahil 120 Euro gecelik. Başka bir şeye ihtiyacınız var mı?",
+    "answer": "Vielen Dank, das klingt hervorragend. Könnten Sie bitte noch ein paar zusätzliche Handtücher auf mein Zimmer bringen?",
+    "tr": "Çok teşekkür ederim, harika görünüyor. Birkaç ekstra havlu da odama getirebilir misiniz?",
+    "reading": "",
+    "chips": [
+     "Handtücher",
+     "Zimmer",
+     "zusätzlich"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "money",
+  "topic": "Para",
+  "npcName": "Felix",
+  "npcEmoji": "🍽️",
+  "steps": [
+   {
+    "prompt": "Entschuldigen Sie, möchten Sie wissen, wie der aktuelle Wechselkurs für Euro zu Türkischer Lira ist?",
+    "promptTr": "Affedersiniz, Euro'nun güncel Türk Lirası karşılığını öğrenmek ister misiniz?",
+    "answer": "Ja, bitte. Könnten Sie mir sagen, wie viel ein Euro in Lira wert ist?",
+    "tr": "Evet, lütfen. Bir Euro'nun kaç Lira ettiğini söyleyebilir misiniz?",
+    "reading": "ya bitte. kunntn zi mir zan vi: vi: ayn o:ro in li:ra ve:rt is?",
+    "chips": [
+     "Wechselkurs",
+     "Euro",
+     "Lira"
+    ]
+   },
+   {
+    "prompt": "Der heutige Kurs liegt bei 1 Euro = 21,45 Lira, das ist fast so zuverlässig wie ein Kompass.",
+    "promptTr": "Bugünkü kur 1 Euro = 21,45 Lira, bu neredeyse bir pusula kadar güvenilir.",
+    "answer": "Danke für die Information. Glauben Sie, dass es günstiger wäre, heute zu wechseln, oder sollte ich lieber bis morgen warten?",
+    "tr": "Bilgi için teşekkür ederim. Bugün döviz almak daha uygun olur mu, yoksa yarına kadar beklemek mi gerekir?",
+    "reading": "",
+    "chips": [
+     "Information",
+     "heute",
+     "wechseln"
+    ]
+   },
+   {
+    "prompt": "Ich würde empfehlen, gleich zu wechseln, da die Kurse morgen voraussichtlich leicht fallen werden.",
+    "promptTr": "Şimdi döviz almanızı öneririm, çünkü yarın kurlar muhtemelen biraz düşecek.",
+    "answer": "Das klingt gut, ich werde gleich am Schalter wechseln. Vielen Dank für Ihre Hilfe!",
+    "tr": "Kulağa hoş geliyor, hemen tezgâhta döviz alacağım. Yardımınız için çok teşekkür ederim!",
+    "reading": "",
+    "chips": [
+     "wechseln",
+     "Schalter",
+     "Dank"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "restaurant",
+  "topic": "Restoran",
+  "npcName": "Chef",
+  "npcEmoji": "💼",
+  "steps": [
+   {
+    "prompt": "Könnten Sie mir bitte die Rechnung bringen?",
+    "promptTr": "Lütfen bana hesap getirebilir misiniz?",
+    "answer": "Könnten Sie mir die Rechnung bitte bringen?",
+    "tr": "Lütfen bana hesabı getirebilir misiniz?",
+    "reading": "kon-chen-duh zyu mr reed-uh-kun shpy-cher-bn?",
+    "chips": [
+     "Rechnung",
+     "bringen"
+    ]
+   },
+   {
+    "prompt": "Wo ist die Rechnung?",
+    "promptTr": "Hesap nerede?",
+    "answer": "Die Rechnung liegt auf dem Tisch, wie eine Brücke zwischen uns.",
+    "tr": "Hesap masanın üzerinde, aramızda bir köprü gibi yerleştirilmiş.",
+    "reading": "dee reed-uh-kun lyet awf dehm tish, vee ay-nuh brek-eh tsvee-sen oonss",
+    "chips": [
+     "Rechnung",
+     "Brücke"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie Trinkgeld geben?",
+    "promptTr": "Bahşiş vermek ister misiniz?",
+    "answer": "Ich denke, es wäre angemessen, ein wenig Trinkgeld zu geben, aber ich bevorzuge ein sauberes Restaurant mit exzellentem Service.",
+    "tr": "Bence, bir miktar bahşiş vermek uygun olur, ama ben temiz bir restoranda mükemmel hizmeti tercih ediyorum.",
+    "reading": "ish denk-eh, es va-er-ah ah-gah-men-sen, ayn nyen-ig trink-gell tsoh geh-ben, ah-ber ish beh-fohr-zyo-geh ayn zow-ber-uhs rest-ow-rahnt mit ",
+    "chips": [
+     "Trinkgeld",
+     "Restaurant",
+     "Service"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "shopping",
+  "topic": "Alışveriş",
+  "npcName": "Herr Müller",
+  "npcEmoji": "🛍️",
+  "steps": [
+   {
+    "prompt": "Guten Tag, wie kann ich Ihnen helfen?",
+    "promptTr": "Günaydın, size nasıl yardımcı olabilirim?",
+    "answer": "Ich suche eine Jacke und würde gern wissen, wie viel sie kostet.",
+    "tr": "Bir ceket arıyorum ve fiyatının ne kadar olduğunu öğrenmek istiyorum.",
+    "reading": "ih zuche ayne jake und vurde gern vizn, vi fil zi kostet",
+    "chips": [
+     "Jacke",
+     "kosten"
+    ]
+   },
+   {
+    "prompt": "Welche Jacke interessiert Sie denn besonders?",
+    "promptTr": "Hangi ceket ilginizi çekiyor?",
+    "answer": "Die schwarze Lederjacke dort rechts gefällt mir sehr, aber ich frage mich, ob der Preis verhandelbar ist.",
+    "tr": "Sağ taraftaki siyah deri ceket çok hoşuma gitti, ama fiyatın pazarlık edilebilir olup olmadığını merak ediyorum.",
+    "reading": "",
+    "chips": [
+     "schwarze",
+     "Preis"
+    ]
+   },
+   {
+    "prompt": "Der Preis liegt bei 199 Euro, jedoch kann ich Ihnen einen kleinen Rabatt von zehn Prozent gewähren, wenn Sie heute kaufen.",
+    "promptTr": "Fiyat 199 Euro, ama bugün alırsanız yüzde onluk küçük bir indirim yapabilirim.",
+    "answer": "Das klingt fair, ich nehme sie gern; übrigens habe ich die Jacke im garden anprobiert und sie passt perfekt, könnten Sie mir das Rückgaberecht erklären?",
+    "tr": "Bu adil bir teklif, ceket'i alıyorum; bu arada bahçede denedim ve mükemmel oturdu, iade koşulunu açıklayabilir misiniz?",
+    "reading": "",
+    "chips": [
+     "fair",
+     "Rückgaberecht"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "sport",
+  "topic": "Spor",
+  "npcName": "Verkäuferin Anna",
+  "npcEmoji": "🛍️",
+  "steps": [
+   {
+    "prompt": "Entschuldigen Sie, könnten Sie mir bitte sagen, wie viel ein Ticket für den heutigen Derby kostet?",
+    "promptTr": "Affedersiniz, lütfen bugün derbiyi izlemek için bilet fiyatını söyleyebilir misiniz?",
+    "answer": "Ein Ticket kostet 45 Euro, und ich habe noch ein zusätzliches Paar für den Abend. Möchten Sie das auch?",
+    "tr": "Bir bilet 45 Euro, ve akşam için ek bir çiftim var. Bunu da ister misiniz?",
+    "reading": "ayn tik-it kost-eh 45 e-ro, ahn ich hauf-n noch ayn zusatz-lec-he paar fur den ab-end. moech-ten zee das oos?",
+    "chips": [
+     "Ticket",
+     "kosten",
+     "zusätzlich"
+    ]
+   },
+   {
+    "prompt": "Könnten Sie mir bitte die Sitzplätze zeigen? Ich würde gerne an der Seite des Stadions sitzen.",
+    "promptTr": "Lütfen oturma yerlerini gösterebilir misiniz? Stadyumun yan tarafında oturmak istiyorum.",
+    "answer": "Selbstverständlich, die Plätze sind auf dem Weg zur Tribüne.",
+    "tr": "Elbette, yerler tribüneye giden yolda. VIP oturakları için küçük bir pencere bölgesi var, size gösterebilirim.",
+    "reading": "zehlb-sta-nen-haft-lich, di plehk-zer zint ow-f dem vehg zur trib-uh-nuh. Vee-er hah-ben aynn klein-nen fen-ster-bereich für di vip-zi-tse, ",
+    "chips": [
+     "Sitzplätze",
+     "Tribüne",
+     "Fensterbereich"
+    ]
+   },
+   {
+    "prompt": "Wie kann ich die Tickets bezahlen? Gibt es einen Online- oder Telefonkauf?",
+    "promptTr": "Biletleri nasıl ödeyebilirim? Çevrimiçi ya da telefonla satın alma var mı?",
+    "answer": "Sie können die Tickets an der Kasse per Karte oder Bargeld bezahlen.",
+    "tr": "Biletleri kasada kartla ya da nakitle ödeyebilirsiniz. Alternatif olarak bir çevrimiçi mağaza var, mobil ödeme seçeneği sunuyor.",
+    "reading": "zee kuh-nen di tik-ets an der kas-uh per kar-te or bar-geld bezahl-en. al-ter-na-tiv geyb zayn on-layn-shop, der ine-en ayn mobile zah-lungs",
+    "chips": [
+     "bezahlen",
+     "Kasse",
+     "Online-Shop"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "work",
+  "topic": "İş",
+  "npcName": "Herr Nachbar",
+  "npcEmoji": "👴",
+  "steps": [
+   {
+    "prompt": "Entschuldigen Sie, könnten Sie mir bitte kurz helfen, mein Drucker hat einen Papierstau und ich finde die Lösung nicht.",
+    "promptTr": "Affedersiniz, yazıcımda kağıt sıkışması var ve çözümünü bulamıyorum, bana kısa bir süre yardımcı olabilir misiniz?",
+    "answer": "Natürlich, ich schaue mir das sofort an und erkläre Ihnen Schritt für Schritt, wie Sie den Stau beheben können.",
+    "tr": "Tabii ki, hemen bakıyorum ve size adım adım sıkışmayı nasıl çözebileceğinizi anlatıyorum.",
+    "reading": "",
+    "chips": [
+     "natürlich",
+     "sofort",
+     "Schritt für Schritt"
+    ]
+   },
+   {
+    "prompt": "Wären Sie so freundlich, mir zu zeigen, wie ich das Fach richtig einsetze, damit das Problem nicht wieder auftritt?",
+    "promptTr": "Bana bölmeyi doğru yerleştirmeyi gösterir misiniz, böylece sorun tekrar ortaya çıkmasın?",
+    "answer": "Gern, ich zeige Ihnen zuerst, wie das Papierfach korrekt eingerastet wird, und wir prüfen gemeinsam, ob alle Rollen ordnungsgemäß sitzen.",
+    "tr": "Memnuniyetle, önce kağıt tepsisini nasıl doğru takacağınızı gösteriyorum ve tüm ruloların düzgün yerleştirildiğini birlikte kontrol ediyoruz.",
+    "reading": "",
+    "chips": [
+     "gerne",
+     "zeigen",
+     "prüfen"
+    ]
+   },
+   {
+    "prompt": "Übrigens, ich habe neulich im Garten ein neues Modell ausprobiert, das angeblich solche Staus vermeidet – könnten wir das zusammen testen, sobald Sie fertig sind?",
+    "promptTr": "Bu arada, bahçede yeni bir model denedim, bunun kağıt sıkışmalarını önleyeceği söyleniyor – bitirdiğinizde birlikte deneyecek miyiz?",
+    "answer": "Ja, das klingt spannend; wir können das Gerät nach Ihrer Rückkehr aus dem Arbeitszimmer kurz testen und dabei gleich prüfen, ob die neuen Mechanismen tatsächlich das Problem eliminieren.",
+    "tr": "Evet, kulağa ilginç geliyor; iş odasından döndüğünüzde cihazı hemen test edip, yeni mekanizmanın gerçekten sorunu ortadan kaldırıp kaldırmadığını kontrol edebiliriz.",
+    "reading": "",
+    "chips": [
+     "klingt spannend",
+     "testen",
+     "Mechanismen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "work",
+  "topic": "İş",
+  "npcName": "Mutter",
+  "npcEmoji": "👩‍🍼",
+  "steps": [
+   {
+    "prompt": "Könntest du mir bitte sagen, warum du die Abgabefrist für das Projekt verschieben möchtest?",
+    "promptTr": "Projeyi teslim etme tarihini neden uzatmak istediğini söyleyebilir misin?",
+    "answer": "Ich habe unerwartete familiäre Verpflichtungen, die meine Arbeit stark beeinträchtigen, und würde daher um eine einwöchige Verlängerung bitten.",
+    "tr": "Beklenmedik aile sorumluluklarım var, bunlar işimi ciddi şekilde etkiliyor, bu yüzden bir haftalık uzatma istiyorum.",
+    "reading": "",
+    "chips": [
+     "Unerwartete",
+     "Verpflichtungen",
+     "Verlängerung"
+    ]
+   },
+   {
+    "prompt": "Wie viel zusätzliche Zeit brauchst du konkret, um alles fertigzustellen?",
+    "promptTr": "Her şeyleri bitirmek için tam olarak ne kadar ekstra zamana ihtiyacın var?",
+    "answer": "Ich würde gerne die Frist bis zum 15. Mai verlängern, das gibt mir genug Zeit, die noch ausstehenden Analysen gründlich abzuschließen.",
+    "tr": "15 Mayıs'a kadar tarih uzatmak isterim, bu bana eksik analizleri düzgün tamamlamak için yeterli zaman verir.",
+    "reading": "",
+    "chips": [
+     "Frist",
+     "Mai",
+     "Analysen"
+    ]
+   },
+   {
+    "prompt": "Ich verstehe, aber denke daran, dass ein Projekt wie eine Laterne ist – das Licht darf nicht zu lange brennen, sonst wird es schwächer. Wie klingt das für dich?",
+    "promptTr": "Anlıyorum, ama bir projenin bir lamba gibi olduğunu düşün – ışık çok uzun yanamaz, yoksa zayıflar. Senin için nasıl?",
+    "answer": "Das klingt fair; ich werde die neuen Vorgaben bis zum 15. Mai einhalten und alles rechtzeitig abschließen.",
+    "tr": "Bu adil geliyor; 15 Mayıs'a kadar yeni hedefleri yerine getireceğim ve her şeyi zamanında bitireceğim.",
+    "reading": "",
+    "chips": [
+     "fair",
+     "einhalten",
+     "abschließen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "daily",
+  "topic": "Günlük hayat",
+  "npcName": "Freundliche Nachbarin",
+  "npcEmoji": "👩‍🦰",
+  "steps": [
+   {
+    "prompt": "Wann hast du vor, deine Wäsche heute noch zu waschen?",
+    "promptTr": "Bugün kıyafetlerini yıkamayı ne zaman planlıyorsun?",
+    "answer": "Ich plane, die Wäsche später heute noch zu waschen, weil ich morgen früh einen Termin habe.",
+    "tr": "Bugün daha sonra kıyafetleri yıkamayı planlıyorum, çünkü yarın sabah bir randevum var.",
+    "reading": "ik plan, da vis haysl spaltur ih hötl niç, weil ich morgen frah een termin habe",
+    "chips": [
+     "waschen",
+     "Plan",
+     "Termin"
+    ]
+   },
+   {
+    "prompt": "Welche Art von Waschmittel benutzt du normalerweise?",
+    "promptTr": "Normalde hangi tür deterjan kullanıyorsun?",
+    "answer": "Ich verwende meistens ein Farbwaschmittel, weil es die Farben schützt und trotzdem sauber macht.",
+    "tr": "Genellikle renk koruyucu bir deterjan kullanıyorum, çünkü renkleri korur ve yine de temiz tutar.",
+    "reading": "ik verwende meynens ein farbwaschmittel, weil es die farben schütz und trotzdem sauber macht",
+    "chips": [
+     "Waschmittel",
+     "Farbwaschmittel",
+     "schützen"
+    ]
+   },
+   {
+    "prompt": "Wie oft hängst du die nassen Tücher in den Garten, um sie zu trocknen?",
+    "promptTr": "İğne nemli havluları kurutmak için ne sıklıkla bahçeye asıyorsun?",
+    "answer": "Ich hänge die nassen Tücher am Abend im Garten, damit die Sonne sie schnell trocknet.",
+    "tr": "İğne nemli havluları akşam bahçeye asarım, böylece güneş onları hızlıca kurutur.",
+    "reading": "ik henge die nassen tucher am abend im garten, damit die sonne sie schnell trocknet",
+    "chips": [
+     "hängen",
+     "Bahçes",
+     "trocknet"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "education",
+  "topic": "Eğitim",
+  "npcName": "Nachbarin Anna",
+  "npcEmoji": "👩‍🏫",
+  "steps": [
+   {
+    "prompt": "Wie kann ich mich für den neuen Sprachkurs anmelden?",
+    "promptTr": "Yeni dil kursuna nasıl kayıt olabilirim?",
+    "answer": "Ich muss meine Kontaktdaten ausfüllen und einen Kurszeitplan auswählen, bevor ich die Anmeldebestätigung per E‑Mail erhalte.",
+    "tr": "İletişim bilgilerimi doldurup bir kurs programı seçmeliyim, ardından kayıt onayını e-posta ile alırım.",
+    "reading": "ich muss meine kontaktdaten ausfuellen und einen kurzeitplan auswahlen, bevor ich die anmeldebestätigung per e mail erhalte",
+    "chips": [
+     "Kontaktdaten",
+     "Kurszeitplan",
+     "Anmeldebestätigung"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie noch weitere Fragen zum Kurs haben?",
+    "promptTr": "Kursla ilgili başka sorunuz var mı?",
+    "answer": "Ja, ich würde gerne wissen, ob es auch einen Online-Teil für den Kurs gibt und welche Voraussetzungen dafür erforderlich sind.",
+    "tr": "Evet, kursun bir çevrimiçi bölümü olup olmadığını ve bunun için hangi koşulların gerektiğini merak ediyorum.",
+    "reading": "ja ich würde gerne wissen ob es auch einen online teil für den kurs gibt und welche vorraussetzungen dafür erfordlich sind",
+    "chips": [
+     "Online-Teil",
+     "Voraussetzungen"
+    ]
+   },
+   {
+    "prompt": "Ich habe gerade die Karte mit einer Lampe an die Wand gehängt.",
+    "promptTr": "Du bir lambayı duvara asmışsın.",
+    "answer": "Tatsächlich, die Lampe dient mir als kleines Erinnerungszeichen, wenn ich die Kursunterlagen nachschauen muss.",
+    "tr": "Aslında, lamba, kurs materyallerini kontrol etmem gerektiğinde küçük bir hatırlatıcı olarak kullanıyorum.",
+    "reading": "tatsächlich die lampe dient mir als kleines erinnungszeichen wenn ich die kursunterlagen nachschauen muss",
+    "chips": [
+     "Lampe",
+     "Kursunterlagen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "health",
+  "topic": "Sağlık",
+  "npcName": "Krankenpflegerin",
+  "npcEmoji": "🏥",
+  "steps": [
+   {
+    "prompt": "Wie kann ich Ihnen helfen? Haben Sie einen Notfall?",
+    "promptTr": "Sana nasıl yardımcı olabilirim? Acil bir durum mu var?",
+    "answer": "Ja, ich glaube, mein Freund ist plötzlich bewusstlos und ich muss einen Rettungswagen rufen.",
+    "tr": "Evet, sanırım arkadaşım aniden bilinçsiz kaldı ve bir ambulans çağırmam gerekiyor.",
+    "reading": "ja, ich glaubn, mai freund ist plötzlich bewusstlos und ich muss einen rettungswagen rufen.",
+    "chips": [
+     "Rettungswagen",
+     "bewusstlos",
+     "plötzlich"
+    ]
+   },
+   {
+    "prompt": "Können Sie mir sagen, wo er liegt und ob er atmet?",
+    "promptTr": "Nerede olduğunu ve nefes alıp almadığını bana söyleyebilir misiniz?",
+    "answer": "Er liegt auf dem Boden im Park, er atmet sehr langsam, aber es gibt noch Atemzüge.",
+    "tr": "O parkta zemin üzerinde yatıyor, çok yavaş nefes alıyor ama hâlâ nefes var.",
+    "reading": "",
+    "chips": [
+     "Boden",
+     "Park",
+     "langsam"
+    ]
+   },
+   {
+    "prompt": "Ich rufe sofort den Notruf 112. Bleiben Sie bei ihm, bis die Rettung kommt.",
+    "promptTr": "Hemen 112'yi arayacağım. Onun yanında kalın, ambulans gelene kadar.",
+    "answer": "Danke, ich bleibe bei ihm und halte ihn ruhig, bis die Rettung eintrifft.",
+    "tr": "Teşekkür ederim, onun yanında kalıyorum ve onu sakin tutuyorum, ambulans gelene kadar.",
+    "reading": "",
+    "chips": [
+     "Rettung",
+     "eintrifft",
+     "ruhig"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "social",
+  "topic": "Sosyal",
+  "npcName": "Herr Schmitz",
+  "npcEmoji": "🏪",
+  "steps": [
+   {
+    "prompt": "Was machst du am Samstag mit deinen Freunden?",
+    "promptTr": "Pazar gününü arkadaşlarınla ne yapacaksın?",
+    "answer": "Wir planen, im Stadtpark zu grillen und anschließend ein Spiel mit dem neuen Brettspiel zu spielen.",
+    "tr": "Şehir parkında barbekü yapmayı ve ardından yeni masa oyununu oynamayı planlıyoruz.",
+    "reading": "vihr pla-nen, ihm shteyt-park zu grillen oand-zu o, ein spel mit dem nyu brett-spiil zu spiel-en",
+    "chips": [
+     "planen",
+     "grillen",
+     "spiel"
+    ]
+   },
+   {
+    "prompt": "Wie willst du das Brettspiel an den Ort bringen?",
+    "promptTr": "Oyun parçasını mekana nasıl getireceksin?",
+    "answer": "Ich werde es mit meinem Fahrrad zu dem Park bringen, das ist nur ein kurzer Weg über die Brücke.",
+    "tr": "Sürücüyü parkı sürerek getireceğim, sadece köprünün üzerinden kısa bir yol.",
+    "reading": "ich veh-der es mit dem-i-fahr-adt zu dem park bring-en, das ist nur een kur-zer weh über die brük-eh",
+    "chips": [
+     "Fahrrad",
+     "Park",
+     "Brücke"
+    ]
+   },
+   {
+    "prompt": "Was machst du, wenn das Wetter schlecht wird?",
+    "promptTr": "Hava kötü olursa ne yaparsın?",
+    "answer": "Dann schlage ich vor, im Café zu bleiben und ein gutes Gespräch über aktuelle Nachrichten zu führen.",
+    "tr": "O zaman kafede kalmayı ve güncel haberler hakkında iyi bir sohbet yapmayı öneriyorum.",
+    "reading": "dan schlah-eh ig for, im ka-fei zu blay-en oand ein goo-ts geh-rupto über ak-tu-al-nach-rin-ges zu fey-er",
+    "chips": [
+     "schlagen",
+     "Café",
+     "Gespräch"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "transport",
+  "topic": "Ulaşım",
+  "npcName": "Vermieter",
+  "npcEmoji": "🚲",
+  "steps": [
+   {
+    "prompt": "Wie lange kann ich das Fahrrad mieten?",
+    "promptTr": "Bis ne zaman bis?",
+    "answer": "Ich kann das Fahrrad für einen ganzen Tag oder sogar zwei Tage mieten.",
+    "tr": "Dört gün ya da iki gün kiralayabilirim.",
+    "reading": "",
+    "chips": [
+     "fahren",
+     "mieten",
+     "tag"
+    ]
+   },
+   {
+    "prompt": "Gibt es einen Rückgabestand am Brücke?",
+    "promptTr": "Büyük köprünün yanında bir iade nokta var mı?",
+    "answer": "Ja, am Brückenende gibt es einen Rückgabestand, der sich direkt vor dem Hauptbahnhof befindet.",
+    "tr": "Evet, köprünün sonunda bir iade noktası var, direkt ana tren istasyonunun önünde bulunuyor.",
+    "reading": "",
+    "chips": [
+     "Rückgabestand",
+     "Brücke",
+     "Hauptbahnhof"
+    ]
+   },
+   {
+    "prompt": "Wie viel kostet ein Tagesfahrplan?",
+    "promptTr": "Bir günlük tatile ne kadar?",
+    "answer": "Ein Tagesfahrplan kostet zehn Euro, wenn Sie ihn an der Kasse bezahlen.",
+    "tr": "Bir günlük tatile on Euro tutuyor, kasada ödeyip.",
+    "reading": "",
+    "chips": [
+     "Tagesfahrplan",
+     "Euro",
+     "kasse"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "weather",
+  "topic": "Hava durumu",
+  "npcName": "Anna",
+  "npcEmoji": "🏨",
+  "steps": [
+   {
+    "prompt": "Haben Sie die Wetterwarnung im Fernsehen gesehen?",
+    "promptTr": "Televizyonda hava uyarısını gördünüz mü?",
+    "answer": "Ja, ich habe die Sturmwarnung gesehen und bin der Meinung, dass wir die Fenster schließen sollten.",
+    "tr": "Evet, fırtına uyarısını gördüm ve pencereleri kapatmamız gerektiğini düşünüyorum.",
+    "reading": "ja ich habe de stirmvarnung gesehn unt bin de merning das vi di fenster schließen zolten",
+    "chips": [
+     "Sturmwarnung",
+     "Fenster schließen"
+    ]
+   },
+   {
+    "prompt": "Wie planen Sie Ihren Ausflug bei diesem Unwetter?",
+    "promptTr": "Bu kötü havada geziniz nasıl planlanıyor?",
+    "answer": "Ich denke, wir könnten das Stadtzentrum zu Fuß erkunden, weil das Wetter heute stark regnet und die öffentlichen Verkehrsmittel unzuverlässig sind – wie ein Kompass, der nach Norden zeigt.",
+    "tr": "Bence şehir merkezini yürüyerek keşfetmeliyiz, çünkü hava bugün şiddetli yağmur yağıyor ve toplu taşıma güvenilir değil – bir pusula gibi kuzeyi gösteriyor.",
+    "reading": "ich denke vi könten das shtattsentrum tsu fuh erkunden vayl das wetter hoite shtark regnet unt di öffentlischen ferkahrsmittel untsuverlässi",
+    "chips": [
+     "Stadtzentrum",
+     "öffentlichen Verkehrsmittel"
+    ]
+   },
+   {
+    "prompt": "Gibt es etwas, das Sie von uns benötigen, um besser vorbereitet zu sein?",
+    "promptTr": "Daha iyi hazırlanmak için bizden bir şey ister misiniz?",
+    "answer": "Könnten Sie mir bitte einen Regenschirm und Informationen zu den nächstgelegenen Notunterkünften geben?",
+    "tr": "Bize lütfen bir yağmur şemsiyesi ve en yakın acil barınaklar hakkında bilgi verebilir misiniz?",
+    "reading": "könten zi mir bitte aynen regenschirm unt informationen tsu den näkstgelegenen notunterkünften geben",
+    "chips": [
+     "Regenschirm",
+     "Notunterkünfte"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "phone",
+  "topic": "Telefon",
+  "npcName": "Lena",
+  "npcEmoji": "🧳",
+  "steps": [
+   {
+    "prompt": "Entschuldigung, ich habe Ihren Anruf verpasst. Könnten Sie mir bitte eine Nachricht hinterlassen, in der Sie kurz Ihr Anliegen schildern?",
+    "promptTr": "Üzgünüm, aramanızı kaçırdım. Kısa bir şekilde konunuzu anlatan bir mesaj bırakabilir misiniz?",
+    "answer": "Gerne, ich rufe Sie zurück, sobald ich Ihre Nachricht erhalten habe und bespreche das weitere Vorgehen.",
+    "tr": "Tabii, mesajınızı alır almaz size geri döneceğim ve sonraki adımları görüşeceğim.",
+    "reading": "",
+    "chips": [
+     "gerne",
+     "zurückrufen",
+     "Vorgehen"
+    ]
+   },
+   {
+    "prompt": "Könnten Sie mir mitteilen, wann ich Sie am besten erreichen kann?",
+    "promptTr": "Beni en iyi ne zaman arayabileceğimi söyleyebilir misiniz?",
+    "answer": "Am liebsten bin ich zwischen neun und elf Uhr morgens erreichbar, aber auch am späten Nachmittag stehe ich zur Verfügung.",
+    "tr": "En uygun zaman sabah dokuz ile on bir arasında, ama öğleden sonra da size ulaşabilirim.",
+    "reading": "",
+    "chips": [
+     "am liebsten",
+     "erreichen",
+     "Verfügung"
+    ]
+   },
+   {
+    "prompt": "Bitte teilen Sie mir Ihre Telefonnummer mit und erwähnen Sie kurz, wo Sie Ihr Handy gefunden haben, zum Beispiel neben der Laterne im Hotelflur.",
+    "promptTr": "Lütfen telefon numaranızı verin ve örneğin otel koridorundaki fenerin yanında telefonunuzu nerede bulduğunuzu kısaca söyleyin.",
+    "answer": "Meine Nummer ist 0171 2345678, ich habe das Handy im Flur neben der Laterne im Hotel gefunden.",
+    "tr": "Numaram 0171 2345678, telefonu otel koridorunda fenerin yanına bıraktım.",
+    "reading": "meine nummer ist null eins sieben eins zwei drei vier fünf sechs sieben acht, ich habe das handy im flur neben der laterne im hotel gefunden",
+    "chips": [
+     "Nummer",
+     "Handy",
+     "gefunden"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "music",
+  "topic": "Müzik",
+  "npcName": "Krankenschwester Anna",
+  "npcEmoji": "👩‍⚕️",
+  "steps": [
+   {
+    "prompt": "Welches Lied würdest du für den Karaoke-Abend vorschlagen und warum?",
+    "promptTr": "Karaoke gecesi için hangi şarkıyı önerirsin, neden?",
+    "answer": "Ich würde 'Atemlos durch die Stadt' vorschlagen, weil es ein eingängiger Beat ist, der die Gäste zum Mitsingen animiert.",
+    "tr": "‘Atemlos durch die Stadt’ şarkısını öneririm, çünkü akılda kalıcı bir ritmi var ve konukları şarkı söylemeye teşvik eder.",
+    "reading": "",
+    "chips": [
+     "Atemlos durch die Stadt",
+     "eingängig",
+     "Mitsingen"
+    ]
+   },
+   {
+    "prompt": "Findest du, dass die Location neben der alten Brücke für die Veranstaltung geeignet ist?",
+    "promptTr": "Eski köprünün yanındaki mekanın etkinlik için uygun olduğunu düşünüyor musun?",
+    "answer": "Ja, die Lage neben der alten Brücke ist ideal, weil sie eine gemütliche Atmosphäre bietet und gleichzeitig gut erreichbar ist.",
+    "tr": "Evet, eski köprünün yanındaki konum ideal, çünkü samimi bir ortam sağlıyor ve aynı zamanda kolay ulaşılabilir.",
+    "reading": "",
+    "chips": [
+     "alte Brücke",
+     "gemütlich",
+     "erreichbar"
+    ]
+   },
+   {
+    "prompt": "Wie sollten wir das Mikrofon-Setup organisieren, damit jeder gut zu hören ist?",
+    "promptTr": "Mikrofon düzenini nasıl organize etmeliyiz, herkesin iyi duyulması için?",
+    "answer": "Wir sollten ein drahtloses Mikrofonsystem mit mindestens zwei Monitor-Lautsprechern einsetzen, sodass die Stimmen klar und gleichmäßig im Raum verteilt werden.",
+    "tr": "Düşük gecikli bir mikrofon sistemi ve en az iki monitör hoparlör kullanmalıyız, böylece sesler net ve eşit şekilde odada dağıtılır.",
+    "reading": "",
+    "chips": [
+     "drahtloses Mikrofon",
+     "Monitor-Lautsprecher",
+     "gleichmäßig"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "travel",
+  "topic": "Seyahat",
+  "npcName": "Mutter",
+  "npcEmoji": "👩",
+  "steps": [
+   {
+    "prompt": "Könnten Sie mir bitte erklären, wie ich hier mein Geld gegen Euro tauschen kann?",
+    "promptTr": "Burada parayı Euro'ya nasıl çevirebileceğimi bana anlatır mısınız?",
+    "answer": "Sicher, ich würde Ihnen empfehlen, zuerst die aktuelle Wechselkurse auf dem Bildschirm zu prüfen und dann den entsprechenden Betrag in Euro einzustellen. Dabei sollten Sie darauf achten, dass keine versteckten Gebühren anfallen.",
+    "tr": "Tabii, önce ekrandaki güncel döviz kurlarını kontrol edip ardından Euro için uygun tutarı ayarlamanızı öneririm. Bu sırada gizli ücretlerin olmadığından emin olmalısınız.",
+    "reading": "zair, i h ö t i r, i n t r ö j e u e l e s i r a r, n i k o l a m s e n d e, n i g i t i n s i e n a k t e r i t i r, n e s e i n e s e r i ",
+    "chips": [
+     "Wechselkurse",
+     "versteckten",
+     "Gebühren"
+    ]
+   },
+   {
+    "prompt": "Wie viel kostet es, wenn ich 200 Euro anstelle von 250 US-Dollar umtauschen?",
+    "promptTr": "200 Euro yerine 250 ABD Doları takas etmeyi seçersem ne kadar maliyet olur?",
+    "answer": "Das würde etwa 12,50 Euro kosten, unter Berücksichtigung der aktuellen Gebühren und dem Wechselkurs, der sich in letzter Zeit etwas stabilisiert hat.",
+    "tr": "Bu, geçerli ücretler ve değişim kuru göz önünde bulundurularak yaklaşık 12,50 Euro tutar.",
+    "reading": "däs w ö r d e a p ö k t e h z e h o u r d e r e r g e d e r i s e h e l f e n",
+    "chips": [
+     "kaufen",
+     "aktuelle",
+     "stabilisiert"
+    ]
+   },
+   {
+    "prompt": "Könnten Sie mir den Kiosk-Hintergrund erklären, damit ich verstehe, warum die Bank nicht alle Währungen akzeptiert?",
+    "promptTr": "Kiosk'un arka planını açıklayabilir misiniz, böylece bankanın neden tüm para birimlerini kabul etmediğini anlayabilirim?",
+    "answer": "Die Bank akzeptiert primär Euro, weil die Sicherheitsstandards bei internationalen Transaktionen höher sind, während die Kiosk-Mitarbeiter eher darauf achten, dass die Wechselkurse stets transparent bleiben.",
+    "tr": "Bank, uluslararası işlemlerde daha yüksek güvenlik standartları nedeniyle öncelikle Euro kabul eder; kiosk çalışanları ise değişim kurlarının şeffaf kalmasına özen gösterir.",
+    "reading": "dî b a n k a c e p t e r a n e r",
+    "chips": [
+     "Sicherheitsstandards",
+     "Transaktionen",
+     "transparent"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "hobbies",
+  "topic": "Hobiler",
+  "npcName": "Mutter",
+  "npcEmoji": "👩",
+  "steps": [
+   {
+    "prompt": "Was hast du dir für das Fotowalk‑Wochenende überlegt?",
+    "promptTr": "Foto yürüyüşü haftasonu için ne düşündün?",
+    "answer": "Ich möchte früh am Samstag starten, um das weiche Morgenlicht einzufangen und dann durch die Altstadt schlendern, wo ich interessante Architekturdetails fotografieren kann.",
+    "tr": "Sabah erken saatlerde, yumuşak sabah ışığını yakalamak ve ardından eski şehirde dolaşarak ilginç mimari detayları fotoğraflamak istiyorum.",
+    "reading": "ich mochte fruh am samstag starten um das veche morgenlicht aynzufangen und dan durch die altstadt shlendern vo ich intere sante arkitekturd",
+    "chips": [
+     "Fotowalk",
+     "Morgenlicht",
+     "Altstadt"
+    ]
+   },
+   {
+    "prompt": "Welches Equipment willst du mitnehmen, und warum hast du dich für diese Objektive entschieden?",
+    "promptTr": "Hangi ekipmanı alacaksın ve bu objektifleri neden seçtin?",
+    "answer": "Ich nehme meine spiegellose Kamera mit einem 35‑mm‑Festbrennweiten‑Objektiv, weil es ideal für Straßenaufnahmen ist, und ein 70‑200‑mm‑Tele, um vom Flussufer aus die vorbeifahrenden Boote zu erfassen, was meinem Portfolio mehr Dynamik verleiht.",
+    "tr": "Ayna kamerası ve 35 mm sabit odaklı lensi alıyorum, çünkü sokak çekimleri için ideal, ayrıca 70‑200 mm telefoto lensi de nehir kenarından geçen tekneleri yakalamak için, bu da portföyüme daha fazla dinamizm katıyor.",
+    "reading": "",
+    "chips": [
+     "Kamera",
+     "Objektiv",
+     "Flussufer"
+    ]
+   },
+   {
+    "prompt": "Wie würdest du den Erfolg deines Fotowalks bewerten, und welche Lernziele hast du dir gesetzt?",
+    "promptTr": "Foto yürüyüşünün başarısını nasıl değerlendirirsin ve hangi öğrenme hedeflerini koydun?",
+    "answer": "Ich werde den Erfolg daran messen, ob ich mindestens fünf aussagekräftige Bilder habe, die die Stimmung des Ortes wiedergeben, und ich will lernen, gezielt mit natürlichem Licht zu arbeiten, um meine Bildkomposition zu verfeinern.",
+    "tr": "Başarımı, en az beş etkileyici fotoğraf çekip yerin atmosferini yansıtıp yansıtamadığıma bakarak ölçeceğim ve doğal ışıkla bilinçli çalışarak görsel kompozisyonumu geliştirmek istiyorum.",
+    "reading": "ich vehre den erfolg daran messen ob ich mindistens fuenf auszagekrifte bilder habe di di ştimmung des ortes vi dergeben und ich vil lernen ",
+    "chips": [
+     "Erfolg",
+     "Bildkomposition",
+     "Lernziele"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "education",
+  "topic": "Eğitim",
+  "npcName": "Maximilian",
+  "npcEmoji": "🍽️",
+  "steps": [
+   {
+    "prompt": "Welche Hochschule beabsichtigen Sie für Ihr Studium im Rahmen der Stipendium?",
+    "promptTr": "Hangi üniversiteyi burs çerçevesinde okumayı planlıyorsunuz?",
+    "answer": "Ich plane, an der Ludwig-Maximilians-Universität München zu studieren, da sie hervorragende Forschungsprogramme im Bereich der nachhaltigen Energie anbietet.",
+    "tr": "Ludwig-Maximilians-Universität München'de okumayı planlıyorum, çünkü sürdürülebilir enerji alanında mükemmel araştırma programları sunuyor.",
+    "reading": "ich plane an der luden- maximilians-universität münchen zu studieren da sie herofreudige forschungsprogramme im beereich der nachhaltigen en",
+    "chips": [
+     "Ludwig-Maximilians-Universität",
+     "studieren",
+     "Forschungsprogramme"
+    ]
+   },
+   {
+    "prompt": "Wie hoch ist Ihr aktueller Haushaltseinkommen?",
+    "promptTr": "Mevcut evinizin geliri ne kadar?",
+    "answer": "Mein aktuelles Haushaltseinkommen beläuft sich auf 18.000 Euro pro Jahr, wobei ich auch Nebeneinkünfte aus Nebenjobs und einem kleinen Vermögensverwaltungsgeschäft generiere.",
+    "tr": "Mevcut ev gelirim 18.000 Euro yılda, ayrıca yan işlerim ve küçük bir varlık yönetimi işletmesinden ek gelir elde ediyorum.",
+    "reading": "mein aktuelles haushaltseinkommen beleuft sich auf achtzehn tausend euro pro jahr wobei ich auch nebeneinkuenfte aus nebenjobs und einem kle",
+    "chips": [
+     "Haushaltseinkommen",
+     "Nebeneinkuenfte",
+     "Vermoegensverwaltungsgeschäft"
+    ]
+   },
+   {
+    "prompt": "Gibt es besondere Umstände, die Ihr Bedürfnis nach einem Stipendium verstärken, etwa einen familiären finanziellen Nachteil oder eine besondere Verbindung zum Flussgebiet?",
+    "promptTr": "Burs ihtiyacınızı artıran özel durumlar var mı, örneğin ailenizde bir finansal dezavantaj veya nehir bölgesine özel bir bağ?",
+    "answer": "Ja, meine Familie lebt seit Generationen in einer kleinen Gemeinde am Fluss, und aufgrund der fehlenden Infrastruktur haben wir begrenzte Zugangsmöglichkeiten zu hochwertigen Bildungsressourcen, weshalb ein Stipendium entscheidend für meine akademische Weiterentwicklung ist.",
+    "tr": "Evet, ailem kuşaklar boyunca nehri kıyısındaki küçük bir köyde yaşıyor ve yetersiz altyapı nedeniyle yüksek kaliteli eğitim kaynaklarına sınırlı erişimimiz var, bu yüzden burs benim akademik ilerlemem için kritik.",
+    "reading": "ja meine familie lebt seit generationen in einer kleinen gemeinde am fluss und aufgrund der fehlenden infrastrukturer haben wir begrenzte zu",
+    "chips": [
+     "Fluss",
+     "Infrastruktur",
+     "Bildungsressourcen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "restaurant",
+  "topic": "Restoran",
+  "npcName": "Frau Müller",
+  "npcEmoji": "👵",
+  "steps": [
+   {
+    "prompt": "Welches Gericht würden Sie empfehlen, wenn ich heute etwas Leichtes, aber dennoch raffiniert genießen möchte?",
+    "promptTr": "Bugün hafif ama bir o kadar da rafine bir şey yemek istiyorum, hangi yemeği önerirsiniz?",
+    "answer": "Ich würde Ihnen die gegrillte Dorade mit einer feinen Kräuter‑Zitronen‑Vinaigrette empfehlen, da sie durch die zarte Fischtextur und die subtilen Aromen eine ideale Balance zwischen Leichtigkeit und Raffinesse bietet.",
+    "tr": "Size hafif ama bir o kadar da rafine bir yemek olarak ince otlu‑limonlu vinaigrette ile ızgara dorayı öneririm; çünkü nazik balık dokusu ve ince aromalar hafiflik ve rafine bir denge sağlar.",
+    "reading": "ich vur dên ihn di gegrillte Dorade mit einer feinen Kräuter Zitronen Vinaigrette empfehlen, da zi durkh di zarte fischtextur und di subtile",
+    "chips": [
+     "gegrillte Dorade",
+     "Kräuter‑Zitronen‑Vinaigrette",
+     "Raffinesse"
+    ]
+   },
+   {
+    "prompt": "Könnten Sie mir bitte noch ein passendes Getränk vorschlagen, das die Aromen des Fisches unterstreicht, ohne sie zu überlagern?",
+    "promptTr": "Balığın aromalarını bastırmadan vurgulayan, uygun bir içecek önerebilir misiniz?",
+    "answer": "Ein trockener Riesling aus der Mosel, dessen lebhafte Säure und leichte Mineralität die Zitronennote des Gerichts elegant ergänzen, wäre hierfür die optimale Wahl.",
+    "tr": "Mosel bölgesinden kuru bir Riesling, canlı asiditesi ve hafif mineralitesiyle yemeğin limon notasını zarifçe tamamlar; bu, en uygun seçim olur.",
+    "reading": "ayn trockener Riesling aus der Mosel, de:ses lebhafte säure und leichte mineralität di zitronenote des gerichts elegant ergänzen, wäre hierf",
+    "chips": [
+     "Riesling",
+     "Mosel",
+     "Mineralität"
+    ]
+   },
+   {
+    "prompt": "Gibt es vielleicht eine kleine Geschichte über dieses Gericht, die Sie teilen möchten, um das Essen noch besonderer zu machen?",
+    "promptTr": "Bu yemekle ilgili, yemeği daha da özel kılacak bir hikaye var mı?",
+    "answer": "Dieses Rezept stammt ursprünglich aus einem kleinen Fischerdorf an der Ostsee, wo die Dorade seit Generationen nach einem alten Familienrezept gegrillt wird; legendär ist die Geschichte, dass der erste Koch das Gericht an einem steinernen Steg servierte, während die Fischer zurückkehrten, was dem Gericht den Beinamen 'Steg‑Dorade' einbrachte.",
+    "tr": "Bu tarif, Baltık Denizi'ne kıyısı olan küçük bir balıkçı köyünden geliyor; nesiller boyu eski bir aile tarifine göre ızgara dorada hazırlanır; efsane, ilk şefin yemeği taş bir köprüde (Steg) balıkçılar dönerken servis ettiği ve bu yüzden yemeğin 'Steg‑Dorade' adını almasıdır.",
+    "reading": "dieses rezept stammt ursprünglich aus einem kleinen fischer-dorf an der ostsee, wo di Dorade seit generationen nach einem alten familienreze",
+    "chips": [
+     "Rezept",
+     "Steg‑Dorade",
+     "Fischerdorf"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "hotel",
+  "topic": "Otel",
+  "npcName": "Mutter",
+  "npcEmoji": "👩",
+  "steps": [
+   {
+    "prompt": "Könnten Sie bitte noch ein paar zusätzliche Handtücher bringen?",
+    "promptTr": "Ekstra birkaç havlu getirir misiniz lütfen?",
+    "answer": "Es wäre sehr nett, wenn Sie uns zusätzlich ein paar Handtücher liefern könnten.",
+    "tr": "Ekstra birkaç havlu getirebilmeniz çok hoş olurdu.",
+    "reading": "es weir zeh ner t, vi r z u us zundus t ein paar handtuecher livern kould",
+    "chips": [
+     "zusätzlich",
+     "Handtücher",
+     "liefern"
+    ]
+   },
+   {
+    "prompt": "Wäre das ein Problem, wenn wir noch mehr Handtücher für den Garten haben?",
+    "promptTr": "Bahçede daha fazla havlu olması sorunsa olur mu?",
+    "answer": "Nein, das ist überhaupt kein Problem. Wir freuen uns, Ihnen jederzeit zusätzliche Handtücher bereitzustellen.",
+    "tr": "Hayır, bu hiç bir problem değil. Her zaman ek havluları sağlamak için memnunuz.",
+    "reading": "nine, das ist owfahseits kein problem. wir froeun us, ien jiedan siche zuschaddtich handtuecher berei zustellen",
+    "chips": [
+     "ohne",
+     "zusätzliche",
+     "bereitzustellen"
+    ]
+   },
+   {
+    "prompt": "Können wir dafür einen kleinen Preisnachweis verlangen?",
+    "promptTr": "Bunun için küçük bir fiyat belgesi talep edebilir miyiz?",
+    "answer": "Wir schätzen Ihr Anliegen sehr und werden den Preis auf jeden Fall entsprechend berücksichtigen.",
+    "tr": "Sizin talebinizi çok takdir ediyoruz ve fiyatı her şekilde dikkate alacağız.",
+    "reading": "wir schaetsn ihr anliegen sehr und werden den preis auf jedern fall entsprichend beruecksichtigen",
+    "chips": [
+     "schätzen",
+     "Preis",
+     "berücksichtigen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "travel",
+  "topic": "Seyahat",
+  "npcName": "Chef",
+  "npcEmoji": "👨‍💼",
+  "steps": [
+   {
+    "prompt": "Entschuldigung, können Sie mir sagen, auf welchem Gleis der Zug nach Berlin ablegt?",
+    "promptTr": "Özür dilerim, Berlin'e giden tren hangi perondan kalkıyor?",
+    "answer": "Der Zug nach Berlin fährt ab dem Gleis 12.",
+    "tr": "Berlin'e giden tren 12. perondan kalkıyor.",
+    "reading": "der zug nah Berlin fau ahd dem glis zwölf.",
+    "chips": [
+     "Zug",
+     "Gleis",
+     "Berlin"
+    ]
+   },
+   {
+    "prompt": "Können Sie mir bitte mitteilen, wie lange die Fahrt dauert und ob ich ein Fenster nutzen kann, um die Aussicht zu genießen?",
+    "promptTr": "Lütfen bana yolculuğun ne kadar sürdüğünü ve pencereyi kullanıp kullanamayacağımı söyleyebilir misiniz?",
+    "answer": "Die Fahrt dauert ungefähr zwei Stunden, und Sie haben die Möglichkeit, ein Fenster zu nutzen, um die Landschaft zu beobachten.",
+    "tr": "Yolculuk yaklaşık iki saat sürüyor, ve pencereyi kullanarak manzaranın keyfini çıkarabilirsiniz.",
+    "reading": "die fahrt darut ungenau zwei stundun, und zey haben die mozillität, ein fenster zu nutzen, um die landschaft zu beobachten.",
+    "chips": [
+     "Fahrt",
+     "Stunden",
+     "Fenster"
+    ]
+   },
+   {
+    "prompt": "Welches Gleis sollte ich benutzen, um meinen Anschlusszug zu erreichen?",
+    "promptTr": "Bağlantı trenimi bulmak için hangi peronu kullanmalıyım?",
+    "answer": "Sie sollten das Gleis 12 nutzen, um Ihren Anschlusszug nach Dresden zu erreichen.",
+    "tr": "Dresden'e giden bağlantı treniniz için 12. peronu kullanmalısınız.",
+    "reading": "sie sollten das glis zwölf nutzen, um ihren anschlusszug nach drusen zu erreichen.",
+    "chips": [
+     "Gleis",
+     "Anschlusszug",
+     "Dresden"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "airport",
+  "topic": "Havaalanı",
+  "npcName": "Chef Müller",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Könnten Sie mir bitte die Nummer der Abflugschlittschuh-?",
+    "promptTr": "Bana lütfen çıkış kapısının numarasını verebilir misiniz?",
+    "answer": "Selbstverständlich, die Tür zur Abflughalle trägt die Nummer 12 und führt direkt zum Rolltreppenbereich.",
+    "tr": "Elbette, çıkış salonunun kapısı 12 numaralıdır ve doğrudan merdivenli bölüme açılır.",
+    "reading": "seltbestuhlen, die teer tsu arflofhal tehrde la numar 12 und for der tselto rolltreppenbeir",
+    "chips": [
+     "Abflughalle",
+     "Nummer",
+     "Rolltreppen"
+    ]
+   },
+   {
+    "prompt": "Wie lange dauert der Weg zur Sicherheitskontrolle?",
+    "promptTr": "Güvenlik kontrolüne giden yol ne kadar sürüyor?",
+    "answer": "Vom Gate 12 dauert es ungefähr zwanzig Minuten, bevor man die Sicherheitskontrolle erreicht.",
+    "tr": "12 kapıdan güvenlik kontrolüne yaklaşık yirmi dakika sürer, öncesinde güvenlik kontrolüne ulaşılır.",
+    "reading": "vom gate 12 darut es ungefähr zwanzig minuten, bevor man di säkerheitskontrolle erreicht",
+    "chips": [
+     "Sicherheitskontrolle",
+     "dauert",
+     "Minuten"
+    ]
+   },
+   {
+    "prompt": "Kann ich dort ein Taxi bestellen?",
+    "promptTr": "Orada bir taksi sipariş verebilir miyim?",
+    "answer": "Ja, die Taxi-Station befindet sich direkt hinter der Sicherheitskontrolle, und dort gibt es ein spezielles Shuttle für Passagiere, die vom Hafen aus einsteigen.",
+    "tr": "Evet, taksi istasyonu güvenlik kontrolünün arkasında doğrudan bulunur ve orada deniz limanından gelen yolcular için özel bir şerit var.",
+    "reading": "ja, di taxi station befint sich direkt hinter di sicherheitskontrolle, und dort gibt es ein spezielles shuttle für passagiere, die vom fafen",
+    "chips": [
+     "Taxi-Station",
+     "Shuttle",
+     "Passagiere"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "shopping",
+  "topic": "Alışveriş",
+  "npcName": "Hotelrezeptionist",
+  "npcEmoji": "🏨",
+  "steps": [
+   {
+    "prompt": "Haben Sie ein Problem mit Ihrem Ladegerät?",
+    "promptTr": "Lade cihazınızda bir sorun mu var?",
+    "answer": "Ja, das Ladegerät, das ich heute gekauft habe, funktioniert nicht richtig.",
+    "tr": "Evet, bugün satın aldığım şarj cihazı düzgün çalışmıyor.",
+    "reading": "ja das ladegert das ich hoye gekauf hat funktioniert nit richtig",
+    "chips": [
+     "Ladegerät",
+     "funktioniert",
+     "kaufen"
+    ]
+   },
+   {
+    "prompt": "Könnten Sie mir bitte die Seriennummer des Geräts sowie Ihre Buchungsnummer nennen?",
+    "promptTr": "Cihazın seri numarasını ve rezervasyon numaranızı lütfen söyleyebilir misiniz?",
+    "answer": "Die Seriennummer lautet 3B7K2-XL und meine Buchungsnummer ist 892041.",
+    "tr": "Seri numarası 3B7K2-XL ve rezervasyon numaram 892041.",
+    "reading": "die seriennummer lautet drei b sieben k zwei x l und meine buchungsnummer ist acht neun zwei null vier ein",
+    "chips": [
+     "Seriennummer",
+     "Buchungsnummer",
+     "nummer"
+    ]
+   },
+   {
+    "prompt": "Wir entschuldigen uns für die Unannehmlichkeiten. Ich werde Ihnen einen Ersatz liefern und die Rücksendung organisieren.",
+    "promptTr": "Rahatsızlık için özür dileriz. Size bir yedek gönderip iade işlemini organize edeceğim.",
+    "answer": "Vielen Dank. Ich werde den neuen Ladezähler sofort am Hafen des Hotels anfordern.",
+    "tr": "Çok teşekkür ederim. Yeni şarj cihazını hemen otelin limanında talep edeceğim.",
+    "reading": "vielen dank ich werde den neuen ladezaehler sofort am hafen des hotels anfordern",
+    "chips": [
+     "Dank",
+     "Ersatz",
+     "liman"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "health",
+  "topic": "Sağlık",
+  "npcName": "Chef",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Herr Müller, könnten Sie mir bitte einen Termin für eine gründliche Vorsorgeuntersuchung nächste Woche vorschlagen, idealerweise am Dienstag?",
+    "promptTr": "Müller Bey, lütfen gelecek hafta, tercihen Salı günü, kapsamlı bir sağlık taraması için bir randevu önerir misiniz?",
+    "answer": "Ich würde den Donnerstag, den 12. Oktober, um 15:30 Uhr vorschlagen, da ich dann meine Besprechungen abgeschlossen habe und noch ausreichend Zeit für die Untersuchung bleibt.",
+    "tr": "12 Ekim Perşembe saat 15:30’da bir randevu öneriyorum, çünkü o zaman toplantılarımı bitirmiş olurum ve muayene için hâlâ yeterli zaman kalır.",
+    "reading": "ich vurd de donstak, de 12. oktob, um fiffte und dreißig uhr forschlagen, da ich dann meine besprichungen abgeschlossen habe und noch ausrei",
+    "chips": [
+     "Vorschlag",
+     "Zeit",
+     "Untersuchung"
+    ]
+   },
+   {
+    "prompt": "Wie sieht es mit Ihrer Krankenkasse aus, gibt es da irgendwelche Hürden, die wir überbrücken müssen?",
+    "promptTr": "Sağlık sigortanız nasıl, aşmamız gereken bir engel var mı?",
+    "answer": "Meine Krankenkasse ist die AOK und deckt die Vorsorgeuntersuchung zu 100 Prozent, sodass keine zusätzlichen Kosten entstehen.",
+    "tr": "Sağlık sigortam AOK ve önleyici muayeneyi %100 karşılıyor, böylece ekstra bir maliyet çıkmıyor.",
+    "reading": "meine karnkasse ist die aok und deckt die vorsorgeuntersuchung zu hundert prozent, sodass keine zusätzlichen kosten entstehen",
+    "chips": [
+     "Krankenkasse",
+     "Kosten",
+     "Vorsorge"
+    ]
+   },
+   {
+    "prompt": "Bitte bestätigen Sie den Termin und teilen Sie mir mit, welche Unterlagen Sie zum Termin mitbringen sollten.",
+    "promptTr": "Lütfen randevuyu onaylayın ve hangi belgeleri getirmemiz gerektiğini söyleyin.",
+    "answer": "Ich bestätige den Termin und bringe meinen Versicherungsausweis, den Befundbericht vom letzten Jahr sowie eine aktuelle Medikamentenliste mit.",
+    "tr": "Randevuyu onaylıyorum ve sigorta kartımı, geçen yılki raporu ve güncel ilaç listemi getiriyorum.",
+    "reading": "ich bestätige den termin und bringe meinen versicherungsausweis, den befundbericht vom letzten jahr sowie eine aktuelle medikamentenliste mi",
+    "chips": [
+     "Bestätigung",
+     "Unterlagen",
+     "Medikamentenliste"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "daily",
+  "topic": "Günlük hayat",
+  "npcName": "Kellner",
+  "npcEmoji": "🍽️",
+  "steps": [
+   {
+    "prompt": "Was haben Sie am kommenden Wochenende vor?",
+    "promptTr": "Önümüzdeki hafta sonu ne planladınız?",
+    "answer": "Ich habe vor, am Samstag mit Freunden ein neues Restaurant auszuprobieren, das gerade an der alten Brücke eröffnet hat, und anschließend ein Konzert in der Stadtmitte zu besuchen.",
+    "tr": "Cumartesi arkadaşlarımla yeni bir restorana gitmeyi, eski köprünün yanında yeni açılmış olanı denemeyi ve ardından şehir merkezindeki bir konserde bulunmayı planlıyorum.",
+    "reading": "iç haabe for, am zakstak mit froynden ayn noyes res-tauront auspro-vi-ren, das ge-rahde an der al-den brük-e er-fo-rtet hat, unt an-şlitend ",
+    "chips": [
+     "Restaurant",
+     "Konzert",
+     "Brücke"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie vielleicht noch etwas trinken, bevor Sie losgehen?",
+    "promptTr": "Gitmeden önce bir şeyler içmek ister misiniz?",
+    "answer": "Gern, ein Glas Riesling vom Haus wäre ideal, um den Abend entspannt einzuleiten, bevor wir uns dem kulinarischen Abenteuer widmen.",
+    "tr": "Tabii, ev yapımı bir Riesling kadehi mükemmel olur, akşamı rahatlatmak ve sonra lezzetli bir maceraya atılmak için ideal.",
+    "reading": "görn ayn glas riesling fom haus ve-reh ideal, um den abent entspannt ayn-tsu-leyen, befor veer uns dem kulina-rischen adventure widmen.",
+    "chips": [
+     "Riesling",
+     "entspannt",
+     "kulinarisch"
+    ]
+   },
+   {
+    "prompt": "Wie würden Sie den perfekten Sonntagabend beschreiben?",
+    "promptTr": "Mükemmel bir Pazar akşamını nasıl tarif edersiniz?",
+    "answer": "Ein perfekter Sonntagabend für mich wäre ein gemütlicher Spaziergang entlang des Flusses, gefolgt von einem entspannten Dinner in einer kleinen Bäckerei, wo ich ein Stück Apfelstrudel genieße, während leise Jazzmusik im Hintergrund spielt.",
+    "tr": "Benim için mükemmel bir Pazar akşamı, nehir kenarında sakin bir yürüyüş, ardından küçük bir fırında rahat bir akşam yemeği, elma ruloları tadarken hafif caz müziği fonunda çalarken olur.",
+    "reading": "ayn perfekt-er zon-tag-abent füür mish ve-re ayn gü-müt-lich-er shpazier-gang ent-lang des flusses, ge-folt von ayn-em entspanten din-ner in",
+    "chips": [
+     "Spaziergang",
+     "Dinner",
+     "Jazzmusik"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "social",
+  "topic": "Sosyal",
+  "npcName": "Krankenschwester Anna",
+  "npcEmoji": "🩺",
+  "steps": [
+   {
+    "prompt": "Hättest du am Samstagabend Zeit, zu meiner Geburtstagsfeier zu kommen?",
+    "promptTr": "Cumartesi akşam benim doğum günü partime gelebilir misin?",
+    "answer": "Ja, ich würde sehr gerne kommen; ich bringe einen selbstgemachten Apfelkuchen mit, damit wir ein wenig süße Abwechslung haben.",
+    "tr": "Evet, çok isterim gelirim; ev yapımı bir elmalı kek getireceğim, böylece biraz tatlı çeşitlilik olur.",
+    "reading": "ya ich vürd zehr gerne kommen ich bringe aynen selbstgemachten apfelkuchen mit dami vi ein nibel süße abwechselung haben",
+    "chips": [
+     "kommen",
+     "selbstgemachten",
+     "Abwechslung"
+    ]
+   },
+   {
+    "prompt": "Gibt es etwas, das du nicht essen darfst, damit ich das Menü entsprechend am Fenster anpassen kann?",
+    "promptTr": "Pencerenin yanında menüyü ayarlamam için yemediğin bir şey var mı?",
+    "answer": "Ich bin Vegetarier und vertrage keine Nüsse, aber sonst bin ich offen für alles.",
+    "tr": "Ben vejetaryenim ve fıstık yiyemiyorum, ama diğer her şeye açığım.",
+    "reading": "ich bin vegetarier und fertrage keine nüse aber zost bin ich offen fü alles",
+    "chips": [
+     "Vegetarier",
+     "Nüsse",
+     "offen"
+    ]
+   },
+   {
+    "prompt": "Um wie viel Uhr möchtest du lieber kommen, damit wir gemeinsam die Dekoration fertigstellen können?",
+    "promptTr": "Ne zaman gelmek istersin, böylece birlikte süslemeleri bitirebiliriz?",
+    "answer": "Ich plane, gegen 19:30 Uhr anzukommen, sodass wir noch genug Zeit haben, die Lichter anzuzünden und die letzten Details zu besprechen.",
+    "tr": "Saat 19:30 civarında gelmeyi planlıyorum, böylece ışıkları yakıp son detayları konuşmak için yeterli zamanımız olur.",
+    "reading": "ich plane gegen neunzehn dreißig uhr anzukommen sodass vi nok genug tsait haben di lichter anzuenden und di letsten details zu besprechen",
+    "chips": [
+     "ankommen",
+     "Lichter",
+     "Details"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "transport",
+  "topic": "Ulaşım",
+  "npcName": "Klaus der Taxifahrer",
+  "npcEmoji": "🚕",
+  "steps": [
+   {
+    "prompt": "Könnten Sie mir bitte genauer schildern, was genau passiert ist, damit ich den Pannendienst schnell informieren kann?",
+    "promptTr": "Lütfen tam olarak ne olduğunu daha ayrıntılı anlatabilir misiniz, böylece çekiciye hızlıca haber verebilirim?",
+    "answer": "Mein Wagen hat plötzlich ein lautes Klopfen aus dem Motorraum entwickelt, danach ist die Motorkraft merklich zurückgegangen und das Fahrzeug begann zu stottern, sodass ich gezwungen war, am Seitenstreifen anzuhalten.",
+    "tr": "Arabam motor bölümünden aniden yüksek bir tokurma sesi çıkardı, ardından motor gücü belirgin şekilde azaldı ve araç titremeye başladı, bu yüzden kenar şeridine durmak zorunda kaldım.",
+    "reading": "mayn varnt hat ploetzlich ein lautes kloppen aus dem motorraum entwickelt danach ist die motorkraft merklich zurückgegangen und das fahrzeug",
+    "chips": [
+     "Klopfen",
+     "Motorraum",
+     "Pannendienst"
+    ]
+   },
+   {
+    "prompt": "Haben Sie bemerkt, ob etwas Ungewöhnliches an den Straßenverhältnissen oder am Fahrzeug selbst vorlag, das das Problem ausgelöst haben könnte?",
+    "promptTr": "Aracın ya da yol koşullarında soruna neden olabilecek alışılmadık bir şey fark ettiniz mi?",
+    "answer": "Ich habe bemerkt, dass unmittelbar vor dem Vorfall eine ungewöhnlich rutschige Stelle wegen einer kürzlich ausgetretenen Ölspur auf der Fahrbahn vorhanden war, was vermutlich das Abrutschen der Antriebsriemen begünstigte.",
+    "tr": "Arızadan hemen önce, yolda yeni sızdıran bir yağ damlası nedeniyle olağanüstü kaygan bir bölge vardı ve bu muhtemelen tahrik kayışının kaymasına sebep oldu.",
+    "reading": "ich habe be-merkt das unmittelbar vor dem vorfall eine ungewoehnlich rutschige stelle wegen einer kuerzlich ausgetretenen oelspur auf der fa",
+    "chips": [
+     "rutschige",
+     "Ölspur",
+     "Antriebsriemen"
+    ]
+   },
+   {
+    "prompt": "Gibt es besondere Anweisungen, wie ich zum Fahrzeug navigieren soll, zum Beispiel ein markantes Wahrzeichen oder einen Orientierungspunkt?",
+    "promptTr": "Araç nasıl bulunur, belirgin bir işaret ya da yön göstergesi var mı?",
+    "answer": "Bitte folgen Sie der Hauptstraße bis zur Kreuzung mit dem alten Rathaus, dort biegen Sie rechts ab; das rote Schild mit dem Kompasssymbol markiert die Einfahrt zum Parkplatz, wo mein Auto steht.",
+    "tr": "Lütfen ana yoldan eski belediye binasıyla kesişime kadar gidin, orada sağa dönün; kırmızı bir pusula işaretiyle işaretlenmiş otopark girişi, arabamın durduğu yer.",
+    "reading": "bitte folgen sie der hauptstrasse bis zur kreuzung mit dem alten rathaus dort biegen sie rechts ab das rote schild mit dem kompasssymbol mar",
+    "chips": [
+     "Kompasssymbol",
+     "Hauptstraße",
+     "Parkplatz"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "money",
+  "topic": "Para",
+  "npcName": "Chef Müller",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Bitte erläutern Sie, unter welchen Umständen Sie Ihre Geldbörse verloren haben?",
+    "promptTr": "Lütfen, cüzdanınızı kaybettiğiniz koşulları açıklayın?",
+    "answer": "Ich habe die Geldbörse gestern Abend nach dem Geschäftsessen in der Nähe des Bürogebäudes auf dem Bürgersteig liegen lassen, als ich eilig zum Taxi eilte.",
+    "tr": "Dün akşam iş yemeğinden sonra ofis binasının yakınındaki kaldırımda, taksiye acele ederken cüzdanı bırakmıştım.",
+    "reading": "",
+    "chips": [
+     "Geldbörse",
+     "Bürgersteig",
+     "Taxi"
+    ]
+   },
+   {
+    "prompt": "Haben Sie bereits versucht, die Geldbörse bei der Fundstelle des Gebäudes zu melden?",
+    "promptTr": "Binanın kayıp eşya ofisine cüzdanı bildirmeyi denediniz mi?",
+    "answer": "Ja, ich habe sofort die Fundabteilung des Gebäudes kontaktiert und zusätzlich am Hafen den Fundbüro des örtlichen Polizeireviers informiert, weil ich dort häufig Kunden aus der Schifffahrt betreue.",
+    "tr": "Evet, hemen bina kayıp ofisiyle iletişime geçtim ve ayrıca limanda yerel polis karakolunun kayıp bürosunu da bilgilendirdim, çünkü orada sık sık denizcilik müşterilerini ağırlıyorum.",
+    "reading": "ja iç habe sofort di fundabteilung des gebäudes kontaktiert und zusatzlich am haven den fundbüro des örtlichen politse-reviers informiert, w",
+    "chips": [
+     "Fundbüro",
+     "Polizeirevier",
+     "Hafen"
+    ]
+   },
+   {
+    "prompt": "Welche Maßnahmen ergreifen Sie, um zukünftige Verluste zu vermeiden?",
+    "promptTr": "Gelecek kayıpları önlemek için hangi önlemleri alacaksınız?",
+    "answer": "Zukünftig werde ich meine Geldbörse stets in einer gesicherten Innentasche tragen, bei wichtigen Terminen ein Backup-Dokument in meinem Laptop hinterlegen und mich verpflichten, nach jedem Meeting meine persönlichen Gegenstände zu überprüfen, bevor ich das Gebäude verlasse.",
+    "tr": "İleride cüzdanımı her zaman güvenli bir iç çantada taşıyacağım, önemli toplantılarda laptopuma yedek belge koyacağım ve her toplantıdan sonra kişisel eşyalarımı kontrol edeceğim, binayı terk etmeden önce.",
+    "reading": "",
+    "chips": [
+     "gesicherten",
+     "Backup-Dokument",
+     "überprüfen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "work",
+  "topic": "İş",
+  "npcName": "Chef",
+  "npcEmoji": "🕴️",
+  "steps": [
+   {
+    "prompt": "Könnten Sie bitte die Kernaussagen der letzten Folie zusammenfassen und erläutern, wie diese unsere langfristige Strategie beeinflussen?",
+    "promptTr": "Son slaytın ana noktalarını özetleyip, bunların uzun vadeli stratejimizi nasıl etkileyeceğini açıklayabilir misiniz?",
+    "answer": "Gern. Die Analyse zeigt, dass die aktuelle Marktdynamik, insbesondere die zunehmende Digitalisierung, unser Geschäftsmodell zwingt, die Kundensegmente neu zu definieren, während gleichzeitig die operative Effizienz durch Automatisierung gesteigert werden muss, um wettbewerbsfähig zu bleiben.",
+    "tr": "Tabii. Analiz, mevcut pazar dinamiklerinin, özellikle artan dijitalleşmenin, iş modelimizi müşteri segmentlerini yeniden tanımlamaya zorladığını ve aynı zamanda rekabetçi kalabilmek için operasyonel verimliliğin otomasyonla artırılması gerektiğini gösteriyor.",
+    "reading": "görn dee a-na-ly-ze zeigt das daz die aktuel-le markt-dy-na-mik, ins-be-son-de di tsu-nehmende di-gi-ta-li-sierung, unser ge-schäfts-modell ",
+    "chips": [
+     "Kernaussagen",
+     "Marktdynamik",
+     "operativen Effizienz"
+    ]
+   },
+   {
+    "prompt": "Wie würden Sie auf die Einwände der Vertriebsabteilung reagieren, die behaupten, dass die vorgeschlagenen Änderungen zu einer kurzfristigen Umsatzrückgang führen könnten?",
+    "promptTr": "Satış departmanının önerilen değişikliklerin kısa vadeli ciro düşüşüne yol açabileceğini iddia eden itirazlarına nasıl yanıt verirsiniz?",
+    "answer": "Ich würde darauf hinweisen, dass die Investitionen in innovative Prozesse zwar anfänglich die Gewinnmargen belasten, langfristig jedoch durch gesteigerte Marktanteile und Kundenloyalität die Gesamtrentabilität signifikant erhöhen werden, was die kurzfristigen Einbußen ausgleichen wird.",
+    "tr": "Şöyle yanıt verirdim: Yenilikçi süreçlere yapılan yatırımlar başlangıçta kar marjlarını zorlayabilir, fakat uzun vadede artan pazar payı ve müşteri sadakati sayesinde toplam kârlılığı önemli ölçüde artıracak ve kısa vadeli kayıpları telafi edecektir.",
+    "reading": "ich vur da-rauf hi-ni-zen das die in-vesti-tionen in in-no-va-ti-ve pro-ces-e zwar an-fan-lich die ge-winn-mar-gen be-las-ten, lang-fristig ",
+    "chips": [
+     "Investitionen",
+     "Marktanteile",
+     "Kundenloyalität"
+    ]
+   },
+   {
+    "prompt": "Abschließend, könnten Sie bitte das Konzept des 'river' als Metapher in Ihrer Schlussbemerkung verwenden, um die Notwendigkeit kontinuierlicher Innovation zu betonen?",
+    "promptTr": "Son olarak, 'river' kavramını bir metafor olarak kullanıp, sürekli yeniliğin gerekliliğini vurgulayan bir kapanış notu yapabilir misiniz?",
+    "answer": "Selbstverständlich. Wie ein Fluss, der unbeirrt seine Richtung sucht, muss unser Unternehmen beständig neue Ideen integrieren, um im dynamischen Markt nicht nur zu überleben, sondern aktiv die Zukunft zu gestalten.",
+    "tr": "Tabii ki. Kesintisiz yönünü arayan bir nehir gibi, şirketimiz sürekli yeni fikirler entegre etmeli, sadece ayakta kalmak için değil, dinamik pazarda aktif bir şekilde geleceği şekillendirmek için.",
+    "reading": "zelt be-shvurt-lich vi ein flus der unbeirrt seine richtung sucht muss unser unter-nehmen be-ständig neue ideen in-te-gri-ren um im dyna-mis",
+    "chips": [
+     "Metapher",
+     "kontinuierliche Innovation",
+     "Zukunft"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "weather",
+  "topic": "Hava durumu",
+  "npcName": "Lena",
+  "npcEmoji": "👭",
+  "steps": [
+   {
+    "prompt": "Wie erträgst du diese unerbittliche Hitzewelle, die selbst das Stadtbild in ein flirrender Inferno verwandelt?",
+    "promptTr": "Bu acımasız sıcak dalgasını nasıl katlanıyorsun, ki şehir manzarasını bile kızgın bir cehenneme çeviriyor?",
+    "answer": "Ich verabscheue diese sengende Glut, die wie ein loderndes Kaleidoskop aus Asphalt und Asphaltluft meine Sinne vergiftet, und ich frage mich, ob die Stadt nicht bald in ein flüssiges Blech verwandelt wird.",
+    "tr": "Bu yakıcı alevi, asfalt ve asfalt havasından oluşan yanıp sönen bir kaleidoskop gibi hislerimi zehirliyor, tahmin ediyorum ki şehir yakında akışkan bir metal levhaya dönüşecek.",
+    "reading": "ih ferabshoye deeze sengende gloot, dee vee ayn lo derndes kaleidoskop ows asfalt unt asfaltluft mayne zinse fergiftet, unt ih frage mish, o",
+    "chips": [
+     "verabscheuen",
+     "Hitzewelle",
+     "flüssiges Blech"
+    ]
+   },
+   {
+    "prompt": "Welche Strategien hast du entwickelt, um trotz der drückenden Schwüle produktiv zu bleiben, ohne in einem schwitzenden Desaster zu enden?",
+    "promptTr": "Bu bunaltıcı nemli havaya rağmen verimli kalmak için hangi stratejileri geliştirdin, ter içinde bir felakete düşmeden?",
+    "answer": "Ich habe mir ein kühles Refugium im obersten Stockwerk meines Arbeitszimmers eingerichtet, ausgestattet mit einem Ventilator, der das monotone Brummen der Klimaanlage in ein beruhigendes Hintergrundrauschen verwandelt, sodass ich trotz der unerbittlichen Glut fokussiert bleiben kann.",
+    "tr": "Üst katındaki çalışma odama serin bir sığınak kurdum, bir vantilatör ekledim; bu, klimanın tekdüze uğultusunu rahatlatıcı bir arka plan gürültüsüne dönüştürerek, acımasız ısıya rağmen odaklanmamı sağlıyor.",
+    "reading": "ih habe mir ayn kühles refugium im obersten shtokverk maynes arbeitszimmer eingerichtet, ausgestalt mit aynem ventilator, dare das monotone ",
+    "chips": [
+     "Refugium",
+     "Ventilator",
+     "fokussiert"
+    ]
+   },
+   {
+    "prompt": "Ich habe gehört, dass sogar der Hafen jetzt mit schattigen Segeln improvisiert, um die Boote vor der Sonne zu schützen.",
+    "promptTr": "Duydum ki liman bile artık gölgeli yelkenlerle, tekneleri güneşten korumak için doğaçlama yapıyor.",
+    "answer": "Selbst der Hafen hat sich ein Netzwerk aus schattenspendenden Segeln aufgebaut, die wie flüchtige Vorhänge über die Anlegestellen drapiert sind, damit die Schiffe nicht unter der gnadenlosen Sonne verkümmern.",
+    "tr": "Hatta liman bile gölgeli yelkenlerden oluşan bir ağ kurdu; bu yelkenler, iskele alanlarının üzerine geçici perdeler gibi seriliyor, böylece gemiler acımasız güneş altında soluk kalmıyor.",
+    "reading": "selbst der hafen hat sich ayn netzwerk aus schattenspendenden segeln aufgebaut, dee vee fli:chtige forhangue uber die anlegestellen drapiert",
+    "chips": [
+     "Hafen",
+     "Schatten",
+     "Segel"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "transport",
+  "topic": "Ulaşım",
+  "npcName": "Herr Schmitz",
+  "npcEmoji": "👨‍🏫",
+  "steps": [
+   {
+    "prompt": "Entschuldigen Sie, an welcher Station muss ich die U-Bahn-Linie 7 in Linie 3 umsteigen?",
+    "promptTr": "Özür dilerim, U-Bahn 7 hattını 3 hattına çevirmek için hangi istasyonda değişim yapmalıyım?",
+    "answer": "Sie wechseln in der Haltestelle Hauptbahnhof, dort befinden sich die U-Bahn-Linien 7 und 3.",
+    "tr": "Hauptbahnhof istasyonunda U-Bahn 7 hattını 3 hattına değiştirirsiniz, o istasyonda U-Bahn 7 ve 3 hatları bulunur.",
+    "reading": "zi vaikeln in der haltestelle hauptbahnhof, dort befinden sich die u- bahn linien sieben und drei",
+    "chips": [
+     "Hauptbahnhof",
+     "Umsteigen",
+     "Haltestelle"
+    ]
+   },
+   {
+    "prompt": "Können Sie mir bitte mitteilen, ob die nächste Station eine Brücke überquert?",
+    "promptTr": "En yakın istasyonun bir köprüyi geçip geçmediğini bana bildirir misiniz?",
+    "answer": "Die Brücke, die die U-Bahn überquert, ist direkt neben der Station Stadtpark.",
+    "tr": "U-Bahn'ı geçen köprü, direkt olarak Stadtpark istasyonunun yanında yer alır.",
+    "reading": "di bruecke, di di u- bahn ueberquert, ist direkt neben der station stadtspark",
+    "chips": [
+     "Brücke",
+     "überquert",
+     "Station"
+    ]
+   },
+   {
+    "prompt": "Wie lange dauert es, vom Ausgang der Haltestelle zum nächsten Ticketautomaten zu gelangen?",
+    "promptTr": "İstasyonun çıkışından en yakın bilet makinesine ulaşmak ne kadar sürer?",
+    "answer": "Es dauert ungefähr fünf Minuten, wenn Sie den Hauptausgang nehmen und der Weg durch den kurzen Tunnel führt.",
+    "tr": "Hauptausgangu kullanarak ve kısa tünelden geçerek en yakın bilet makinesine ulaşmak yaklaşık beş dakika sürer.",
+    "reading": "es daut ungefähr funf minuten, wenn zi den hauptausgang nehmen und der weg durch den kurzen tunnel führt",
+    "chips": [
+     "Ticketautomat",
+     "Ausgang",
+     "Tunnel"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "hobbies",
+  "topic": "Hobiler",
+  "npcName": "Marktverkäufer",
+  "npcEmoji": "🧑‍🦰",
+  "steps": [
+   {
+    "prompt": "Wie wäre es, wenn wir nach dem Markt eine Partie Schach spielen, um zu sehen, wer wirklich die besseren Züge kennt?",
+    "promptTr": "Pazardan sonra bir satranç oyunu oynayıp gerçekten kim daha iyi hamleler biliyor görelim, ne dersin?",
+    "answer": "Ich nehme die Herausforderung gern an, doch ich warne dich, dass ich seit meinem letzten Turnier, das ich überraschend im Grünen auf einer Wiese gewann, meine Eröffnungen verfeinert habe.",
+    "tr": "Bu meydan okumayı memnuniyetle kabul ediyorum, ama seni uyarıyorum ki, son turnuvamda, yeşil bir çayırda beklenmedik bir şekilde kazandığımda açılışlarımı geliştirmiştim.",
+    "reading": "",
+    "chips": [
+     "Schach",
+     "Herausforderung",
+     "Eröffnungen"
+    ]
+   },
+   {
+    "prompt": "Möchtest du die Partie mit einer klassischen Bedenkzeit von 90 Minuten pro Spieler beginnen?",
+    "promptTr": "90 dakikalık klasik bir düşünme süresiyle oyuna başlamak ister misin?",
+    "answer": "Ja, das klingt verlockend, jedoch würde ich lieber ein Schnellschach mit 15 Minuten pro Seite bevorzugen, da ich die Intensität des Spiels in kürzeren Intervallen schätze.",
+    "tr": "Evet, çekici geliyor, ama ben 15 dakikalık hızlı satranç tercih ederim, çünkü oyunun yoğunluğunu daha kısa aralıklarla daha çok takdir ediyorum.",
+    "reading": "",
+    "chips": [
+     "Bedenkzeit",
+     "Schnellschach",
+     "Intensität"
+    ]
+   },
+   {
+    "prompt": "Interessant, dass du das letzte Mal auf einer sonnigen Wiese, die ich zufällig „die Wiese des Friedens“ nannte, gespielt hast – glaubst du, das wird deine Konzentration heute beeinflussen?",
+    "promptTr": "Güneşli bir çayırda, 'Barış Çayırı' diye adlandırdığım yerde oynamıştın – bu, bugün konsantrasyonunu etkiler mi?",
+    "answer": "Obwohl die entspannte Atmosphäre dort meine Gedanken klärte, beabsichtige ich, mich heute voll und ganz auf die taktischen Feinheiten zu konzentrieren, sodass das Umfeld kaum eine Ablenkung darstellt.",
+    "tr": "Oradaki rahat ortam düşüncelerimi netleştirdi, ama bugün tamamen taktiksel inceliklere odaklanacağım, böylece ortam neredeyse bir dikkat dağıtma olmaktan çıkmaz.",
+    "reading": "",
+    "chips": [
+     "Atmosphäre",
+     "taktischen",
+     "Ablenkung"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "weather",
+  "topic": "Hava durumu",
+  "npcName": "Mutter",
+  "npcEmoji": "👩‍👧‍👦",
+  "steps": [
+   {
+    "prompt": "Wie wird das Wetter heute die Auswahl an Winterkleidung beeinflussen?",
+    "promptTr": "Bugün hava, kış giyim seçimini nasıl etkileyecek?",
+    "answer": "Da die Temperaturen in den kommenden Tagen bis zu minus fünf Grad sinken könnten und die Windböen stark sind, sollte man vor allem auf winddichte und isolierende Materialien setzen, um die Wärme zu speichern und gleichzeitig vor dem kalten Luftzug zu schützen.",
+    "tr": "Gelecek günlerde sıcaklıklar minüs beş dereceye kadar düşebilir ve rüzgar esintileri güçlü olduğu için, öncelikle rüzgar geçirmez ve yalıtıcı malzemelere yatırım yapmalı, böylece ısıyı korurken soğuk hava akışına karşı da korumalı olmalı.",
+    "reading": "da dai temperaturen in den kommende tagen bis zu minuss fuenf grad sinken koennten und dai windboen stark sind, sholl-te man vor al-men auf ",
+    "chips": [
+     "Temperatur",
+     "Winddichte",
+     "isolierende"
+    ]
+   },
+   {
+    "prompt": "Gibt es in der Nähe des Flusses ein Geschäft, das besonders warme Jacken führt?",
+    "promptTr": "Nehrin yakınında özellikle sıcak jaket satan bir mağaza var mı?",
+    "answer": "Ja, das Fachgeschäft 'Waldbrand' am Ufer des Flusses bietet eine Auswahl an Thermo-Jacken, die sowohl bei kaltem Wetter als auch in windigen Bedingungen hervorragende Wärmeisolierung garantieren.",
+    "tr": "Evet, nehrin kıyısında bulunan 'Waldbrand' mağazası, soğuk hava ve rüzgarlı koşullarda bile mükemmel ısı yalıtımı sağlayan termal jaketler sunar.",
+    "reading": "ja das fachgeschaft walbrand am ufer des flusses bietet eine auswahl an thermo-jacken die sowohl bei kaltem wetter als auch in windigen bedi",
+    "chips": [
+     "Fachgeschäft",
+     "Thermo-Jacken",
+     "Wärmeisolierung"
+    ]
+   },
+   {
+    "prompt": "Was sollte ich zusätzlich zu einer warmen Jacke kaufen, um mich vor dem Frost zu schützen?",
+    "promptTr": "Soğuktan korunmak için sıcak bir ceketin yanında neler eklemeliyim?",
+    "answer": "Neben einer strapazierfähigen, wasserabweisenden Winterjacke empfiehlt sich ein Schaumstoff- oder Gummi-Mütze, kombiniert mit einer thermischen Unterwäsche, um die Wärmeabgabe zu minimieren und gleichzeitig Feuchtigkeit aus dem Körper fernzuhalten.",
+    "tr": "Dayanıklı, suya dayanıklı kış ceketi yanında bir köpük veya kauçuklu bere, ısı yalıtımlı alt giyimle birlikte, ısı kaybını en aza indirmek ve nemi vücuttan uzak tutmak için önerilir.",
+    "reading": "neben einer strapazierfaehigen wasserabweisenden winterjacke empfiehlt sich ein schaumstoff oder gummi muetze kombiniert mit einer thermisch",
+    "chips": [
+     "Wasserabweisenden",
+     "Thermischen",
+     "Unterwäsche"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B2",
+  "topicKey": "food",
+  "topic": "Yemek yapım",
+  "npcName": "Chef",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Herr Müller, welche Mahlzeit würden Sie aus den Resten im Kühlschrank zubereiten, um das Team heute zu überraschen?",
+    "promptTr": "Müller Bey, buzdolabındaki artıklardan hangi yemeği hazırlayıp ekibi bugün şaşırtırdınız?",
+    "answer": "Ich würde ein deftiges Gemüsepfannenrösti mit gebratenen Hähnchenstreifen und einem Hauch von frisch geriebenem Parmesan zubereiten, das die restlichen Paprika, Zucchini und Kartoffeln perfekt nutzt.",
+    "tr": "Bütün kalan biber, kabak ve patatesleri mükemmel şekilde değerlendiren, kızarmış tavuk şeritleri ve taze rendelenmiş parmesanla tatlandırılmış bir sebzeli patates kızartması yapardım.",
+    "reading": "",
+    "chips": [
+     "Gemüsepfannenrösti",
+     "Hähnchenstreifen",
+     "Parmesan"
+    ]
+   },
+   {
+    "prompt": "Könnten Sie bitte das Rezept kurz zusammenfassen, damit ich die Schritte effizient planen kann?",
+    "promptTr": "Tarifi kısaca özetleyebilir misiniz, böylece adımları verimli planlayabilirim?",
+    "answer": "Zuerst die Kartoffeln raspeln, dann die Zucchini und Paprika klein schneiden, alles mit den Hähnchenstreifen mischen, würzen und in einer Pfanne bei mittlerer Hitze knusprig braten, zuletzt mit Parmesan bestreuen.",
+    "tr": "Önce patatesleri rendeleyip, ardından kabak ve biberi küçük doğrayıp, hepsini tavuk şeritleriyle karıştırıp, baharatlayıp, orta ateşte tavada çıtır çıtır kızartıp, son olarak parmesan serpip.",
+    "reading": "",
+    "chips": [
+     "Kartoffeln raspeln",
+     "Paprika schneiden",
+     "Pfanne"
+    ]
+   },
+   {
+    "prompt": "Gibt es noch etwas, das Sie benötigen, zum Beispiel ein Licht, damit ich das Essen bei der Vorbereitung besser sehen kann?",
+    "promptTr": "Hazırlıkta yemeği daha iyi görebilmek için bir ışık gibi bir şey lazım mı?",
+    "answer": "Ein kleiner LED-Laternenlampe würde reichen, um die Arbeitsfläche gut auszuleuchten, damit wir das Gericht optimal präsentieren können.",
+    "tr": "İyi aydınlatmak için bir LED fener yeterli olur, böylece çalışma alanını iyi aydınlatır, yemeği mükemmel sunarız.",
+    "reading": "",
+    "chips": [
+     "LED-Laterne",
+     "Arbeitsfläche",
+     "Gericht"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "phone",
+  "topic": "Telefon",
+  "npcName": "Max",
+  "npcEmoji": "🤗",
+  "steps": [
+   {
+    "prompt": "Entschuldige, aber ich habe dich anscheinend falsch angerufen. Welche Nummer soll ich stattdessen wählen?",
+    "promptTr": "Afedersiniz, ama sanırım seni yanlış numaraya aradım. Bunun yerine hangi numarayı seçmeliyim?",
+    "answer": "Ich entschuldige mich dafür, die korrekte Nummer ist 0123 456 789.",
+    "tr": "Bunun için özür dilerim, doğru numara 0123 456 789.",
+    "reading": "ich entschulde mich dafür, die korrekte nummer ist zero one two three space four five six space seven eight nine.",
+    "chips": [
+     "entschuldige",
+     "korrekte",
+     "Nummer"
+    ]
+   },
+   {
+    "prompt": "Willst du mich wirklich anrufen oder lieber Textnachricht senden?",
+    "promptTr": "Beni gerçekten aramak mı istiyorsun yoksa mesaj göndermek mi?",
+    "answer": "Ich denke, ein kurzes Telefonat reicht, um die Details zu klären, aber ich kann dir auch gern eine SMS schicken, wenn das für dich praktischer ist.",
+    "tr": "Sanırım detayları netleştirmek için kısa bir telefon yeterli, ama senin için daha pratikse sana mesaj gönderebilirim.",
+    "reading": "ich denke, ein kurzes telefonat reicht, um die details zu klären, aber ich kann dir auch gern eine sms schicken, wenn das für dich praktisch",
+    "chips": [
+     "kurzes",
+     "Telefonat",
+     "details"
+    ]
+   },
+   {
+    "prompt": "Okay, ich rufe dich um 15:00 an. Wir können uns kurz im Garten treffen, bevor wir die Lieferung prüfen.",
+    "promptTr": "Tamam, seni 15:00'te arayacağım. Teslimatı kontrol etmeden önce kısa bir süre için bahçede buluşabiliriz.",
+    "answer": "Ja, das klingt gut. Ich werde um 15:00 in der Nähe des Gartens sein und wir können uns dort verabreden.",
+    "tr": "Evet, bu iyi görünüyor. 15:00'te bahçenin yakınında olacağım ve orada buluşabiliriz.",
+    "reading": "",
+    "chips": [
+     "nahe",
+     "Garten",
+     "verabreden"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "education",
+  "topic": "Eğitim",
+  "npcName": "Krankenschwester Anna",
+  "npcEmoji": "🩺",
+  "steps": [
+   {
+    "prompt": "Könnten Sie bitte erläutern, welche spezifischen Forschungsinteressen Sie mit dem Stipendium verfolgen möchten und wie diese mit den aktuellen Projekten unserer Fakultät korrespondieren?",
+    "promptTr": "Bana bursayla hangi araştırma ilgi alanlarını takip etmek istediğinizi ve bunların fakültemizin güncel projeleriyle nasıl örtüştüğünü açıklayabilir misiniz?",
+    "answer": "Selbstverständlich beabsichtige ich, im Rahmen des Stipendiums die interdisziplinäre Untersuchung von nachhaltigen Energielösungen voranzutreiben, wobei ich vor allem die Synergieeffekte zwischen Photovoltaik‑Technologien und thermischer Speicheroptimierung fokussiere, um so die Forschungsagenda Ihrer Fakultät, die derzeit stark auf kohlenstoffarme Systeme ausgerichtet ist, zu bereichern.",
+    "tr": "Elbette burs kapsamında sürdürülebilir enerji çözümlerinin disiplinlerarası incelenmesini ilerletmeyi, özellikle fotovoltaik teknolojileri ile termal depolama optimizasyonu arasındaki sinerji etkilerine odaklanarak, fakültenizin şu anda karbon azaltımlı sistemlere yoğunlaştığı araştırma programını zenginleştirmeyi amaçlıyorum.",
+    "reading": "zelferstandlik beabsıhtige ich, im rahmen des stipendiums di interdiszipliniere untersuchung fon nachhaltiğen enerji lözungen foranantreibe,",
+    "chips": [
+     "interdisziplinäre",
+     "Synergieeffekte",
+     "nachhaltigen"
+    ]
+   },
+   {
+    "prompt": "Im Antragsformular gibt es ein Feld, das die Angabe Ihrer bisherigen Publikationen verlangt; könnten Sie mir bitte die korrekte Zitierweise für Ihren jüngsten Artikel in der Zeitschrift \"Erneuerbare Energien\" nennen?",
+    "promptTr": "Başvuru formunda daha önceki yayınlarınızı belirtmeniz gereken bir alan var; lütfen \"Erneuerbare Energien\" dergisindeki son makalenizin doğru alıntı biçimini söyleyebilir misiniz?",
+    "answer": "Natürlich lautet die vollständige Referenz: Müller, A., & Schmidt, L. (2023). „Innovative Ansätze zur Integration von Wind- und Solarenergie in urbanen Räumen“, Erneuerbare Energien, 18(4), 215‑229, doi:10.1007/s12345-023-0045-6.",
+    "tr": "Tabii ki tam referans şöyle: Müller, A., & Schmidt, L. (2023). “Şehir ortamlarında rüzgar ve güneş enerjisinin entegrasyonu için yenilikçi yaklaşımlar”, Erneuerbare Energien, 18(4), 215‑229, doi:10.1007/s12345-023-0045-6.",
+    "reading": "naururlich loit de ferstendliçe referents: müller, a., unt şmidt, l. (2023). \"innovatife anzetz zur integration fon vind unt solarenergi in ",
+    "chips": [
+     "Referenz",
+     "Integration",
+     "urbanen"
+    ]
+   },
+   {
+    "prompt": "Einige Bewerber erwähnen in ihrem Motivationsschreiben ein Fenster zur persönlichen Weiterentwicklung; wie würden Sie ein derart metaphorisches Element elegant in Ihren eigenen Text einbetten, um sowohl Reflexion als auch Zielstrebigkeit zu signalisieren?",
+    "promptTr": "Bazı adaylar motivasyon mektuplarında kişisel gelişim için bir pencere bahsediyor; böyle bir metaforik unsuru kendi metninizde nasıl zarifçe yerleştirir, hem düşünceyi hem de hedefe odaklanmayı gösterirsiniz?",
+    "answer": "Ich würde das Bild eines lichtdurchfluteten Fensters nutzen, das nicht nur symbolisch den Eintritt neuer Erkenntnisse markiert, sondern zugleich den Blick auf die bereits gewonnenen Kompetenzen freigibt, um zu verdeutlichen, dass meine akademische Laufbahn durch kontinuierliches Lernen und kritische Selbstreflexion stets im Einklang mit den strategischen Zielsetzungen Ihres Instituts steht.",
+    "tr": "Işıkla dolu bir pencere imgesi kullanırdım; bu sadece yeni bilgiler kazanmanın sembolik bir işareti olmakla kalmaz, aynı zamanda elde ettiğim becerileri de ortaya çıkararak akademik yolculuğumun kurumunuzun stratejik hedefleriyle sürekli uyum içinde, sürekli öğrenme ve eleştirel öz-düşünceyle ilerlediğini vurgular.",
+    "reading": "ih vürt das bild aynes lichtdurfluteten fensters nutzen, das nicht nur symbolisch den eintritt neuer erkenntnisse markiert, sondern zugleich",
+    "chips": [
+     "Metapher",
+     "Selbstreflexion",
+     "strategischen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "airport",
+  "topic": "Havaalanı",
+  "npcName": "Max",
+  "npcEmoji": "🛍️",
+  "steps": [
+   {
+    "prompt": "Entschuldigen Sie, wissen Sie, an welchem Gate mein Flug nach Berlin einläuft?",
+    "promptTr": "Afedersiniz, Berlin uçuşumun hangi kapıdan iniş edeceğini biliyor musunuz?",
+    "answer": "Ich glaube, Sie sind im Terminal 3. Die Fluglinie, die Sie nutzt, hat ihr Gate auf Nummer 12. Bitte folgen Sie den Schildern zum Ausgang.",
+    "tr": "Sanırım terminal 3'teyiz. Kullanacağınız havayolu, kapısını 12 numaralı kapıya taşıyor. Lütfen işaretleri takip ederek çıkışa gidin.",
+    "reading": "ik glaub, yuu sind im terminal drei. di flugli, di yuu nutzt, hat ihr gate auf nummer tün. bitte folgen di shildern zum aßgang.",
+    "chips": [
+     "Terminal",
+     "Gate",
+     "schildern"
+    ]
+   },
+   {
+    "prompt": "Danke, Max. Kann ich das Gate auch mit meiner Handtuch-Tasche in der Hand abholen?",
+    "promptTr": "Teşekkür ederim, Max. Kapıyı elimdeki havlu çantamla alabilir miyim?",
+    "answer": "Ja, selbstverständlich. Das Terminal verfügt über einen speziellen Handtaschenbereich, aber bitte beachten Sie, dass das Handtuch nicht die Handtaschenkontrolle überschreitet. Andernfalls wird es am Gate zurückgewiesen.",
+    "tr": "Evet, tabii ki. Terminalde özel bir çanta bölümü var, ama lütfen havlu, çanta kontrolünü geçmemeli. Aksi halde kapıda geri dönülecek.",
+    "reading": "ja, selbstverständlich. das terminal verfügt über einen speziellen handtaschenbereich, aber bitte beachten sie, dass das handtuch nicht die ",
+    "chips": [
+     "Handtaschenbereich",
+     "kontrolle",
+     "zurückgewiesen"
+    ]
+   },
+   {
+    "prompt": "Ich werde das Check-In durchgehen, bevor ich die Gardena sehe. Wo ist der nächste Sitzbereich?",
+    "promptTr": "Giriş kontrollerinden geçeceğim, ardından Gardena'yı göreceğim. En yakın oturma alanı nerede?",
+    "answer": "Die Sitzplätze befinden sich neben dem großen Garten, der in der Nähe des Cafés liegt. Folgen Sie dem Pfad, der zum Eingangsbereich führt, und Sie werden dort einen bequemen Platz finden.",
+    "tr": "Oturma yerleri, kafenin yakınındaki büyük bahçenin yanında. Giriş bölgesine giden patikayı takip edin, orada rahat bir yer bulacaksınız.",
+    "reading": "die sitzplätze befinden sich neben dem großen garten, der in der nahe des cafés liegt. folgen sie dem pfad, der zum eingangsbereich führt, u",
+    "chips": [
+     "Sitzplätze",
+     "Garten",
+     "Pfad"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "food",
+  "topic": "Yemek yapım",
+  "npcName": "Felix",
+  "npcEmoji": "🧑‍💼",
+  "steps": [
+   {
+    "prompt": "Welchen Fisch würden Sie heute gern für Ihr Hauptgericht auswählen?",
+    "promptTr": "Bugün ana yemeğiniz için hangi balığı seçmek istersiniz?",
+    "answer": "Ich würde lieber den saftigen Lachs aus dem Hafenmarkt wählen, weil er eine zarte Textur und einen feinen, leicht nussigen Geschmack aufweist.",
+    "tr": "Liman pazarındaki sulu somonu tercih ederim, çünkü onun narin bir dokusu ve hafif fındıksı bir tadı var.",
+    "reading": "ihç viert layber den zaftigen lax aß dem hafnmarkt vaylen, vayl er ayne tatre tekstuur unt ayn fein, laycht nusigen geschmack aufveist.",
+    "chips": [
+     "Lachs",
+     "Hafenmarkt",
+     "zarte Textur"
+    ]
+   },
+   {
+    "prompt": "Wie planen Sie den Fisch zuzubereiten, und welche Beilagen würden Sie dazu servieren?",
+    "promptTr": "Balığı nasıl pişirmeyi planlıyorsunuz ve yanında hangi yan yemekleri sunacaksınız?",
+    "answer": "Ich beabsichtige, den Lachs sanft zu dämpfen, anschließend mit einer leichten Zitronen-Dill-Emulsion zu verfeinern, und dazu ein cremiges Selleriepüree sowie geröstete Pinienkerne zu reichen, um eine harmonische Balance aus Säure und Süße zu erzielen.",
+    "tr": "Somonu hafifçe buğulamak, ardından hafif bir limon dereotu sosuyla zenginleştirmek ve yanına kremalı kereviz püresi ile kavrulmuş çam fıstığı sunarak ekşi ve tatlı arasında uyumlu bir denge yaratmayı planlıyorum.",
+    "reading": "",
+    "chips": [
+     "dämpfen",
+     "Zitronen-Dill-Emulsion",
+     "Selleriepüree"
+    ]
+   },
+   {
+    "prompt": "Welchen Wein würden Sie zu diesem Fischgericht empfehlen, um die Aromen optimal zu ergänzen?",
+    "promptTr": "Bu balık yemeğine aromaları en iyi şekilde tamamlayacak bir şarap önerir misiniz?",
+    "answer": "Ich empfehle einen eleganten, leicht mineralischen Weißwein aus der Region Mosel, etwa einen Riesling Kabinett, dessen feine Säure die Zitronennote des Fisches unterstreicht und gleichzeitig die cremige Textur des Selleriepürees elegant umspielt.",
+    "tr": "Mosel bölgesinden hafif mineral bir beyaz şarap, özellikle bir Riesling Kabinett öneririm; bu şarap, balığın limon notasını vurgularken kereviz püresinin kremalı dokusunu zarifçe dolaşır.",
+    "reading": "",
+    "chips": [
+     "Weißwein",
+     "Riesling Kabinett",
+     "Säure"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "health",
+  "topic": "Sağlık",
+  "npcName": "Pflegekraft",
+  "npcEmoji": "👩‍⚕️",
+  "steps": [
+   {
+    "prompt": "Bitte, was ist die akute Situation des Patienten?",
+    "promptTr": "Lütfen, hastanın ani durumu nedir?",
+    "answer": "Der Patient hat plötzlich starke Brustschmerzen und Atemnot; ich glaube, er könnte einen Herzinfarkt haben.",
+    "tr": "Hasta aniden şiddetli göğüs ağrısı ve nefes darlığı yaşadı; bence kalp krizi olabilir.",
+    "reading": "dehr pah-tent hat plos-chen-lich shtar-ke shtrost-shair-en en ah-teh-mot; ihr groh-bel, es gibt eyn hau-tah kran-te",
+    "chips": [
+     "Brustschmerzen",
+     "Herzinfarkt",
+     "Atemnot"
+    ]
+   },
+   {
+    "prompt": "Was tun Sie, während das Rettungsteam eintrifft?",
+    "promptTr": "Reddiyon ekip geldiğinde ne yaparsınız?",
+    "answer": "Ich überprüfe den Zustand, stelle sicher, dass die Sauerstoffflasche aufgestockt ist, und beginne sofort mit der Herzmassage, um die Durchblutung zu stabilisieren.",
+    "tr": "Durumu kontrol ederim, oksijen şişesinin doldurulmuş olduğundan emin olurum ve hemen kalp masajı yapmaya başlarım, kan akışını stabilize etmek için.",
+    "reading": "ich eh-bre-uh-fuh den tsoon-haft, shtel-lah zeek-er, daff dee Sauer-stoff-fla-shche owf-gestockt ist, oand be-gin-nuh for-tod mit der Herz-m",
+    "chips": [
+     "Sauerstoffflasche",
+     "Herzmassage",
+     "Durchblutung"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "sport",
+  "topic": "Spor",
+  "npcName": "Chef",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Könnten Sie mir bitte mitteilen, ob Sie am kommenden Samstag für einen morgendlichen Lauf zur Verfügung stehen?",
+    "promptTr": "Gelecek Cumartesi sabah koşusu için uygun olup olmadığınızı bana söyleyebilir misiniz?",
+    "answer": "Ja, ich plane bereits um 6:30 Uhr zu laufen, um danach noch einen kurzen Besuch im Garten zu machen, bevor ich ins Büro gehe.",
+    "tr": "Evet, sabah 6:30'da koşmayı planlıyorum, ardından bahçede kısa bir ziyaret yapıp ofise gitmeden önce.",
+    "reading": "ja ich plane bereits um sechs uhr dreißig zu laufen um danach noch einen kurzen besuch im garten zu machen bevor ich ins buro gehe",
+    "chips": [
+     "laufen",
+     "Garten"
+    ]
+   },
+   {
+    "prompt": "Wie würden Sie Ihre aktuelle Laufleistung bewerten und welche Trainingsmethoden setzen Sie ein, um Ihre Ausdauer zu optimieren?",
+    "promptTr": "Şu anki koşu performansınızı nasıl değerlendirirsiniz ve dayanıklılığınızı artırmak için hangi antrenman yöntemlerini kullanıyorsunuz?",
+    "answer": "Ich schätze meine wöchentliche Distanz auf etwa fünfundvierzig Kilometer, wobei ich Intervalltraining und progressive Longruns kombiniere, um sowohl meine VO2max als auch meine Laktatschwelle gezielt zu verbessern.",
+    "tr": "Haftalık mesafemi yaklaşık kırk beş kilometre olarak değerlendiriyorum, interval antrenmanları ve progresif uzun koşuları birleştirerek VO2max ve laktat eşiğimi hedefli bir şekilde iyileştiriyorum.",
+    "reading": "ich schätze meine wöchentliche distanz auf etwa fünfundvierzig kilometer wobei ich intervalltraining und progressive longruns kombiniere um ",
+    "chips": [
+     "Intervalltraining",
+     "VO2max"
+    ]
+   },
+   {
+    "prompt": "Welche Vorteile erwarten Sie sich von diesem gemeinsamen Lauf hinsichtlich Teamdynamik und persönlicher Leistungssteigerung?",
+    "promptTr": "Bu ortak koşudan takım dinamiği ve kişisel performans artışı açısından hangi faydaları bekliyorsunuz?",
+    "answer": "Ich erhoffe mir, dass das gemeinsame Training nicht nur den Teamzusammenhalt stärkt, indem es informelle Kommunikation fördert, sondern auch individuelle Motivationsschübe auslöst, die sich positiv auf die Produktivität und die körperliche Resilienz aller Beteiligten auswirken.",
+    "tr": "Umarım ortak antrenman sadece takım bağını güçlendirmekle kalmaz, aynı zamanda gayri resmi iletişimi artırır ve bireysel motivasyon patlamaları tetikleyerek herkesin üretkenliğine ve fiziksel direncine olumlu etkiler.",
+    "reading": "ich erhoffe mir dass das gemeinsame training nicht nur den teamzusammenhalt stärkt indem es informelle kommunikation foerdert sondern auch i",
+    "chips": [
+     "Teamzusammenhalt",
+     "Resilienz"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C1",
+  "topicKey": "music",
+  "topic": "Müzik",
+  "npcName": "Herr Müller",
+  "npcEmoji": "👨‍🍳",
+  "steps": [
+   {
+    "prompt": "Welche Art von Kopfhörern würden Sie mir als Geschenk empfehlen, wenn ich sie meiner Schwester schenken möchte, die Musik liebt und oft im Fitnessstudio trainiert?",
+    "promptTr": "Hangi tür kulaklıkları, müzikten hoşlanan ve sık sık spor salonunda çalışan kardeşim için hediye olarak önerirsiniz?",
+    "answer": "Ich würde Ihnen empfehlen, eine kabellose Bluetooth-Kopfhörerserie mit Geräuschunterdrückung und einem ergonomischen Design zu wählen, damit sie beim Training nicht abfällt und gleichzeitig ein kristallines Klangbild bietet.",
+    "tr": "Kablosuz Bluetooth kulaklık serisi, gürültü engelleme ve ergonomik tasarımla öneririm, böylece spor sırasında düşmez ve kristal netliğinde ses sunar.",
+    "reading": "ich vord er mein in dem kepp zung p rohl y ahn ahn g",
+    "chips": [
+     "kabellose",
+     "Bluetooth",
+     "Geräuschunterdrückung"
+    ]
+   },
+   {
+    "prompt": "Welcher Markenname wäre dabei besonders gut, wenn es um Preis-Leistungs-Verhältnis geht, und welche Besonderheit hat er, die ich meiner Schwester besonders empfehlen kann?",
+    "promptTr": "Maliyet performans açısından özellikle hangi marka ismi iyi olur, ve hangi özelliği var ki kardeşime özellikle öneririm?",
+    "answer": "Der Markenname Beats by Dre bietet ein ausgewogenes Preis-Leistungs-Verhältnis und zeichnet sich durch die „Active Noise Cancelling“-Technologie aus, die die Umgebungsgeräusche effektiv reduziert und somit ein ungestörtes Trainingserlebnis ermöglicht.",
+    "tr": "Beats by Dre markası uygun fiyat performansı sağlar ve 'Active Noise Cancelling' teknolojisi ile çevresel gürültüyü etkili şekilde azaltır, böylece kesintisiz bir antrenman deneyimi sunar.",
+    "reading": "de er mark en nam e beats by dre p rohl y",
+    "chips": [
+     "Beats",
+     "Active Noise Cancelling",
+     "Preis-Leistungs-Verhältnis"
+    ]
+   },
+   {
+    "prompt": "Wenn ich die Kopfhörer in Ihrem Laden kaufe, könnten Sie mir noch einen zusätzlichen Geschenkartikel empfehlen, der das Ganze noch attraktiver macht?",
+    "promptTr": "Kulaklıkları mağazada alırsam, bu deneyimi daha çekici kılacak ek bir hediye önerir misiniz?",
+    "answer": "Natürlich, Sie könnten ein elegantes, schwarz-weißen Headphone‑Case mit integriertem Kabelmanagement und einer kleinen LED‑Leuchte – wie eine Mini‑Taschenlampe – erwerben, um die Kopfhörer stilvoll zu schützen und gleichzeitig das Setup praktisch zu organisieren.",
+    "tr": "Tabii, kablo yönetimi ve küçük bir LED ışığı olan şık siyah-beyaz kulaklık kasası, mini el feneri gibi satın alarak kulaklıkları şıkça korur ve kurulumunuzu pratikleştirir.",
+    "reading": "nac h to r ly",
+    "chips": [
+     "Headphone‑Case",
+     "LED‑Leuchte",
+     "Kabelmanagement"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "money",
+  "topic": "Para",
+  "npcName": "Felix",
+  "npcEmoji": "🧑‍🍳",
+  "steps": [
+   {
+    "prompt": "Entschuldigen Sie, ich habe gerade festgestellt, dass der Geldautomat meine Karte verschluckt hat – was wäre Ihrer Meinung nach der schnellste Weg, wieder an mein Geld zu kommen?",
+    "promptTr": "Affedersiniz, ATM kartımı yuttu – parama en hızlı nasıl ulaşabilirim?",
+    "answer": "Am effektivsten wäre es, zunächst die Notfall-Hotline Ihrer Bank zu kontaktieren, um die Karte sperren zu lassen und gleichzeitig um einen sofortigen Barauszahlungsservice zu bitten; parallel dazu könnten Sie in einer Filiale persönlich vorbeischauen, um dort ein Ersatzkartenformular auszufüllen.",
+    "tr": "En etkili yol, bankanızın acil yardım hattını arayıp kartı bloke ettirmeniz ve aynı anda anında nakit hizmeti talep etmeniz; aynı zamanda bir şubeye gidip yeni kart formu doldurmanızdır.",
+    "reading": "",
+    "chips": [
+     "Notfall-Hotline",
+     "Barauszahlungsservice",
+     "Filiale"
+    ]
+   },
+   {
+    "prompt": "Falls Sie kein Bargeld erhalten können, welche alternativen Zahlungsmittel würden Sie in unserem Restaurant vorschlagen, vielleicht sogar etwas, das an das schwache Licht einer Laterne erinnert?",
+    "promptTr": "Nakit alamazsam, restoranda hangi alternatif ödeme yöntemlerini önerirsiniz, belki bir fener ışığı gibi?",
+    "answer": "In einem solchen Fall wäre es ratsam, auf kontaktlose Zahlungsmethoden zurückzugreifen – etwa per Smartphone über Apple Pay oder Google Wallet – oder, wenn Sie bar zahlen möchten, einen kleinen Betrag in Euro zu beschaffen, etwa durch einen schnellen Wechsel bei einem benachbarten Kiosk, der das Leuchten einer Laterne wie ein dezentes Signal für Diskretion bietet.",
+    "tr": "Böyle bir durumda, temassız ödeme yöntemlerini (Apple Pay ya da Google Wallet gibi) kullanmanız ya da bir kioskta hızlı bir döviz bozdurma yapıp birkaç Euro almanız önerilir; bu, bir fenerin hafif ışığı gibi gizlilik sağlar.",
+    "reading": "",
+    "chips": [
+     "kontaktlose Zahlung",
+     "Apple Pay",
+     "Kiosk"
+    ]
+   },
+   {
+    "prompt": "Wie würden Sie die Bank darüber informieren, dass die Karte verschluckt wurde, und welche Formalitäten sind dafür erforderlich, um das Problem endgültig zu lösen?",
+    "promptTr": "Bankayı kart yutuldu diye nasıl bilgilendirirsiniz ve sorunu kalıcı çözmek için hangi formaliteler gerekir?",
+    "answer": "Ich würde ein förmliches Schreiben an den Kundendienst Ihrer Bank verfassen, in dem ich den Vorfall detailliert schildere, die Transaktionsnummer angebe und gleichzeitig um die Ausstellung einer vorläufigen Ersatzkarte samt sofortiger Freigabe des gesperrten Kontos bitte; anschließend ist ein persönlicher Termin in der Filiale notwendig, um die Unterschrift zu leisten und die Identität zu verifizieren.",
+    "tr": "Bankanın müşteri hizmetlerine resmi bir mektup yazar, olay detaylarını, işlem numarasını ve geçici bir yedek kart ile hesabın anında açılmasını talep ederim; ardından şubede imza ve kimlik doğrulama için bir randevu alırım.",
+    "reading": "",
+    "chips": [
+     "förmliches Schreiben",
+     "Ersatzkarte",
+     "Filialtermin"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "food",
+  "topic": "Yemek yapım",
+  "npcName": "Nachbarin Anna",
+  "npcEmoji": "👩‍🌾",
+  "steps": [
+   {
+    "prompt": "Falls du die Tomaten nicht hast, welche Zutat würdest du stattdessen verwenden?",
+    "promptTr": "Eğer domatesleri bulamazsan, yerine hangi malzemeyi koyardın?",
+    "answer": "Ich würde gehackte Paprika in gleicher Menge als Ersatz verwenden, weil sie eine ähnliche Textur und einen milden, fruchtigen Geschmack bieten.",
+    "tr": "Ben aynı miktarda doğranmış kırmızı biberi yerine koyardım, çünkü benzer bir dokuya ve hafif, meyvemsi bir tada sahip.",
+    "reading": "ik wid gehakd paprika in geiler mengt als ersatz verwen, weil ze ain similar tischur und aen milden fruchtig shakts erbiet",
+    "chips": [
+     "Paprika",
+     "Ersatz",
+     "Geschmack"
+    ]
+   },
+   {
+    "prompt": "Wenn du keine frischen Kräuter hast, welche getrocknete würdest du einmischen?",
+    "promptTr": "Taze otların yoksa, kuru hangi otları eklerdin?",
+    "answer": "Ich würde getrocknete Oregano und Thymian in etwa ein Drittel der Menge hinzufügen, um das Aroma zu erhalten, ohne die Frische zu verlieren.",
+    "tr": "Ben kuru oregano ve rezene'nin yaklaşık bir üçte birini eklerdim, aromayı korumak için, tazeliği kaybetmeden.",
+    "reading": "ik wid geitrocknete oregano und thymian in etwa ein drittel der menge hinzufuegen, um das aroma zu erhalten, ohne die frische zu verlieren",
+    "chips": [
+     "Oregano",
+     "Thymian",
+     "Aroma"
+    ]
+   },
+   {
+    "prompt": "Welchen zusätzlichen Geschmack würdest du einbringen, wenn du nur die Grundzutaten hast, um das Gericht zu verfeinern?",
+    "promptTr": "Sadece temel malzemelerle yemeği geliştirmek için hangi ek lezzeti koyardın?",
+    "answer": "Ich würde einen Hauch von geröstetem Knoblauch, etwas geriebene Muskatnuss und einen Spritzer Zitronensaft hinzufügen, um die Tiefe und Frische des Gerichts zu betonen.",
+    "tr": "Yemeğin derinliğini ve tazeliğini vurgulamak için hafif bir kavrulmuş sarımsak, biraz rendelenmiş muskat ve bir damla limon suyu eklerdim.",
+    "reading": "ik wid aynen haus von gerostetem knoblauch, etz mal geriebene muskatnuss und aen spritzer zitronensaft hinzufuegen, um die tiefe und frische",
+    "chips": [
+     "Knoblauch",
+     "Muskatnuss",
+     "Zitronensaft"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "shopping",
+  "topic": "Alışveriş",
+  "npcName": "Geschäftsführer",
+  "npcEmoji": "🛍️",
+  "steps": [
+   {
+    "prompt": "Möchten Sie das Produkt in Geschenkpapier verpacken lassen?",
+    "promptTr": "Ürününü hediye paketine koymak ister misiniz?",
+    "answer": "Ja, ich würde gerne, wenn es möglich ist, dass Sie es in einem eleganten Geschenkpapier aus dem oberen Regal verpacken, und vielleicht ein kleines Blatt mit einem Zitat aus der deutschen Literatur aufbringen.",
+    "tr": "Evet, eğer mümkünse üst rafdan gelen şık bir hediye paketiyle paketlenmesini ve belki Almanca edebiyatından bir alıntı içeren küçük bir karton eklenmesini isterim.",
+    "reading": "ya aich vurt graen ven es moegli ist dass es in ainem eleganten geschenkpapier aus dem obmen regal verpacken und vielleicht ein kleines Blat",
+    "chips": [
+     "Verpacken",
+     "Geschenkpapier",
+     "Literatur"
+    ]
+   },
+   {
+    "prompt": "Wie viele Artikel möchten Sie verpacken lassen?",
+    "promptTr": "Kaç ürün paketlenmesini istiyorsunuz?",
+    "answer": "Ich würde drei verschiedene Artikel verpacken lassen, bitte, und ich würde bevorzugen, dass die Verpackungen ein harmonisches Farbschema aus der Farbpalette der Wiese im Frühling haben.",
+    "tr": "Üç farklı ürünü paketlenmesini istiyorum, lütfen, ve paketlerin, bahar zamanında bir tarlanın renk paletinden gelen uyumlu bir renk şemasına sahip olmasını tercih ederim.",
+    "reading": "iich vurt drei verschiedene artikel verpacken lassen bitte iich vurt bevorzugen dass die verpackungen ein harmonisches farbschema aus der fa",
+    "chips": [
+     "Artikel",
+     "Verpackungen",
+     "Farbschema"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie auch eine kleine Nachricht auf der Verpackung anbringen?",
+    "promptTr": "Paketin üzerine küçük bir mesaj eklemek ister misiniz?",
+    "answer": "Ja, ich würde eine elegante, kurz gehaltene Botschaft in lateinischer Schrift wünschen, die mit dem Vers „Der Weg ist das Ziel“ endet, und die Verpackung mit einer filigranen Goldfolie umrandet.",
+    "tr": "Evet, 'Yol hedeftir' sözüyle biten, elen, kısa bir mesajı latince yazılmış olarak ve paketle filigran altın kaplama eklemeyi isterim.",
+    "reading": "ya iich vurt eine elegante kurz gehaltene botschaft in lateinischer schrift wunschen die mit dem vers der weg ist das ziel endet und die ver",
+    "chips": [
+     "Botschaft",
+     "Goldfolie",
+     "lateinischer Schrift"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "music",
+  "topic": "Müzik",
+  "npcName": "Bauer Becker",
+  "npcEmoji": "🏪",
+  "steps": [
+   {
+    "prompt": "Welcher Sänger ist Ihrer Meinung nach der Beste?",
+    "promptTr": "Sizce en iyi şarkıcı kim?",
+    "answer": "Ich glaube, dass Beyoncé aufgrund ihrer herausragenden Bühnenpräsenz, ihrer kraftvollen Stimme und ihrer Fähigkeit, Emotionen in jedes Lied zu tragen, die ultimative Königin des Gesangs ist.",
+    "tr": "Beyoncé, sahne varlığından, güçlü sesinden ve her şarkıya duyguları taşıma yeteneğinden dolayı, sesin kesinlikle kraliçesi olduğuna inanıyorum.",
+    "reading": "ik gelbl dass beyonsay ahts herausragendengs bähnpräsens, ahts kraftvoll ess, ahts fah-eh-ken-ty, em-oh-shons in aits lit träg, dee uhl-tah-",
+    "chips": [
+     "Beyoncé",
+     "Bühnenpräsenz",
+     "Königin"
+    ]
+   },
+   {
+    "prompt": "Wer ist Ihrer Meinung nach die beste Sängerin? Und warum?",
+    "promptTr": "Sizce en iyi şarkıcı kadın kim? Neden?",
+    "answer": "Meiner Ansicht nach ist Adele eine der herausragendsten Sängerinnen, weil ihr melancholisches Gesangsmuster, die präzise Dynamik und ihre eindringliche Bühnenhaltung sie zu einer unvergesslichen Stimme machen.",
+    "tr": "Benim görüşümce Adele, melankolik ses desenleri, kesin dinamikleri ve etkileyici sahne tutumuyla, unutulmaz bir ses yaratıyor.",
+    "reading": "mer-en ansicht nah ist adele aih der herausragendsten sangerin, weil ihr melankolisch ess gestur, die präzise dynamik und ihr ein-dring-lich",
+    "chips": [
+     "Adele",
+     "melankolisch",
+     "Bühnenhaltung"
+    ]
+   },
+   {
+    "prompt": "Wie beeinflusst die Musik Ihrer Arbeit im Laden? Nennen Sie ein Beispiel.",
+    "promptTr": "Mağaza işinizde müzik nasıl etki ediyor? Örnek verin.",
+    "answer": "Die Musik im Laden schafft eine Atmosphäre, die Kunden dazu motiviert, länger zu verweilen, und ein spezielles Beispiel dafür ist, wenn der Klang des Gitarren-Bridge-Refrahs während des Verkaufs einer neuen Limousinenkategorie die Aufmerksamkeit der Besucher auf sich zieht.",
+    "tr": "Mağazadaki müzik, müşterileri daha uzun süre kalmaya teşvik eden bir atmosfer yaratıyor; örnek olarak, yeni lüks araba kategorisini satarken gitar bridge refrainsinin sesi ziyaretçilerin dikkatini çekiyor.",
+    "reading": "die musik im laden schafft eine atmosphaere, die kunden dazu motiviert, länger zu verweilen, und ein spezielles beispiel dafür ist wenn der ",
+    "chips": [
+     "Atmosphäre",
+     "motivier",
+     "Bridge"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "sport",
+  "topic": "Spor",
+  "npcName": "Herr Müller",
+  "npcEmoji": "🚕",
+  "steps": [
+   {
+    "prompt": "Wie fühlt sich das Aufwärmtraining für deine Flexibilität an?",
+    "promptTr": "Isınma antrenmanı esnekliğini nasıl etkiliyor?",
+    "answer": "Die Aufwärmphase bereitet meine Muskeln nicht nur optimal auf die anschließende Dehnung vor, sondern stimuliert gleichzeitig die Durchblutung, wodurch ich ein intensiveres Körpergefühl erlebe und die Gefahr von Verletzungen signifikant reduziert wird.",
+    "tr": "Isınma süreci kaslarımı yalnızca sonraki esnetmeye optimum hazırlamakla kalmaz, aynı zamanda dolaşımı da uyarır; böylece daha yoğun bir beden farkındalığı yaşarım ve yaralanma riskini önemli ölçüde azaltırım.",
+    "reading": "di awf-ahrm-faas-bay bær-teyt ma-ine ma-sel-nah nüt-zu or-puh-teel-uh-uh ah-fah-ree-moh ahn-ahl-dah-nuh fey-nah-hen-tee, fey-ah-bahn-uh-nahn",
+    "chips": [
+     "Aufwärmphase",
+     "Dehnung",
+     "Verletzungen"
+    ]
+   },
+   {
+    "prompt": "Was sind deine Ziele nach dem ersten Yoga-Kurs?",
+    "promptTr": "İlk yoga dersinden sonra hedeflerin ne?",
+    "answer": "Mein Hauptziel besteht darin, eine tiefgreifende Ruhe in meinem Bewusstsein zu etablieren, indem ich die meditativen Elemente der Asana-Praktiken systematisch in meinen täglichen Routinen verankere und gleichzeitig die physische Leistungsfähigkeit steigern kann.",
+    "tr": "Ana hedefim, Asana uygulamalarının meditasyonel öğelerini günlük rutinlerimde sistematik olarak yerleştirerek derin bir huzur ve aynı zamanda fiziksel performansımı artırmak.",
+    "reading": "mayn ha-vahlt-til bas-tet day-ree, ayn-eh tee-freh-guhf-eh-den roo-eh in maihn-eh bay-vhoos-sih-ten tsoo ay-tah-beh-lee-eh-ren, ahb-ehn-ihn ",
+    "chips": [
+     "Hauptziel",
+     "Bewusstsein",
+     "Leistungsfähigkeit"
+    ]
+   },
+   {
+    "prompt": "Welche Veränderungen würdest du im Alltag beobachten, um den Nutzen des Yoga zu maximieren?",
+    "promptTr": "Yoga'nın faydasını maksimize etmek için günlük hayatta ne gibi değişiklikler yapar?",
+    "answer": "Ich plane, meine Schlafgewohnheiten systematisch anzupassen, indem ich frühzeitig mit Atemübungen und progressive Bewegungsablauf in den Morgenritus integriere, während ich gleichzeitig die Atemzüge im Training anstelle des klassischen Flach- und Tiefatmungsmodus mit bewusstem Fokus auf den Körper und die inneren Energien synchronisiert einführe.",
+    "tr": "Uyku düzenlemelerimi sistematik olarak ayarlayarak, sabah rutiniye nefes egzersizleri ve art arda hareketlerle entegre ederek, nefes alışkanlıklarını ve içsel enerji kaynaklarını senkronize ederim.",
+    "reading": "ihn plah-neh, ma-ine shlap-guh-voh-nen-hah-ten sis-tem-ah-tik ahn-zoo-pah-sen, ahb-ehn-ihn ayn fri-uh-tshah-yig mit ah-tem-oo-beh-oo-guh-nen",
+    "chips": [
+     "Schlafgewohnheiten",
+     "Atemübungen",
+     "Energien"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "hobbies",
+  "topic": "Hobiler",
+  "npcName": "Nurse Liesel",
+  "npcEmoji": "🩺",
+  "steps": [
+   {
+    "prompt": "Wie können wir die Spieleabende optimal für die Patienten gestalten, damit sie gleichzeitig entspannen und aktiv bleiben?",
+    "promptTr": "Oyun gecelerini hastalar için hem rahatlatıcı hem de aktif kalmalarını sağlayacak şekilde nasıl en iyi şekilde düzenleyebiliriz?",
+    "answer": "Wir sollten eine Mischung aus kooperativen und kompetitiven Spielen anbieten, bei denen die Patienten in kleinen Gruppen zusammenarbeiten, um komplexe Rätsel zu lösen, während sie gleichzeitig ihre Reaktionsgeschwindigkeit und ihr strategisches Denken trainieren.",
+    "tr": "Kooperatif ve rekabetçi oyunların karışımını sunmalıyız, böylece hastalar küçük gruplar halinde karmaşık bulmacaları çözmek için birlikte çalışır ve aynı anda reaksiyon hızlarını ve stratejik düşünme becerilerini eğitirler.",
+    "reading": "",
+    "chips": [
+     "Kooperativen",
+     "Rätsel",
+     "Reaktionsgeschwindigkeit"
+    ]
+   },
+   {
+    "prompt": "Welche ruhigen Aktivitäten können wir zusätzlich zum Spiel anbieten, um eine entspannte Atmosphäre zu schaffen, besonders für die älteren Patienten?",
+    "promptTr": "Oyuna ek olarak, özellikle yaşlı hastalar için rahatlatıcı bir atmosfer yaratmak adına hangi sakin aktiviteleri sunabiliriz?",
+    "answer": "Wir können ein beruhigendes Musikstück mit sanften Klängen vorspielen und anschließend eine kurze Meditation mit Atemübungen anbieten, die die Patienten in eine friedliche, zentrierte Stimmung versetzt und dabei die Atemfrequenz senkt.",
+    "tr": "Rahatlatıcı bir müzik parçası çalarak yumuşak seslerle ve ardından nefes egzersizleriyle kısa bir meditasyon sunarak hastaları sakin, dengeli bir ruh haline sokar ve solunum hızını düşürürüz.",
+    "reading": "vi r z e n a r b i c e v r e d e r e l e n",
+    "chips": [
+     "Beruhigendes",
+     "Meditation",
+     "Atemübungen"
+    ]
+   },
+   {
+    "prompt": "Wie können wir die Sitzordnung so anpassen, dass die Patienten nicht nur die Spiele verfolgen, sondern auch die Gespräche in der Runde verfolgen können, ohne die Gruppendynamik zu stören?",
+    "promptTr": "Hasta oyunları izlemenin yanı sıra sohbetleri de takip edebilsin, grup dinamiğini bozmayacak şekilde oturma düzenini nasıl ayarlayabiliriz?",
+    "answer": "Wir sollten die Tische in einer U-Form anordnen, sodass jeder Spieler einen klaren Blick auf die Spiele und das Gespräch hat; zusätzlich platzieren wir ein mobiles Tablet am Tisch, damit die Patienten die Spielstände verfolgen können, während sie die Diskussionen im Raum aufnehmen.",
+    "tr": "Masa düzenini U şeklinde yerleştirerek her oyuncunun oyunları ve sohbeti net bir şekilde görebileceği bir konumda olmalarını sağlamalıyız; ayrıca masaya taşınabilir bir tablet yerleştirerek hastaların oyun durumlarını takip edebilmelerini ve odadaki tartışmaları izleyebilmelerini sağlayabiliriz.",
+    "reading": "",
+    "chips": [
+     "U-Form",
+     "Mobiles Tablet",
+     "Spielstände"
+    ]
+   }
+  ]
  }
 ]
