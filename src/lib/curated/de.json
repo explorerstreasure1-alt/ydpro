@@ -2299,5 +2299,95 @@
     ]
    }
   ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "restaurant",
+  "topic": "Restoran",
+  "npcName": "Chefkoch",
+  "npcEmoji": "👨‍🍳",
+  "steps": [
+   {
+    "prompt": "Welches Gericht würden Sie uns heute besonders ans Herz legen, um unsere Gäste von der üblichen Auswahl zu überraschen?",
+    "promptTr": "Bugün konuklarımızı alışılmış seçimden şaşırtmak için hangi yemeği özellikle önerebilirsiniz?",
+    "answer": "Ich würde Ihnen das filigrane Lachsfilet auf Safranrisotto empfehlen, das wir mit einem Hauch von Zitronenverbene verfeinert haben, um die Geschmacksknospen zu stimulieren.",
+    "tr": "Size safran risottolu ince işlenmiş somon filetosunu öneririm, üzerine hafif bir limon otu dokunuşu ekledik, böylece tat tomurcuklarını uyarır.",
+    "reading": "ih vurd ihnen das filigrane laxfilet auf safranrisotto empfehlen das vi mit einem hauch fon zitronenverbene ferfainert haben um di geschmack",
+    "chips": [
+     "Lachsfilet",
+     "Safranrisotto",
+     "Zitronenverbene"
+    ]
+   },
+   {
+    "prompt": "Könnten Sie dabei bitte berücksichtigen, dass unser Tisch neben dem großen Fenster sitzt, sodass das Licht die Präsentation optimal unterstreicht?",
+    "promptTr": "Bununla birlikte, masamız büyük pencerenin yanında oturduğu için ışığın sunumu en iyi şekilde vurguladığını göz önünde bulundurabilir misiniz?",
+    "answer": "Selbstverständlich, ich präsentiere das Lachsfilet kunstvoll auf einer porzellanverzierten Platte, deren Spiegelglanz das einfallende Sonnenlicht reflektiert und dem Gericht eine visuelle Eleganz verleiht.",
+    "tr": "Tabii ki, somon filetosunu bir porselen süslemeli tabağa sanatsal bir şekilde sunuyorum, yansıtıcı parlaması gelen güneş ışığını yansıtıyor ve yemeğe görsel bir zarafet katıyor.",
+    "reading": "zelbstfershteind iç prezantiere das laxfilet kunstvoll auf einer porzellanverzierten platte deren spiegelglanz das einfallende sonnenlicht r",
+    "chips": [
+     "porzellanverzierten",
+     "Spiegelglanz",
+     "visuelle Eleganz"
+    ]
+   },
+   {
+    "prompt": "Bitte formulieren Sie eine kurze, aber pointierte Beschreibung für die Speisekarte, die sowohl die kulinarische Raffinesse als auch die saisonale Frische hervorhebt.",
+    "promptTr": "Menüde hem mutfaki inceliği hem de mevsimsel tazeliği vurgulayan kısa ama öz bir tanım lütfen yazın.",
+    "answer": "Ein zartes Lachsfilet, seidig umhüllt von Safranrisotto, gekrönt von einer dezenten Zitronenverbene‑Note, die das frische Aroma des Nordseefischs mit dem aromatischen Duft des Frühlings verbindet.",
+    "tr": "İnce bir somon filetosu, ipeksi safran risotto ile sarılmış, hafif bir limon otu notasıyla taçlanmış, bu da Kuzey Denizi balığının taze aromasını baharın aromatik kokusuyla birleştiriyor.",
+    "reading": "ain tsartes laxfilet, zaidig umhilt fon safranrisotto, gekront fon aynen dezenten zitronenverbene-note die das frische aroma des nordseefisc",
+    "chips": [
+     "zartes",
+     "dezenten",
+     "Frühlings"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "C2",
+  "topicKey": "phone",
+  "topic": "Telefon",
+  "npcName": "Nachbarin Anna",
+  "npcEmoji": "👩‍🌾",
+  "steps": [
+   {
+    "prompt": "Hätten Sie einen Moment, um unseren morgigen Termin um eine Stunde nach hinten zu verschieben?",
+    "promptTr": "Yarınki randevumuzu bir saat erteleme zamanı bulabilir misiniz?",
+    "answer": "Selbstverständlich, ich kann den Termin um 15:00 Uhr einrichten, wenn das für Sie passt.",
+    "tr": "Elbette, eğer sizin için uygunsa randevuyu 15:00'te ayarlayabilirim.",
+    "reading": "selbstverstanlich, ich kann den termin um 15:00 uhr einrichten, wenn das fur zee passt",
+    "chips": [
+     "termin",
+     "einrichten",
+     "Uhr"
+    ]
+   },
+   {
+    "prompt": "Falls das nicht möglich ist, welche anderen Zeiten könnten für Sie geeignet sein?",
+    "promptTr": "Eğer bu mümkün değilse, sizin için hangi diğer saatler uygun olabilir?",
+    "answer": "Sollte 15:00 Uhr unpassend sein, schlage ich 17:30 Uhr vor; alternativ wäre der nächste Dienstag um 10:30 Uhr passend. Ich werde den neuen Termin mit meinem Kompass im Kalender markieren.",
+    "tr": "Eğer 15:00 uygun değilse, 17:30'ı öneriyorum; alternatif olarak gelecek Salı günü 10:30 uygun olur. Yeni randevuyu kompass'imle takvimde işaretleyeceğim.",
+    "reading": "sollte 15:00 uhr unpassend sein, schlage ich 17:30 uhr vor; alternativ ware der nächste dienstag um 10:30 uhr passend. ich werde den neuen t",
+    "chips": [
+     "unpassend",
+     "vor",
+     "Kalender"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie, dass ich die Änderung schriftlich bestätige, zum Beispiel per E‑Mail?",
+    "promptTr": "Değişikliği yazılı olarak, örneğin e-posta ile teyit etmemi ister misiniz?",
+    "answer": "Ja, bitte senden Sie mir eine kurze Bestätigung per E‑Mail; ich prüfe den Termin anschließend in meinem Kalender.",
+    "tr": "Evet, lütfen e-posta ile kısa bir teyit gönderin; ardından randevuyu takvimimde kontrol edeceğim.",
+    "reading": "ja, bitte senden sie mir eine kurze bestätigung per e mail; ich prüfe den termin anschliessend in meinem kalender",
+    "chips": [
+     "Bestätigung",
+     "E-Mail",
+     "Kalender"
+    ]
+   }
+  ]
  }
 ]
