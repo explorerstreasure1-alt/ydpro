@@ -22,7 +22,10 @@ export async function POST(req: NextRequest) {
 
   const lesson = await generateLesson(langName, level, topic, nativeName, fresh, seen, topicKey);
   if (!lesson) {
-    // Offline/AI yoksa: ders bölümü ölmesin — seviyeye uyarlanmış taban + offline bayrağı
+    // Önce yedek paket (anlamlı+okunuşlu hazır ders), o da yoksa çevrimdışı taban
+    const { curatedLesson } = await import("@/lib/curated");
+    const pack = curatedLesson(langCode, level, topicKey, seen);
+    if (pack) return Response.json(pack);
     const { offlineLessonSteps } = await import("@/lib/ai");
     return Response.json({
       npcName: "Rehber",

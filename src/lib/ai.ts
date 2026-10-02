@@ -1054,6 +1054,7 @@ TRANSLATION FIDELITY (promptTr/tr are the learner's lifeline — mistakes here t
 - promptTr translates ONLY "prompt". "tr" translates ONLY "answer". NEVER cross them, NEVER invent people/places/names that aren't in the sentence.
 - Natural ${nativeLangName}, not word-for-wordrobotic. Watch cases/plurals/tense (e.g., "to the hotel" = "otele", not "otelleri").
 - If the sentence is short, the translation is short. No explanations inside translations.
+- Domain terms in STANDARD everyday Turkish (train platform=peron NEVER perde, reservation=rezervasyon, gate=kapı, counter=gişe, dormitory=yurt). When unsure, choose the common word.
 - Format example ONLY (do NOT copy its content):
   {"prompt":"Where is the bus stop?","promptTr":"Otobüs durağı nerede?","answer":"It is near the bank.","tr":"Bankanın yanında.","reading":"it iz niir dhuh bengk","chips":["near","bank"]}
 - "reading": pronunciation of "answer" written in SIMPLE Latin letters a ${nativeLangName} speaker can sound out cold (e.g., English "thought" → "sot", Chinese "你好" → "ni hao", Japanese "こんにちは" → "konnichiwa", Arabic "مرحبا" → "merhaba", Russian "спасибо" → "spasiba"). ALWAYS fill it, even when the answer is already Latin.
@@ -1070,7 +1071,7 @@ Keep answers appropriate to the ${level} level. Do not add explanations.`,
         { role: "user", content: `Generate the ${topicName} lesson at ${level} in ${langName}.
 THIS LESSON'S SCENARIO (all 3 turns MUST happen inside this exact situation, nowhere else): ${variety.angle}.
 THIS LESSON'S CHARACTER (npcName/npcEmoji must fit this role): a ${variety.npcRole} (native ${langName} speaker).
-Session seed word "${variety.seedWord}" — let it inspire one small concrete detail (an object, a place, a name) somewhere in the 3 turns, so this lesson can never be identical to another.
+Session seed word "${variety.seedWord}" — you MAY use it as ONE small detail in ONE turn at most. NEVER repeat it across turns, NEVER force it where it doesn't fit, NEVER let it dominate the lesson.
 ${fresh ? "This must be a FRESH variant — new questions, new answers, new details." : ""}${forbidden ? `\n${forbidden}` : ""}` },
       ],
     };

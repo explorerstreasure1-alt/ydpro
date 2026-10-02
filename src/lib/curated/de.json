@@ -1,0 +1,2303 @@
+[
+ {
+  "level": "A1",
+  "topicKey": "travel",
+  "topic": "Seyahat",
+  "npcName": "Chef",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Wie viel Euro möchten Sie kaufen?",
+    "promptTr": "Kaç Euro almak istiyorsunuz?",
+    "answer": "Ich möchte zwanzig Euro.",
+    "tr": "Yirmi Euro istiyorum.",
+    "reading": "ihm muhtuh tsvantsich oiy-ro",
+    "chips": [
+     "zwanzig",
+     "Euro"
+    ]
+   },
+   {
+    "prompt": "Wie viel kostet ein Euro am Kiosk neben der Brücke?",
+    "promptTr": "Köprünün yanındaki kiosk'ta bir Euro kaç lira?",
+    "answer": "Ein Euro kostet einen Euro.",
+    "tr": "Bir Euro bir Euro’ya eşittir.",
+    "reading": "ayn oiy-ro kostet aynen oiy-ro",
+    "chips": [
+     "Euro",
+     "kostet"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie einen Wechselbeleg?",
+    "promptTr": "Bir değişim makbuzu ister misiniz?",
+    "answer": "Ja, bitte.",
+    "tr": "Evet, lütfen.",
+    "reading": "",
+    "chips": [
+     "Ja",
+     "bitte"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "airport",
+  "topic": "Havaalanı",
+  "npcName": "Lena",
+  "npcEmoji": "👭",
+  "steps": [
+   {
+    "prompt": "Entschuldige, weißt du, wann unser Flug nach Berlin abfliegt?",
+    "promptTr": "Affedersiniz, Berlin'e uçuşumuz ne zaman kalkıyor?",
+    "answer": "Der Flug geht um vierzehn Uhr.",
+    "tr": "Uçuş saat dörtte on çıkıyor.",
+    "reading": "de:r flug geit um firtse:n uhr",
+    "chips": [
+     "Flug",
+     "Uhr"
+    ]
+   },
+   {
+    "prompt": "Der Flug ist verspätet. Weißt du, wie lange die Verspätung ist?",
+    "promptTr": "Uçuş gecikti. Gecikmenin ne kadar sürdüğünü biliyor musun?",
+    "answer": "Die Verspätung ist dreißig Minuten.",
+    "tr": "Gecikme otuz dakika.",
+    "reading": "dee fer-shaet-ung ist draißig minute",
+    "chips": [
+     "Verspätung",
+     "Minuten"
+    ]
+   },
+   {
+    "prompt": "Wir können im Wartebereich sitzen, dort ist eine Wiese.",
+    "promptTr": "Bekleme alanında oturabiliriz, orada bir çayır var.",
+    "answer": "Ja, wir setzen uns dort.",
+    "tr": "Evet, orada oturacağız.",
+    "reading": "ja vi zetzen uns dort",
+    "chips": [
+     "setzen",
+     "dort"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "hotel",
+  "topic": "Otel",
+  "npcName": "Herr Müller",
+  "npcEmoji": "🛍️",
+  "steps": [
+   {
+    "prompt": "Warum ist es laut im Zimmer?",
+    "promptTr": "Odada neden gürültü var?",
+    "answer": "Es ist laut.",
+    "tr": "Oda gürültülü.",
+    "reading": "es iz laut",
+    "chips": [
+     "laut"
+    ]
+   },
+   {
+    "prompt": "Haben Sie etwas im Zimmer, das das Geräusch verursacht?",
+    "promptTr": "Odada ses çıkaran bir şey var mı?",
+    "answer": "Ja, ich habe eine Laterne.",
+    "tr": "Evet, bir lamba var.",
+    "reading": "",
+    "chips": [
+     "Laterne"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie ein anderes Zimmer?",
+    "promptTr": "Başka bir odaya geçmek ister misiniz?",
+    "answer": "Ja, bitte.",
+    "tr": "Evet, lütfen.",
+    "reading": "",
+    "chips": [
+     "bitte"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "restaurant",
+  "topic": "Restoran",
+  "npcName": "Lena",
+  "npcEmoji": "👩‍🍳",
+  "steps": [
+   {
+    "prompt": "Möchtest du heute Abend einen Tisch reservieren?",
+    "promptTr": "Bu akşam bir masa ayırtmak ister misin?",
+    "answer": "Ja, ich möchte einen Tisch für zwei Personen reservieren.",
+    "tr": "Evet, iki kişi için bir masa ayırtmak istiyorum.",
+    "reading": "ja iç möçte aynen tisch fyyr tsvai pörzönön rezärviiren",
+    "chips": [
+     "Tisch",
+     "zwei Personen",
+     "reservieren"
+    ]
+   },
+   {
+    "prompt": "Um wie viel Uhr?",
+    "promptTr": "Saat kaçta?",
+    "answer": "Um acht Uhr.",
+    "tr": "Saat sekizde.",
+    "reading": "um aht uhr",
+    "chips": [
+     "acht",
+     "Uhr"
+    ]
+   },
+   {
+    "prompt": "Ich habe einen schönen Tisch neben der Brücke.",
+    "promptTr": "Köprünün yanında güzel bir masam var.",
+    "answer": "Das ist gut, danke.",
+    "tr": "Bu iyi, teşekkürler.",
+    "reading": "",
+    "chips": [
+     "gut",
+     "danke"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "shopping",
+  "topic": "Alışveriş",
+  "npcName": "Lena",
+  "npcEmoji": "🧳",
+  "steps": [
+   {
+    "prompt": "Möchten Sie die Jacke anprobieren?",
+    "promptTr": "Ceketi denemek ister misiniz?",
+    "answer": "Ja, bitte.",
+    "tr": "Evet, lütfen.",
+    "reading": "ya, bitte",
+    "chips": [
+     "ja",
+     "bitte"
+    ]
+   },
+   {
+    "prompt": "Wie fühlen Sie sich in der Größe M?",
+    "promptTr": "M bedeninde nasıl hissediyorsunuz?",
+    "answer": "Sie ist zu groß.",
+    "tr": "Çok büyük.",
+    "reading": "zee ist tsu gross",
+    "chips": [
+     "groß"
+    ]
+   },
+   {
+    "prompt": "Nehmen Sie die Jacke? (Der Fluss neben dem Laden ist schön.)",
+    "promptTr": "Ceketi alıyor musunuz? (Mağazanın yanındaki nehir güzel.)",
+    "answer": "Ich nehme sie.",
+    "tr": "Alıyorum.",
+    "reading": "ich nehm-uh zee",
+    "chips": [
+     "nehmen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "work",
+  "topic": "İş",
+  "npcName": "Taxi Fahrer",
+  "npcEmoji": "🚕",
+  "steps": [
+   {
+    "prompt": "Wie viel verdienen Sie im Monat?",
+    "promptTr": "Ayda ne kadar kazanıyorsunuz?",
+    "answer": "Ich verdiene 2000 Euro.",
+    "tr": "Ayda iki bin Euro kazanıyorum.",
+    "reading": "ih fer-dee-neh zwei-tys-uh ro",
+    "chips": [
+     "verdienen",
+     "Euro"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie mehr Geld?",
+    "promptTr": "Daha fazla para istiyor musunuz?",
+    "answer": "Ja, ich möchte mehr Geld.",
+    "tr": "Evet, daha fazla para istiyorum.",
+    "reading": "ya ih mer-teh mehr gelt",
+    "chips": [
+     "möchte",
+     "Geld"
+    ]
+   },
+   {
+    "prompt": "Wann bekommen Sie die Gehaltserhöhung?",
+    "promptTr": "Maaş artışını ne zaman alacaksınız?",
+    "answer": "Ich bekomme die Erhöhung nächsten Monat.",
+    "tr": "Maaş artışını gelecek ay alıyorum.",
+    "reading": "ih bekoome dee erhoong neks-ten monaht",
+    "chips": [
+     "Erhöhung",
+     "Monat"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "education",
+  "topic": "Eğitim",
+  "npcName": "Mutter",
+  "npcEmoji": "👩‍🍼",
+  "steps": [
+   {
+    "prompt": "Gibt es ein Problem in deinem Zimmer?",
+    "promptTr": "Odadaki odanda bir sorun var mı?",
+    "answer": "Ja, das Fenster ist kaputt.",
+    "tr": "Evet, pencere kırık.",
+    "reading": "ya das fens-ter ist kaput",
+    "chips": [
+     "Fenster",
+     "kaputt"
+    ]
+   },
+   {
+    "prompt": "Braucht du etwas zum Lesen?",
+    "promptTr": "Okumak için bir şeye ihtiyacın var mı?",
+    "answer": "Ja, ich brauche eine Laterne.",
+    "tr": "Evet, bir fener lazım.",
+    "reading": "ya iç ba-ue ayn-eh la-ter-neh",
+    "chips": [
+     "Laterne",
+     "brauche"
+    ]
+   },
+   {
+    "prompt": "Wie können wir das Problem lösen?",
+    "promptTr": "Bu sorunu nasıl çözeceğiz?",
+    "answer": "Wir reparieren das Fenster morgen.",
+    "tr": "Pencereyi yarın tamir edeceğiz.",
+    "reading": "vur re-pa-ri-ren das fens-ter mor-gen",
+    "chips": [
+     "reparieren",
+     "morgen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "health",
+  "topic": "Sağlık",
+  "npcName": "Klaus",
+  "npcEmoji": "🚕",
+  "steps": [
+   {
+    "prompt": "Wie geht es Ihnen?",
+    "promptTr": "Nasılsınız?",
+    "answer": "Mir geht es gut.",
+    "tr": "İyiyim.",
+    "reading": "mir geit es guut",
+    "chips": [
+     "gut"
+    ]
+   },
+   {
+    "prompt": "Haben Sie Schmerzen? (Ich sehe, dass Sie auf der Wiese warten.)",
+    "promptTr": "Ağrınız var mı? (Çimenlikte beklediğinizi görüyorum.)",
+    "answer": "Ja, ich habe Kopfschmerzen.",
+    "tr": "Evet, başım ağrıyor.",
+    "reading": "ya iH ha-be kopf-shmen",
+    "chips": [
+     "Kopfschmerzen"
+    ]
+   },
+   {
+    "prompt": "Brauchen Sie ein Rezept?",
+    "promptTr": "Bir reçeteye ihtiyacınız var mı?",
+    "answer": "Ja, bitte.",
+    "tr": "Evet, lütfen.",
+    "reading": "ya bitte",
+    "chips": [
+     "bitte"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "daily",
+  "topic": "Günlük hayat",
+  "npcName": "Krankenschwester Anna",
+  "npcEmoji": "🩺",
+  "steps": [
+   {
+    "prompt": "Möchtest du die Wäsche waschen?",
+    "promptTr": "Çamaşır yıkamak ister misin?",
+    "answer": "Ja, ich möchte die Wäsche waschen.",
+    "tr": "Evet, çamaşırı yıkamak istiyorum.",
+    "reading": "",
+    "chips": [
+     "Wäsche",
+     "waschen"
+    ]
+   },
+   {
+    "prompt": "Wo ist die Waschmaschine?",
+    "promptTr": "Çamaşır makinesi nerede?",
+    "answer": "Sie ist neben der Lampe im Waschraum.",
+    "tr": "O, lambanın yanında çamaşır odasında.",
+    "reading": "zi ist neben der lampe im vaşraʊm",
+    "chips": [
+     "Waschmaschine",
+     "Lampe"
+    ]
+   },
+   {
+    "prompt": "Wie viel kostet das Waschen?",
+    "promptTr": "Yıkama ne kadar?",
+    "answer": "Es kostet drei Euro.",
+    "tr": "Üç euro tutuyor.",
+    "reading": "es kostet dʀai oʀo",
+    "chips": [
+     "drei",
+     "Euro"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "social",
+  "topic": "Sosyal",
+  "npcName": "Felix",
+  "npcEmoji": "👨‍🍳",
+  "steps": [
+   {
+    "prompt": "Entschuldigung für meine späte Antwort, was möchten Sie bestellen?",
+    "promptTr": "Geç cevap için özür dilerim, ne sipariş vermek istersiniz?",
+    "answer": "Ich möchte einen Kaffee, bitte.",
+    "tr": "Bir kahve lütfen.",
+    "reading": "ihç mochte aynen kahfe bitte",
+    "chips": [
+     "Kaffee"
+    ]
+   },
+   {
+    "prompt": "Haben Sie die Laterne auf dem Tisch gesehen?",
+    "promptTr": "Masadaki feneri gördünüz mü?",
+    "answer": "Ja, ich sehe die Laterne.",
+    "tr": "Evet, feneri görüyorum.",
+    "reading": "",
+    "chips": [
+     "Laterne"
+    ]
+   },
+   {
+    "prompt": "Vielen Dank für Ihre Geduld.",
+    "promptTr": "Sabrınız için çok teşekkür ederim.",
+    "answer": "Gern geschehen.",
+    "tr": "Rica ederim.",
+    "reading": "gern ge-shen",
+    "chips": [
+     "gern"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "transport",
+  "topic": "Ulaşım",
+  "npcName": "Herr Strenge",
+  "npcEmoji": "👨‍🏫",
+  "steps": [
+   {
+    "prompt": "Wo haben Sie das Auto stehen lassen?",
+    "promptTr": "Arabanızı nerede park ettiniz?",
+    "answer": "Ich habe eine Panne.",
+    "tr": "Arabamda arıza var.",
+    "reading": "",
+    "chips": [
+     "Panne"
+    ]
+   },
+   {
+    "prompt": "Können Sie mir sagen, wo Sie sind?",
+    "promptTr": "Nerede olduğunuzu söyleyebilir misiniz?",
+    "answer": "Ich bin auf der Wiese.",
+    "tr": "Ben çayırdayım.",
+    "reading": "ich bin auf der vi-ze",
+    "chips": [
+     "Wiese"
+    ]
+   },
+   {
+    "prompt": "Brauchen Sie einen Abschleppdienst?",
+    "promptTr": "Bir çekiciye ihtiyacınız var mı?",
+    "answer": "Ja, ich brauche einen Abschleppdienst.",
+    "tr": "Evet, bir çekiciye ihtiyacım var.",
+    "reading": "",
+    "chips": [
+     "Abschleppdienst"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "money",
+  "topic": "Para",
+  "npcName": "Herr Lehrer",
+  "npcEmoji": "👨‍🏫",
+  "steps": [
+   {
+    "prompt": "Wie viel Miete zahlen Sie jeden Monat?",
+    "promptTr": "Aylık ne kadar kira ödüyorsunuz?",
+    "answer": "Ich zahle fünfhundert Euro.",
+    "tr": "Beş yüz Euro ödüyorum.",
+    "reading": "ich zahle fuunfhundert euro",
+    "chips": [
+     "Miete",
+     "zahlen",
+     "Euro"
+    ]
+   },
+   {
+    "prompt": "Haben Sie die Rechnung für die Miete erhalten?",
+    "promptTr": "Kira faturası aldınız mı?",
+    "answer": "Ja, ich habe die Rechnung neben der Lampe gefunden.",
+    "tr": "Evet, faturayı lamba yanında buldum.",
+    "reading": "ja ich habe di rechnung neben der lampe gefunden",
+    "chips": [
+     "Rechnung",
+     "Lampe",
+     "gefunden"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie die Miete per Banküberweisung zahlen?",
+    "promptTr": "Kirayı banka havalesiyle ödemek ister misiniz?",
+    "answer": "Ja, ich zahle per Banküberweisung.",
+    "tr": "Evet, banka havalesiyle ödüyorum.",
+    "reading": "ja ich zahle per bankueberweisung",
+    "chips": [
+     "Banküberweisung",
+     "zahlen",
+     "Miete"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "weather",
+  "topic": "Hava durumu",
+  "npcName": "Chef",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Hast du einen Regenschirm?",
+    "promptTr": "Şemsiye var mı?",
+    "answer": "Nein, ich habe keinen Regenschirm.",
+    "tr": "Hayır, şemsiyem yok.",
+    "reading": "nain, iç hab naynen regenschirm",
+    "chips": [
+     "Regenschirm",
+     "keinen"
+    ]
+   },
+   {
+    "prompt": "Der Regen ist stark, wir müssen schnell ins Büro gehen.",
+    "promptTr": "Yağmur şiddetli, hızlıca ofise gitmeliyiz.",
+    "answer": "Ja, ich laufe zum Büro.",
+    "tr": "Evet, ofise koşuyorum.",
+    "reading": "ya, iç laufe tsum büro",
+    "chips": [
+     "Büro",
+     "laufe"
+    ]
+   },
+   {
+    "prompt": "Vielleicht gibt es einen Fluss in der Nähe, wir können dort unterstellen.",
+    "promptTr": "Belki yakında bir nehir var, orada sığınabiliriz.",
+    "answer": "Ich warte unter dem Dach am Fluss.",
+    "tr": "Nehrin yanındaki çatı altında bekliyorum.",
+    "reading": "iç varte unter dem dakh am flus",
+    "chips": [
+     "Fluss",
+     "Dach"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "phone",
+  "topic": "Telefon",
+  "npcName": "Fritz der Taxifahrer",
+  "npcEmoji": "🚕",
+  "steps": [
+   {
+    "prompt": "Warum sind Sie zu spät?",
+    "promptTr": "Neden geç kaldınız?",
+    "answer": "Ich habe verschlafen.",
+    "tr": "Uykumu kaçırdım.",
+    "reading": "ich ha: be ferschla:fen",
+    "chips": [
+     "verschlafen"
+    ]
+   },
+   {
+    "prompt": "Entschuldigung, ich fahre gerade am Garten vorbei, um wie viel Uhr müssen Sie bei der Arbeit sein?",
+    "promptTr": "Affedersiniz, şu anda bahçenin yanından geçiyorum, işte saat kaçta olmalısınız?",
+    "answer": "Um neun Uhr.",
+    "tr": "Saat dokuzda.",
+    "reading": "um noin uur",
+    "chips": [
+     "neun"
+    ]
+   },
+   {
+    "prompt": "Soll ich Ihrem Chef Bescheid sagen?",
+    "promptTr": "Patronunuza haber vermemi ister misiniz?",
+    "answer": "Ja, bitte rufen Sie ihn an.",
+    "tr": "Evet, lütfen onu arayın.",
+    "reading": "",
+    "chips": [
+     "bitte",
+     "rufen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "food",
+  "topic": "Yemek yapım",
+  "npcName": "Herr Strenge",
+  "npcEmoji": "👨‍🏫",
+  "steps": [
+   {
+    "prompt": "Möchten Sie frischen Fisch kaufen?",
+    "promptTr": "Taze balık almak ister misiniz?",
+    "answer": "Ja, ich möchte frischen Fisch kaufen.",
+    "tr": "Evet, taze balık almak istiyorum.",
+    "reading": "",
+    "chips": [
+     "frischen",
+     "Fisch",
+     "kaufen"
+    ]
+   },
+   {
+    "prompt": "Wie viel kostet ein Kilogramm Lachs?",
+    "promptTr": "Bir kilogram somon kaç lira?",
+    "answer": "Ein Kilogramm Lachs kostet drei Euro.",
+    "tr": "Bir kilogram somon üç Euro.",
+    "reading": "ayn kilograma laks kostet drai oyro",
+    "chips": [
+     "Kilogramm",
+     "Lachs",
+     "Euro"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie den Fisch zu Hause im Garten grillen?",
+    "promptTr": "Balığı evde bahçede ızgara yapmak ister misiniz?",
+    "answer": "Ja, ich grille den Fisch im Garten.",
+    "tr": "Evet, balığı bahçede ızgara yapacağım.",
+    "reading": "ya ih grille den fisch im garden",
+    "chips": [
+     "grillen",
+     "Garten",
+     "Fisch"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "music",
+  "topic": "Müzik",
+  "npcName": "Herr Lehrer",
+  "npcEmoji": "👨‍🏫",
+  "steps": [
+   {
+    "prompt": "Wer ist dein Lieblingssänger?",
+    "promptTr": "Senin en sevdiğin şarkıcı kim?",
+    "answer": "Mein Lieblingssänger ist Ed Sheeran.",
+    "tr": "Benim en sevdiğim şarkıcı Ed Sheeran.",
+    "reading": "mayn leeblingszenger ist ed sheeren",
+    "chips": [
+     "Lieblingssänger",
+     "ist"
+    ]
+   },
+   {
+    "prompt": "Warum magst du ihn?",
+    "promptTr": "Neden onu seviyorsun?",
+    "answer": "Weil er schöne Lieder singt.",
+    "tr": "Çünkü o güzel şarkılar söylüyor.",
+    "reading": "vail er schoene leeder zingt",
+    "chips": [
+     "schöne",
+     "Lieder"
+    ]
+   },
+   {
+    "prompt": "Siehst du die Laterne im Klassenraum? Wer ist deiner Meinung nach der beste Sänger?",
+    "promptTr": "Sınıftaki feneri görüyor musun? Senin en iyi şarkıcı kim?",
+    "answer": "Ich denke, er ist der beste Sänger.",
+    "tr": "Bence o en iyi şarkıcı.",
+    "reading": "ich denke er ist der beste zenger",
+    "chips": [
+     "beste",
+     "Sänger"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "sport",
+  "topic": "Spor",
+  "npcName": "Chef",
+  "npcEmoji": "🧑‍💼",
+  "steps": [
+   {
+    "prompt": "Möchten Sie an der Yoga‑Stunde teilnehmen?",
+    "promptTr": "Yoga dersine katılmak ister misiniz?",
+    "answer": "Ja, ich möchte teilnehmen.",
+    "tr": "Evet, katılmak istiyorum.",
+    "reading": "ya, iç möçte teilnaimen",
+    "chips": [
+     "möchte",
+     "teilnehmen"
+    ]
+   },
+   {
+    "prompt": "Wie oft trainieren Sie?",
+    "promptTr": "Ne kadar sık antrenman yapıyorsunuz?",
+    "answer": "Ich trainiere einmal pro Woche.",
+    "tr": "Haftada bir kez antrenman yapıyorum.",
+    "reading": "iç treniere aynmal pro voche",
+    "chips": [
+     "einmal",
+     "Woche"
+    ]
+   },
+   {
+    "prompt": "Der Kurs findet im Garten statt, ist das okay?",
+    "promptTr": "Kurs bahçede yapılacak, sorun mu?",
+    "answer": "Ja, das ist gut.",
+    "tr": "Evet, bu iyi.",
+    "reading": "ya, das ist guut",
+    "chips": [
+     "Garten",
+     "gut"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A1",
+  "topicKey": "hobbies",
+  "topic": "Hobiler",
+  "npcName": "Lena",
+  "npcEmoji": "👩‍🌾",
+  "steps": [
+   {
+    "prompt": "Wie pflegst du deine Blumen?",
+    "promptTr": "Çiçeklerine nasıl bakıyorsun?",
+    "answer": "Ich gieße sie jeden Tag.",
+    "tr": "Onları her gün suluyorum.",
+    "reading": "ih giyese zee yeden tahg",
+    "chips": [
+     "gieße",
+     "Tag"
+    ]
+   },
+   {
+    "prompt": "Welches Werkzeug brauchst du zum Pflanzen?",
+    "promptTr": "Bitkileri ekmek için hangi alet gerekir?",
+    "answer": "Ich brauche eine Schaufel.",
+    "tr": "Bir kürek lazım.",
+    "reading": "ih brauche ayne shaufel",
+    "chips": [
+     "Schaufel"
+    ]
+   },
+   {
+    "prompt": "Wie benutzt du den Kompass im Garten?",
+    "promptTr": "Bahçede pusulayı nasıl kullanıyorsun?",
+    "answer": "Ich stelle ihn neben den Rosen auf den Kompass.",
+    "tr": "Pusulayı güllerin yanına koyarım.",
+    "reading": "",
+    "chips": [
+     "Kompass",
+     "Rosen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "travel",
+  "topic": "Seyahat",
+  "npcName": "Herr Müller",
+  "npcEmoji": "🛍️",
+  "steps": [
+   {
+    "prompt": "Möchten Sie ein Taxi zum Flughafen bestellen?",
+    "promptTr": "Havalimanına bir taksi istemek ister misiniz?",
+    "answer": "Ja, bitte. Können Sie ein Taxi zum Flughafen rufen?",
+    "tr": "Evet, lütfen. Bana havalimanına taksi çağırabilir misiniz?",
+    "reading": "ya, bitte. koennen zi ain taksi tsum flughafen ru-fen",
+    "chips": [
+     "Taxi",
+     "Flughafen"
+    ]
+   },
+   {
+    "prompt": "Wie viele Personen reisen und haben Sie Gepäck?",
+    "promptTr": "Kaç kişi seyahat ediyor ve bagajınız var?",
+    "answer": "Wir sind zwei Personen und haben drei Koffer, aber ich habe ein Gepäckstück vom Fluss mitgebracht.",
+    "tr": "İki kişiyiz ve üç bavulumuz var, ama ben nehirden bir bagaj parçası getirdim.",
+    "reading": "vi:r zint tsvai perzo:nen unt habn drai kof-fer, aba ich ha:be ain ge-pak-stük fom flus mit-gebracht",
+    "chips": [
+     "Personen",
+     "Koffer"
+    ]
+   },
+   {
+    "prompt": "Der Fahrer kommt in zehn Minuten. Bitte warten Sie am Ausgang.",
+    "promptTr": "Şoför on dakika içinde gelecek. Lütfen çıkışta bekleyin.",
+    "answer": "Danke, ich warte hier.",
+    "tr": "Teşekkür ederim, burada bekliyorum.",
+    "reading": "danke, ich varte hi:r",
+    "chips": [
+     "Danke",
+     "warte"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "airport",
+  "topic": "Havaalanı",
+  "npcName": "Klinikschwester",
+  "npcEmoji": "🩺",
+  "steps": [
+   {
+    "prompt": "Bitte legen Sie das Tablett auf das Förderband.",
+    "promptTr": "Lütfen tepsiyi taşıma bandına koyun.",
+    "answer": "Ich lege das Tablett auf das Förderband.",
+    "tr": "Tepsiyi taşıma bandına koyuyorum.",
+    "reading": "iç le:ge das taflet auf das fyo:rdband",
+    "chips": [
+     "legen",
+     "Tablett",
+     "Förderband"
+    ]
+   },
+   {
+    "prompt": "Haben Sie Flüssigkeiten im Handgepäck?",
+    "promptTr": "El bagajında sıvı var mı?",
+    "answer": "Nein, ich habe keine Flüssigkeiten im Handgepäck.",
+    "tr": "Hayır, el bagajımda sıvı yok.",
+    "reading": "",
+    "chips": [
+     "Flüssigkeiten",
+     "Handgepäck",
+     "keine"
+    ]
+   },
+   {
+    "prompt": "Nach der Kontrolle können Sie zum Ausgang gehen, dort gibt es ein Café mit Blick auf den Hafen.",
+    "promptTr": "Kontrolden sonra çıkışa gidebilirsiniz, orada limana bakan bir kafe var.",
+    "answer": "Danke, ich gehe zum Ausgang und besuche das Café mit Blick auf den Hafen.",
+    "tr": "Teşekkür ederim, çıkışa gidiyorum ve limana bakan kafeyi ziyaret edeceğim.",
+    "reading": "danka iç ge:e tsum ausgang unt bezu:che das kafe mit blik aup den hafn",
+    "chips": [
+     "Ausgang",
+     "Café",
+     "Hafen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "hotel",
+  "topic": "Otel",
+  "npcName": "Anna",
+  "npcEmoji": "👩‍🦰",
+  "steps": [
+   {
+    "prompt": "Guten Morgen! Ich habe gehört, Sie möchten später auschecken. Wann möchten Sie auschecken?",
+    "promptTr": "Günaydın! Daha geç çıkış yapmak istediğinizi duydum. Ne zaman çıkış yapmak istiyorsunuz?",
+    "answer": "Ich möchte am nächsten Tag um 14 Uhr auschecken.",
+    "tr": "Ertesi gün saat 14'te çıkış yapmak istiyorum.",
+    "reading": "ih möhte an neks­ten taːk um firtin uːr aushken",
+    "chips": [
+     "auschecken",
+     "Uhr",
+     "nächsten"
+    ]
+   },
+   {
+    "prompt": "Wir können das für Sie einrichten, aber dafür fällt eine kleine Gebühr von zehn Euro an. Ist das okay?",
+    "promptTr": "Bunu sizin için ayarlayabiliriz, ama bunun için on Euro bir ücret alınacak. Bu sorun mu?",
+    "answer": "Ja, das ist in Ordnung, ich zahle die zehn Euro.",
+    "tr": "Evet, sorun değil, on Euroyu ödeyeceğim.",
+    "reading": "",
+    "chips": [
+     "Zehn Euro",
+     "bezahlen",
+     "in Ordnung"
+    ]
+   },
+   {
+    "prompt": "Übrigens, wir haben eine schöne Laterne im Flur, die Sie benutzen können, falls Sie nachts noch etwas lesen möchten.",
+    "promptTr": "Bu arada, koridorda güzel bir fener var, geceleri okumak isterseniz kullanabilirsiniz.",
+    "answer": "Vielen Dank, das ist sehr nett von Ihnen.",
+    "tr": "Çok teşekkür ederim, çok naziksiniz.",
+    "reading": "",
+    "chips": [
+     "Danke",
+     "nett",
+     "sehr"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "restaurant",
+  "topic": "Restoran",
+  "npcName": "Kellner",
+  "npcEmoji": "🍽️",
+  "steps": [
+   {
+    "prompt": "Was möchten Sie als Hauptgericht?",
+    "promptTr": "Ana yemek olarak ne istersiniz?",
+    "answer": "Ich hätte gern das Schnitzel, bitte.",
+    "tr": "Schnitzeli isterim, lütfen.",
+    "reading": "iç hette gearn das şnitzel bitte",
+    "chips": [
+     "Hauptgericht",
+     "Schnitzel",
+     "gerne"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie dazu ein Getränk, zum Beispiel ein Wasser vom Hafen?",
+    "promptTr": "Yanına bir şey içmek ister misiniz, mesela limandan su?",
+    "answer": "Ja, ich nehme ein Glas Apfelsaft.",
+    "tr": "Evet, bir bardak elma suyu alıyorum.",
+    "reading": "ja iç neyme ayn glas apfelsaft",
+    "chips": [
+     "trinken",
+     "Glas",
+     "Apfelsaft"
+    ]
+   },
+   {
+    "prompt": "Ist das alles?",
+    "promptTr": "Hepsi bu kadar mı?",
+    "answer": "Ja, das ist alles, danke.",
+    "tr": "Evet, hepsi bu, teşekkür ederim.",
+    "reading": "",
+    "chips": [
+     "alles",
+     "danke"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "shopping",
+  "topic": "Alışveriş",
+  "npcName": "Lena",
+  "npcEmoji": "😊",
+  "steps": [
+   {
+    "prompt": "Möchtest du das Geschenk einpacken lassen?",
+    "promptTr": "Hediyeyi paketletmek istiyor musun?",
+    "answer": "Ja, bitte. Ich möchte es schön verpacken lassen.",
+    "tr": "Evet, lütfen. Güzel paketletmek istiyorum.",
+    "reading": "",
+    "chips": [
+     "Geschenk",
+     "einpacken",
+     "bitte"
+    ]
+   },
+   {
+    "prompt": "Wie schnell brauchst du die Geschenkverpackung?",
+    "promptTr": "Hediyeyi ne kadar çabuk paketletmen gerekiyor?",
+    "answer": "Ich brauche es bis morgen, bitte.",
+    "tr": "Yarın sabaha kadar lazım, lütfen.",
+    "reading": "",
+    "chips": [
+     "schnell",
+     "brauchen",
+     "morgen"
+    ]
+   },
+   {
+    "prompt": "Wir haben Geschenkpapier mit einem Flussmotiv. Möchtest du das?",
+    "promptTr": "Nehir temalı bir hediye kağıdımız var. Bunu ister misin?",
+    "answer": "Ja, das Flussmotiv gefällt mir, bitte dieses Papier verwenden.",
+    "tr": "Evet, nehir teması hoşuma gitti, lütfen bu kağıdı kullan.",
+    "reading": "",
+    "chips": [
+     "Flussmotiv",
+     "Papier",
+     "verwenden"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "work",
+  "topic": "İş",
+  "npcName": "Lena",
+  "npcEmoji": "👩‍💼",
+  "steps": [
+   {
+    "prompt": "Wie war dein gestriger Arbeitstag?",
+    "promptTr": "Dünkü iş günün nasıldı?",
+    "answer": "Mein gestriger Arbeitstag war produktiv, ich habe das Projekt abgeschlossen.",
+    "tr": "Dünkü iş günüm verimliydi, projeyi tamamladım.",
+    "reading": "mayn getsriğer arbyt shtag var produktif, iç habe das projekt abgeschlossen.",
+    "chips": [
+     "Produktiv",
+     "Projekt",
+     "abgeschlossen"
+    ]
+   },
+   {
+    "prompt": "Was hast du heute vor?",
+    "promptTr": "Bugün ne yapacaksın?",
+    "answer": "Heute werde ich an dem Bericht weiterarbeiten und danach ein Meeting haben. Ich gehe später in der Mittagspause auf der Wiese spazieren.",
+    "tr": "Bugün rapor üzerinde çalışacağım ve sonra bir toplantı yapacağım. Öğle arasına sonra çayırda yürüyüş yapacağım.",
+    "reading": "hoyte vere iç an dem beriç veıterarbaiten und danach ayn meeting haben. iç gehe später in der mitagpause auf der vize şpasiren.",
+    "chips": [
+     "Bericht",
+     "Meeting",
+     "Wiese"
+    ]
+   },
+   {
+    "prompt": "Gibt es irgendwelche Probleme, die wir besprechen müssen?",
+    "promptTr": "Görüşmemiz gereken bir sorun var mı?",
+    "answer": "Zurzeit gibt es keine großen Probleme, aber ich brauche Unterstützung beim Datenbank-Update.",
+    "tr": "Şu anda büyük bir sorun yok, ama veri tabanı güncellemesi için desteğe ihtiyacım var.",
+    "reading": "",
+    "chips": [
+     "Probleme",
+     "Unterstützung",
+     "Datenbank-Update"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "education",
+  "topic": "Eğitim",
+  "npcName": "Lena",
+  "npcEmoji": "👭",
+  "steps": [
+   {
+    "prompt": "Wie heißt du und welches Fach möchtest du belegen?",
+    "promptTr": "Adın ne ve hangi dersi almak istiyorsun?",
+    "answer": "Ich heiße Ayşe und ich möchte Deutschkurs belegen.",
+    "tr": "Benim adım Ayşe ve Almanca kursu almak istiyorum.",
+    "reading": "ich haise ayse unt ich mochte doytchkurs belegen",
+    "chips": [
+     "heißen",
+     "möchten"
+    ]
+   },
+   {
+    "prompt": "An welchen Tagen hast du Zeit für den Kurs?",
+    "promptTr": "Kursa hangi günlerde zamanın var?",
+    "answer": "Ich habe am Montag und Mittwoch Zeit.",
+    "tr": "Pazartesi ve Çarşamba günleri zamanım var.",
+    "reading": "ich habe am montag unt mittwoch tsait",
+    "chips": [
+     "Montag",
+     "Mittwoch"
+    ]
+   },
+   {
+    "prompt": "Wo findet der Kurs statt?",
+    "promptTr": "Kurs nerede gerçekleşecek?",
+    "answer": "Der Kurs findet im Klassenraum neben dem Kompass im Eingangsbereich statt.",
+    "tr": "Kurs, giriş bölgesindeki pusulanın yanındaki sınıfta gerçekleşecek.",
+    "reading": "der kurs findet im klassenraum neben dem kompas im ingangsbereich shtat",
+    "chips": [
+     "Klassenraum",
+     "Kompass"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "health",
+  "topic": "Sağlık",
+  "npcName": "Mutter",
+  "npcEmoji": "👩‍🍼",
+  "steps": [
+   {
+    "prompt": "Hast du schon deine Blutwerte bekommen?",
+    "promptTr": "Kan tahlillerini aldın mı?",
+    "answer": "Ja, ich habe die Ergebnisse gestern bekommen.",
+    "tr": "Evet, sonuçları dün aldım.",
+    "reading": "ja iç habe di ergebnise gestern bekomen",
+    "chips": [
+     "Blutwerte",
+     "gestern"
+    ]
+   },
+   {
+    "prompt": "Wie geht es dir mit den Ergebnissen?",
+    "promptTr": "Sonuçlarla ilgili nasıl hissediyorsun?",
+    "answer": "Sie sind gut, alles ist normal.",
+    "tr": "İyi, her şey normal.",
+    "reading": "",
+    "chips": [
+     "gut",
+     "normal"
+    ]
+   },
+   {
+    "prompt": "Möchtest du, dass ich mit dir zum Arzt gehe?",
+    "promptTr": "Seninle doktora gitmek ister misin?",
+    "answer": "Ja, das wäre schön, wir könnten danach über die Brücke gehen.",
+    "tr": "Evet, güzel olur, sonra köprüye geçebiliriz.",
+    "reading": "",
+    "chips": [
+     "Brücke",
+     "gehen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "daily",
+  "topic": "Günlük hayat",
+  "npcName": "Krankenschwester Anna",
+  "npcEmoji": "👩‍⚕️",
+  "steps": [
+   {
+    "prompt": "Möchtest du heute die Wäsche waschen?",
+    "promptTr": "Bugün çamaşır yıkamak ister misin?",
+    "answer": "Ja, ich möchte die Wäsche um 16 Uhr waschen.",
+    "tr": "Evet, saat 16'da çamaşırı yıkamak istiyorum.",
+    "reading": "",
+    "chips": [
+     "Wäsche",
+     "waschen",
+     "Uhr"
+    ]
+   },
+   {
+    "prompt": "Hast du genug Waschmittel?",
+    "promptTr": "Yeterli çamaşır deterjanın var mı?",
+    "answer": "Ja, ich habe genug Waschmittel im Schrank.",
+    "tr": "Evet, dolabımda yeterli çamaşır deterjanı var.",
+    "reading": "",
+    "chips": [
+     "Waschmittel",
+     "Schrank",
+     "genug"
+    ]
+   },
+   {
+    "prompt": "Möchtest du die Wäsche nach dem Waschen im Garten trocknen?",
+    "promptTr": "Yıkamadan sonra çamaşırı bahçede kurutmak ister misin?",
+    "answer": "Ja, ich hänge die Wäsche im Garten auf.",
+    "tr": "Evet, çamaşırı bahçeye asıyorum.",
+    "reading": "",
+    "chips": [
+     "Garten",
+     "aufhängen",
+     "Wäsche"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "social",
+  "topic": "Sosyal",
+  "npcName": "Lukas",
+  "npcEmoji": "🤝",
+  "steps": [
+   {
+    "prompt": "Möchtest du zu meiner Geburtstagsfeier kommen?",
+    "promptTr": "Doğum günü partime gelmek ister misin?",
+    "answer": "Ja, ich komme gern.",
+    "tr": "Evet, gelmek isterim.",
+    "reading": "ya ikome gearn",
+    "chips": [
+     "kommen",
+     "gern"
+    ]
+   },
+   {
+    "prompt": "Die Party ist am Samstag um 18 Uhr im Restaurant neben dem Park.",
+    "promptTr": "Parti Cumartesi saat 18:00'de park yanındaki restoranda.",
+    "answer": "Das klingt gut, ich freue mich darauf.",
+    "tr": "Kulağa hoş geliyor, sabırsızlanıyorum.",
+    "reading": "das klingt gut, i froye mish darauf",
+    "chips": [
+     "klingen",
+     "freuen"
+    ]
+   },
+   {
+    "prompt": "Wir werden im Garten ein paar Spiele auf der Wiese machen.",
+    "promptTr": "Bahçede çimenlikte birkaç oyun oynayacağız.",
+    "answer": "Super, ich bringe einen Kuchen mit.",
+    "tr": "Harika, bir pasta getireceğim.",
+    "reading": "zupar, i bringe aynen kuhen mit",
+    "chips": [
+     "bringen",
+     "Kuchen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "transport",
+  "topic": "Ulaşım",
+  "npcName": "Krankenschwester Anna",
+  "npcEmoji": "👩‍⚕️",
+  "steps": [
+   {
+    "prompt": "Entschuldigung, an welcher Haltestelle möchten Sie aussteigen?",
+    "promptTr": "Affedersiniz, hangi durakta inmek istiyorsunuz?",
+    "answer": "Ich möchte an der Hauptbahnhofhaltestelle aussteigen.",
+    "tr": "Ana tren istasyonu durağında inmek istiyorum.",
+    "reading": "ih möchte an der hauptbahnhofhaltestelle ausştejn",
+    "chips": [
+     "Haltestelle",
+     "aussteigen"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie zuerst zur U-Bahn-Station gehen?",
+    "promptTr": "Önce metro istasyonuna gitmek ister misiniz?",
+    "answer": "Ja, bitte, ich muss zur U-Bahn-Station gehen.",
+    "tr": "Evet, lütfen, metro istasyonuna gitmem gerekiyor.",
+    "reading": "ja bitte ich muss tsur u-bahn station gehen",
+    "chips": [
+     "U-Bahn-Station",
+     "gehen"
+    ]
+   },
+   {
+    "prompt": "Welcher Halt ist in Richtung Norden?",
+    "promptTr": "Kuzeye doğru olan durak hangisi?",
+    "answer": "Der nächste Halt in Richtung Norden ist die Lindenstraße.",
+    "tr": "Kuzeye doğru bir sonraki durak Lindenstraße.",
+    "reading": "der nekte halt in riçun noren ist di lindenstrasse",
+    "chips": [
+     "Richtung",
+     "Norden"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "money",
+  "topic": "Para",
+  "npcName": "Klaus der Taxifahrer",
+  "npcEmoji": "🚕",
+  "steps": [
+   {
+    "prompt": "Könnten Sie mir bitte 20 Euro leihen?",
+    "promptTr": "Bana 20 Euro ödünç verebilir misiniz?",
+    "answer": "Entschuldigung, ich habe nur 10 Euro.",
+    "tr": "Üzgünüm, sadece 10 Euro’m var.",
+    "reading": "entshuldigung ich habe nur zehn euro",
+    "chips": [
+     "leihen",
+     "Euro"
+    ]
+   },
+   {
+    "prompt": "Wie lange brauchen Sie das Geld?",
+    "promptTr": "Paraya ne kadar süre ihtiyacınız var?",
+    "answer": "Ich brauche es bis morgen.",
+    "tr": "Yarın'a kadar ihtiyacım var.",
+    "reading": "",
+    "chips": [
+     "morgen"
+    ]
+   },
+   {
+    "prompt": "Können Sie mir 5 Euro für das Benzin geben? Auf dem Weg zum Flughafen gibt es eine schöne Wiese.",
+    "promptTr": "Bana benzin için 5 Euro verir misiniz? Havalimanına giderken güzel bir çayır var.",
+    "answer": "Ja, hier sind 5 Euro, bitte.",
+    "tr": "Evet, işte 5 Euro, lütfen.",
+    "reading": "ja hier sind fünf euro bitte",
+    "chips": [
+     "Benzin",
+     "Euro"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "weather",
+  "topic": "Hava durumu",
+  "npcName": "Chef",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Warum sind Sie ohne Regenschirm hier?",
+    "promptTr": "Neden şemsiyesiz buradasınız?",
+    "answer": "Entschuldigung, ich habe meinen Regenschirm vergessen.",
+    "tr": "Üzgünüm, şemsiyemi unuttum.",
+    "reading": "entshuldigung, iç habe maynin regenschirm fergesen",
+    "chips": [
+     "Regenschirm",
+     "vergessen"
+    ]
+   },
+   {
+    "prompt": "Wie stark ist der Regen?",
+    "promptTr": "Yağmur ne kadar şiddetli?",
+    "answer": "Der Regen ist stark, aber ich habe meinen Kompass dabei.",
+    "tr": "Yağmur şiddetli, ama yanımda pusulam var.",
+    "reading": "der regen ist ştrak, aba iç habe maynin kompas daabi",
+    "chips": [
+     "Regen",
+     "Kompass"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie etwas zum Schutz vor dem Regen?",
+    "promptTr": "Yağmurdan korunmak için bir şey ister misiniz?",
+    "answer": "Ja, ich brauche einen Regenschirm.",
+    "tr": "Evet, bir şemsiye istiyorum.",
+    "reading": "ja, iç brauhe aynen regenschirm",
+    "chips": [
+     "brauchen",
+     "Regenschirm"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "phone",
+  "topic": "Telefon",
+  "npcName": "Mutter",
+  "npcEmoji": "👩‍🦰",
+  "steps": [
+   {
+    "prompt": "Guten Morgen, du bist zu spät dran. Rufe bitte deinen Chef an und sag, dass du verschlafen hast.",
+    "promptTr": "Günaydın, geç kaldın. Patronunu ara ve uyuyakaldığını söyle.",
+    "answer": "Guten Morgen, hier ist Anna.",
+    "tr": "Günaydın, ben Anna. Bahçede uyuyakaldım ve geç kaldım, sonra daha geç geleceğim.",
+    "reading": "",
+    "chips": [
+     "verschlafen",
+     "später"
+    ]
+   },
+   {
+    "prompt": "Wie kannst du dich beim Chef entschuldigen?",
+    "promptTr": "Patrona nasıl özür dilebilirsin?",
+    "answer": "Entschuldigung, ich werde so schnell wie möglich zur Arbeit kommen.",
+    "tr": "Üzgünüm, mümkün olduğunca çabuk işe geleceğim.",
+    "reading": "",
+    "chips": [
+     "Entschuldigung",
+     "Arbeit"
+    ]
+   },
+   {
+    "prompt": "Sag deinem Chef, wann du ungefähr ankommst.",
+    "promptTr": "Patrona tahminen ne zaman geleceğini söyle.",
+    "answer": "Ich werde voraussichtlich um neun Uhr dort sein.",
+    "tr": "Tahminen saat dokuzda orada olacağım.",
+    "reading": "ih ve:de fowrsçıtliç um noin uhr dort şain.",
+    "chips": [
+     "voraussichtlich",
+     "neun"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "food",
+  "topic": "Yemek yapım",
+  "npcName": "Lena",
+  "npcEmoji": "👩‍🍳",
+  "steps": [
+   {
+    "prompt": "Was möchtest du für die Gäste kochen?",
+    "promptTr": "Misafirler için ne pişirmek istiyorsun?",
+    "answer": "Ich möchte Spaghetti mit Tomatensauce kochen.",
+    "tr": "Spagetti ve domates sosu pişirmek istiyorum.",
+    "reading": "ihç möchte spageti mit tomatenzawse kochen",
+    "chips": [
+     "Spaghetti",
+     "Tomatensauce"
+    ]
+   },
+   {
+    "prompt": "Hast du genug Zutaten?",
+    "promptTr": "Yeterli malzemen var mı?",
+    "answer": "Ja, ich habe den Kompass benutzt, um den Supermarkt zu finden, und ich habe Nudeln, Tomaten und Parmesan.",
+    "tr": "Evet, süpermarkete ulaşmak için pusulayı kullandım ve makarna, domates ve parmesan var.",
+    "reading": "ja ih habe den kompas benutzt um den supermarkt zu finden und ih habe nudeln tomaten und parmesan",
+    "chips": [
+     "Zutaten",
+     "Kompass"
+    ]
+   },
+   {
+    "prompt": "Wie viel Zeit brauchst du dafür?",
+    "promptTr": "Bunun için ne kadar zaman lazım?",
+    "answer": "Ich brauche etwa 30 Minuten.",
+    "tr": "Yaklaşık 30 dakika lazım.",
+    "reading": "ih büche etwa dreißig minuten",
+    "chips": [
+     "Zeit",
+     "Minuten"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "music",
+  "topic": "Müzik",
+  "npcName": "Strenger Lehrer",
+  "npcEmoji": "👨‍🏫",
+  "steps": [
+   {
+    "prompt": "Wer ist deiner Meinung nach der beste Sänger?",
+    "promptTr": "Sence en iyi şarkıcı kim?",
+    "answer": "Ich finde Ed Sheeran ist der beste Sänger.",
+    "tr": "Bence Ed Sheeran en iyi şarkıcı.",
+    "reading": "iç finde ed şieran ist dea beeste zänger",
+    "chips": [
+     "Sänger",
+     "beste"
+    ]
+   },
+   {
+    "prompt": "Warum magst du ihn?",
+    "promptTr": "Neden onu seviyorsun?",
+    "answer": "Weil seine Lieder sehr eingängig und die Stimme schön ist.",
+    "tr": "Çünkü şarkıları çok akılda kalıcı ve sesi güzel.",
+    "reading": "vayl zayne lieder zeer ingangi unt di ştiime şön ist",
+    "chips": [
+     "Lieder",
+     "Stimme"
+    ]
+   },
+   {
+    "prompt": "Stell dir vor, du hörst ihn am Fenster, welche Musik würdest du auswählen?",
+    "promptTr": "Diyelim ki, onu pencerede duyuyorsun, hangi şarkıyı seçerdin?",
+    "answer": "Ich würde sein Song 'Shape of You' am Fenster spielen.",
+    "tr": "Onun 'Shape of You' şarkısını pencerede çalarım.",
+    "reading": "iç vörde zain zong shap of iu am fënster şpilen",
+    "chips": [
+     "Song",
+     "spielen"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "sport",
+  "topic": "Spor",
+  "npcName": "Anna, die Krankenschwester",
+  "npcEmoji": "👩‍⚕️",
+  "steps": [
+   {
+    "prompt": "Wie fühlst du dich vor dem Yoga?",
+    "promptTr": "Yoga öncesi kendini nasıl hissediyorsun?",
+    "answer": "Ich fühle mich etwas müde, aber bereit.",
+    "tr": "Biraz yorgunum ama hazırım.",
+    "reading": "",
+    "chips": [
+     "fühle",
+     "müde"
+    ]
+   },
+   {
+    "prompt": "Welche Pose möchtest du zuerst machen?",
+    "promptTr": "Hangi pozisyonu önce yapmak istiyorsun?",
+    "answer": "Ich möchte die Katze-Kuh-Position zuerst machen.",
+    "tr": "Kedi-İnek pozisyonunu önce yapmak istiyorum.",
+    "reading": "",
+    "chips": [
+     "möchte",
+     "Katze"
+    ]
+   },
+   {
+    "prompt": "Kannst du die Laterne im Raum sehen?",
+    "promptTr": "Oda içinde bulunan lambayı görebilir misin?",
+    "answer": "Ja, die Laterne ist hell und hilft mir zu entspannen.",
+    "tr": "Evet, lambayı parlak ve rahatlatıcı yapıyor.",
+    "reading": "",
+    "chips": [
+     "Laterne"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "A2",
+  "topicKey": "hobbies",
+  "topic": "Hobiler",
+  "npcName": "Chef",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Welche Hobbys haben Sie außerhalb der Arbeit?",
+    "promptTr": "İş dışında hangi hobileriniz var?",
+    "answer": "Ich habe das Töpfern als Hobby.",
+    "tr": "Benim hobim çömlek yapımı.",
+    "reading": "ih hab de toefern als hobby",
+    "chips": [
+     "Töpfern",
+     "Hobby"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie nächste Woche am Töpferkurs teilnehmen?",
+    "promptTr": "Gelecek hafta çömlek kursuna katılmak ister misiniz?",
+    "answer": "Ja, ich möchte am Mittwoch um 18 Uhr teilnehmen.",
+    "tr": "Evet, Çarşamba saat 18:00'de katılmak istiyorum.",
+    "reading": "ja ih möchte am mittvekh um achtzehn uhr teilnaimen",
+    "chips": [
+     "Mittwoch",
+     "teilnehmen"
+    ]
+   },
+   {
+    "prompt": "Haben Sie Erfahrung mit Ton vom Flussufer?",
+    "promptTr": "Nehir kenarından alınan çamurla deneyiminiz var mı?",
+    "answer": "Nein, ich habe bisher nur Ton aus dem Laden benutzt.",
+    "tr": "Hayır, şu ana kadar sadece dükkândan çamur kullandım.",
+    "reading": "nein ih hab bisher nur ton aus dem laden benutzt",
+    "chips": [
+     "Ton",
+     "benutzt"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "travel",
+  "topic": "Seyahat",
+  "npcName": "Marktverkäufer",
+  "npcEmoji": "🛒",
+  "steps": [
+   {
+    "prompt": "Welche geführte Tagestour möchten Sie buchen?",
+    "promptTr": "Hangi rehberli günlük turu rezervasyon etmek istersiniz?",
+    "answer": "Ich möchte die Stadtrundfahrt mit dem Guide buchen. Könnten Sie mir bitte die Abfahrtszeit nennen?",
+    "tr": "Şehir turunu rehberle rezervasyon etmek istiyorum. Bana lütfen kalkış saatini söyleyebilir misiniz?",
+    "reading": "ih mochte di shtadt rundfahrt mit dem gaid buchen. koennten zi mir bitte di abfahrtszeit nennen.",
+    "chips": [
+     "Stadtrundfahrt",
+     "Guide",
+     "Abfahrtszeit"
+    ]
+   },
+   {
+    "prompt": "Wie viel kostet die Tour, die über die alte Brücke führt?",
+    "promptTr": "Eski köprünün üzerinden geçen turun fiyatı ne kadar?",
+    "answer": "Die Tour kostet 45 Euro pro Person.",
+    "tr": "Tur kişi başı 45 Euro. Fiyata eski köprü üzerinden rehberli tur dahildir.",
+    "reading": "di tour kostet fierfünfzehn euro pro person. im prais ist di fuhrung uber di alte brooke inklusiv.",
+    "chips": [
+     "Kosten",
+     "Brücke",
+     "inklusive"
+    ]
+   },
+   {
+    "prompt": "Wie kann ich bezahlen?",
+    "promptTr": "Nasıl ödeme yapabilirim?",
+    "answer": "Sie können bar oder mit Karte bezahlen. Ich nehme gern Ihre Buchung entgegen.",
+    "tr": "Nakit ya da kartla ödeme yapabilirsiniz. Rezervasyonunuzu memnuniyetle alıyorum.",
+    "reading": "zi können bar oder mit karte bezahln. ih nehm gern ihrer buhung entggen.",
+    "chips": [
+     "bezahlen",
+     "Buchung",
+     "gerne"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "airport",
+  "topic": "Havaalanı",
+  "npcName": "Frau Nachbarin",
+  "npcEmoji": "🤝",
+  "steps": [
+   {
+    "prompt": "Entschuldigen Sie, können Sie mir bitte sagen, an welchem Gate mein Flug nach Berlin geht?",
+    "promptTr": "Affedersiniz, Berlin'e giden uçuşumun hangi kapıdan olduğunu söyleyebilir misiniz?",
+    "answer": "Ja, Ihr Flug nach Berlin geht von Gate 12.",
+    "tr": "Evet, Berlin'e giden uçuşunuz Gate 12'den kalkıyor.",
+    "reading": "ya, i:r floug na: Berlin geit fon Geet 12",
+    "chips": [
+     "Gate",
+     "Flug"
+    ]
+   },
+   {
+    "prompt": "Ich habe mein Boardingpass, aber dort steht nur das Wort 'Gate'. Können Sie mir bitte die genaue Nummer nennen? (Ich sehe das Schild neben der Brücke.)",
+    "promptTr": "Biniş kartımda sadece 'Gate' yazıyor. Bana tam numarayı söyleyebilir misiniz? (Köprünün yanındaki tabelayı görüyorum.)",
+    "answer": "Natürlich, das ist Gate 7.",
+    "tr": "Tabii ki, bu Gate 7'dir.",
+    "reading": "na:tyrliç, das ist Geet 7",
+    "chips": [
+     "Gate"
+    ]
+   },
+   {
+    "prompt": "Vielen Dank! Wie lange dauert es normalerweise, von hier zum Gate zu gehen?",
+    "promptTr": "Çok teşekkürler! Buradan Gate'e gitmek normalde ne kadar sürer?",
+    "answer": "Es dauert etwa fünf Minuten, also haben Sie genug Zeit.",
+    "tr": "Yaklaşık beş dakika sürer, bu yüzden yeterli zamanınız var.",
+    "reading": "",
+    "chips": [
+     "Minute",
+     "Zeit"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "hotel",
+  "topic": "Otel",
+  "npcName": "Lukas",
+  "npcEmoji": "🧳",
+  "steps": [
+   {
+    "prompt": "Entschuldigung, wann gibt es Frühstück?",
+    "promptTr": "Affedersiniz, kahvaltı ne zaman?",
+    "answer": "Das Frühstück wird von 7 bis 10 Uhr serviert.",
+    "tr": "Kahvaltı saat 7’den 10’a kadar servis edilir.",
+    "reading": "das froi shtük vehr fon zi bis tsayn uhr zeerfert",
+    "chips": [
+     "Frühstück",
+     "Uhr"
+    ]
+   },
+   {
+    "prompt": "Entschuldigung, wo wird das Frühstück serviert?",
+    "promptTr": "Affedersiniz, kahvaltı nerede servis ediliyor?",
+    "answer": "Das Frühstück wird im Restaurant am Fluss, also am River, serviert.",
+    "tr": "Kahvaltı nehir kenarında, yani River’da, restoran da servis edilir.",
+    "reading": "das froi shtük vehr im restau rant am flus, also am river, zeerfert",
+    "chips": [
+     "Restaurant",
+     "Fluss"
+    ]
+   },
+   {
+    "prompt": "Entschuldigung, gibt es frisches Obst zum Frühstück?",
+    "promptTr": "Affedersiniz, kahvaltıya taze meyve var mı?",
+    "answer": "Ja, wir bieten frisches Obst und Joghurt an.",
+    "tr": "Evet, taze meyve ve yoğurt sunuyoruz.",
+    "reading": "ja, veer beiten frisches obst und yogurt an",
+    "chips": [
+     "Obst",
+     "Joghurt"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "restaurant",
+  "topic": "Restoran",
+  "npcName": "Straßenverkäufer",
+  "npcEmoji": "🧑‍🍳",
+  "steps": [
+   {
+    "prompt": "Entschuldigung, ist die Suppe zu kalt für Sie?",
+    "promptTr": "Affedersiniz, çorba sizin için çok mu soğuk?",
+    "answer": "Ja, die Suppe ist leider kalt. Könnten Sie mir bitte eine neue warme Suppe bringen?",
+    "tr": "Evet, çorba maalesef soğuk. Bana lütfen yeni bir sıcak çorba getirebilir misiniz?",
+    "reading": "ya dee suppe ist layder kalt koennen zi mir bittah ayne noi varme suppe bringn",
+    "chips": [
+     "Suppe",
+     "warm",
+     "bringen"
+    ]
+   },
+   {
+    "prompt": "Möchten Sie die Suppe ersetzen oder ein anderes Gericht?",
+    "promptTr": "Çorbayı değiştirmek mi yoksa başka bir yemek mi istersiniz?",
+    "answer": "Ich würde gern eine neue warme Suppe haben, aber bitte nicht zu scharf.",
+    "tr": "Yeni bir sıcak çorba isterim, ama lütfen çok baharatlı olmasın.",
+    "reading": "ich würd gern ayne noi varme suppe haben aba bittah nikht zu scharf",
+    "chips": [
+     "ersetzen",
+     "anders",
+     "scharf"
+    ]
+   },
+   {
+    "prompt": "Wir haben frische Kräuter vom Wiesengrund, möchten Sie welche zur Suppe?",
+    "promptTr": "Wiesengrund'dan taze otlarımız var, çorbaya eklemek ister misiniz?",
+    "answer": "Ja, bitte etwas Petersilie und Schnittlauch dazu, das macht die Suppe besser.",
+    "tr": "Evet, lütfen biraz maydanoz ve frenk soğanı ekleyin, bu çorbayı daha iyi yapar.",
+    "reading": "ya bittah etvas petersilie unt schnittlauch dazu das macht dee suppe besser",
+    "chips": [
+     "Kräuter",
+     "Petersilie",
+     "Schnittlauch"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "shopping",
+  "topic": "Alışveriş",
+  "npcName": "Nachbar",
+  "npcEmoji": "🏠",
+  "steps": [
+   {
+    "prompt": "Möchtest du, dass ich das Geschenk für dich einpacke?",
+    "promptTr": "Hediyeyi senin için paketlememi ister misin?",
+    "answer": "Ja, bitte.",
+    "tr": "Evet, lütfen. Hediye için renkli bir kağıda paketlemeni ve üzerine bir fiyonk bağlamanı isterim.",
+    "reading": "ya bitte ich hatt gern das du das geschenk in buntes papir aindvikkelst und aine şlaife dran maxt",
+    "chips": [
+     "einpacken",
+     "buntes Papier",
+     "Schleife"
+    ]
+   },
+   {
+    "prompt": "Welche Papiergröße brauchst du für das Geschenk?",
+    "promptTr": "Hediye için hangi kağıt boyutuna ihtiyacın var?",
+    "answer": "Ich brauche ein etwa 30 x 40 cm großes Papier, das gut zur Größe des Geschenks passt.",
+    "tr": "Hediyenin boyutu için yaklaşık 30 x 40 cm'lik büyük bir kağıda ihtiyacım var, bu da hediye boyutuna iyi uyuyor.",
+    "reading": "iç brauçe ayn etwa 30 x 40 cm großes papir das gut zur größe des geschenks passt",
+    "chips": [
+     "Papiergröße",
+     "groß",
+     "passt"
+    ]
+   },
+   {
+    "prompt": "Möchtest du, dass ich das Geschenk gleich morgen im Hafen abliefere?",
+    "promptTr": "Yarının sabahı hediyeyi limana teslim etmemi ister misin?",
+    "answer": "Ja, das wäre ideal, dann kann ich es morgen früh dort abholen und gleich verpacken.",
+    "tr": "Evet, bu ideal olur, o zaman yarın sabah oradan alıp hemen paketlerim.",
+    "reading": "",
+    "chips": [
+     "Hafen",
+     "morgen",
+     "abliefern"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "work",
+  "topic": "İş",
+  "npcName": "Herr Müller",
+  "npcEmoji": "👴",
+  "steps": [
+   {
+    "prompt": "Könntest du mir bitte sagen, warum du mit dem neuen Projektplan nicht einverstanden bist?",
+    "promptTr": "Yeni proje planıyla neden aynı fikirde değilsin, bana söyleyebilir misin?",
+    "answer": "Ich finde, dass der Zeitplan zu eng ist, weil wir noch wichtige Vorbereitungen treffen müssen.",
+    "tr": "Planın çok sık olduğunu düşünüyorum, çünkü hâlâ önemli hazırlıklar yapmamız gerekiyor. Bu yüzden iki hafta uzatmamızı öneriyorum.",
+    "reading": "",
+    "chips": [
+     "Zeitplan",
+     "verlängern",
+     "Vorbereitungen"
+    ]
+   },
+   {
+    "prompt": "Wie würdest du deinem Kollegen deine Bedenken höflich mitteilen?",
+    "promptTr": "Meslektaşına endişelerini kibarca nasıl ifade ederdin?",
+    "answer": "Ich würde sagen, dass ich seine Ideen schätze, aber ich glaube, wir sollten mehr Ressourcen einplanen.",
+    "tr": "Onun fikirlerini takdir ediyorum ama daha fazla kaynak ayırmamız gerektiğini düşünüyorum. Belki bunu kısa bir toplantıda konuşabiliriz.",
+    "reading": "",
+    "chips": [
+     "Bedenken",
+     "Ressourcen",
+     "Meeting"
+    ]
+   },
+   {
+    "prompt": "Glaubst du, dass wir unser Ziel erreichen können, wenn wir nicht zusammenarbeiten, wie Schiffe im Hafen?",
+    "promptTr": "Limana benzer gemileri gibi, birlikte çalışmazsak hedefimize ulaşabileceğimize inanıyor musun?",
+    "answer": "Ich bin überzeugt, dass wir nur gemeinsam erfolgreich sein können, weil Teamarbeit uns stärker macht.",
+    "tr": "Sadece birlikte çalışırsak başarıya ulaşabiliriz, çünkü ekip çalışması bizi daha güçlü kılar. Bu yüzden farklı görüşleri yapıcı bir şekilde çözmek önemli.",
+    "reading": "",
+    "chips": [
+     "erreichen",
+     "Teamarbeit",
+     "konstruktiv"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "education",
+  "topic": "Eğitim",
+  "npcName": "Chef",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Könnten Sie bitte den vorherigen Satz wiederholen?",
+    "promptTr": "Lütfen önceki cümleyi tekrar eder misiniz?",
+    "answer": "Entschuldigen Sie, könnten Sie das bitte noch einmal sagen?",
+    "tr": "Affedersiniz, lütfen bunu bir kez daha söyleyebilir misiniz?",
+    "reading": "",
+    "chips": [
+     "Entschuldigen",
+     "noch einmal",
+     "sagen"
+    ]
+   },
+   {
+    "prompt": "Können Sie das bitte noch genauer erklären?",
+    "promptTr": "Bunu lütfen biraz daha ayrıntılı açıklar mısınız?",
+    "answer": "Gern, die Brücke in der Geschichte symbolisiert den Übergang zwischen den Phasen.",
+    "tr": "Tabii, hikayedeki köprü, aşamalar arasındaki geçişi simgeliyor.",
+    "reading": "",
+    "chips": [
+     "Brücke",
+     "Geschichte",
+     "Übergang"
+    ]
+   },
+   {
+    "prompt": "Bitte fassen Sie die wichtigsten Punkte zusammen.",
+    "promptTr": "Lütfen en önemli noktaları özetleyin.",
+    "answer": "Zusammenfassend lässt sich sagen, dass das Projekt bis zum Ende erfolgreich abgeschlossen wird.",
+    "tr": "Özetle, projenin sonuna kadar başarılı bir şekilde tamamlanacağı söylenebilir.",
+    "reading": "",
+    "chips": [
+     "Zusammenfassen",
+     "Projekt",
+     "erfolgreich"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "health",
+  "topic": "Sağlık",
+  "npcName": "Lukas",
+  "npcEmoji": "🧑‍⚕️",
+  "steps": [
+   {
+    "prompt": "Guten Tag, ich bin der Arzt. Was führt Sie heute zu mir?",
+    "promptTr": "Günaydın, doktorum ben. Bugün beni ne getirdi?",
+    "answer": "Ich habe seit gestern Fieber und Kopfschmerzen. Außerdem bin ich sehr müde.",
+    "tr": "Dünkü gün itibarıyla ateşim ve baş ağrım var. Ayrıca çok yorgunum.",
+    "reading": "ih habe zait gestern fieber und kopfshmerzen auserdem bin ih sehr müde",
+    "chips": [
+     "Fieber",
+     "Kopfschmerzen",
+     "müde"
+    ]
+   },
+   {
+    "prompt": "Haben Sie noch andere Beschwerden, zum Beispiel Husten oder Schnupfen?",
+    "promptTr": "Başka şikayetleriniz var mı, mesela öksürük ya da burun akıntısı?",
+    "answer": "Ja, ich habe einen trockenen Husten, der besonders nachts schlimmer ist, und meine Nase läuft ein bisschen.",
+    "tr": "Evet, kuru bir öksürüğüm var, özellikle geceleri daha kötü ve burnum biraz akıyor.",
+    "reading": "",
+    "chips": [
+     "Husten",
+     "Nase",
+     "nachts"
+    ]
+   },
+   {
+    "prompt": "Wie lange haben Sie diese Symptome schon?",
+    "promptTr": "Bu belirtileri ne kadar süredir yaşıyorsunuz?",
+    "answer": "Die Symptome halten seit etwa drei Tagen an, und das Fieber ist bis zu 38,5 Grad gestiegen.",
+    "tr": "Bu belirtiler yaklaşık üç gündür devam ediyor ve ateş 38,5 dereceye yükseldi.",
+    "reading": "di zeptomine halten zait etwa drai dagen an und das feber ist bis zu drei acht fünf grad gestiegen",
+    "chips": [
+     "Symptome",
+     "Tage",
+     "Grad"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "daily",
+  "topic": "Günlük hayat",
+  "npcName": "Marktbesitzer",
+  "npcEmoji": "🛒",
+  "steps": [
+   {
+    "prompt": "Was möchten Sie heute zum Abendessen kochen?",
+    "promptTr": "Bu akşam ne pişirmek istiyorsunuz?",
+    "answer": "Ich überlege, Pasta mit Tomatensauce zu machen, weil ich heute keine Zeit für aufwändige Gerichte habe, und ich muss schnell über die Brücke zum Markt laufen.",
+    "tr": "Makarna ve domates sosu yapmayı düşünüyorum, çünkü bugün zahmetli yemekler için zamanım yok ve pazara köprü üzerinden çabuk gitmem gerekiyor.",
+    "reading": "ihb öberlege pasta mit tomatenzosa tsu machen vayl ihb hoyte kaine tsyt fyoer aufveende gerichte habe unt ihb muss schnell uber dee brükke t",
+    "chips": [
+     "Pasta",
+     "Tomatensauce",
+     "Brücke"
+    ]
+   },
+   {
+    "prompt": "Wir haben frische Tomaten und verschiedene Nudeln. Was brauchen Sie noch?",
+    "promptTr": "Taze domateslerimiz ve çeşitli makarnalarımız var. Başka neye ihtiyacınız var?",
+    "answer": "Ich brauche noch etwas Parmesan und ein gutes Olivenöl, damit die Sauce cremig wird.",
+    "tr": "Biraz Parmesan ve iyi bir zeytinyağı daha istiyorum, böylece sos kremalı olur.",
+    "reading": "ihb brauche nokt etvas parmesan unt ayn gutes olivenöl damıt dee zosa kremig vird",
+    "chips": [
+     "Parmesan",
+     "Olivenöl",
+     "Sauce"
+    ]
+   },
+   {
+    "prompt": "Dann wünsche ich Ihnen viel Erfolg beim Kochen. Guten Appetit!",
+    "promptTr": "O zaman size iyi şanslar dilerim, afiyet olsun!",
+    "answer": "Vielen Dank, ich koche dann um 19 Uhr und hoffe, dass es allen schmeckt.",
+    "tr": "Çok teşekkür ederim, 19'da pişireceğim ve umarım herkes beğenir.",
+    "reading": "filen dank ihb kohe dan um neunzehn uhr unt hofe das es allen şmekt",
+    "chips": [
+     "Kochen",
+     "Appetit",
+     "Erfolg"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "social",
+  "topic": "Sosyal",
+  "npcName": "Krankenschwester Anna",
+  "npcEmoji": "🩺",
+  "steps": [
+   {
+    "prompt": "Wie hast du die Prüfung gefunden?",
+    "promptTr": "Sınavı nasıl buldun?",
+    "answer": "Ich fand die Prüfung ziemlich schwierig, aber ich habe viel gelernt.",
+    "tr": "Sınavı oldukça zor buldum, ama çok şey öğrendim.",
+    "reading": "ih funt dee prufung fischen schwierik, aba ih hab feel ge lernt",
+    "chips": [
+     "schwierig",
+     "gelernt"
+    ]
+   },
+   {
+    "prompt": "Was hast du nach der Prüfung gemacht?",
+    "promptTr": "Sınavdan sonra ne yaptın?",
+    "answer": "Nach der Prüfung bin ich mit meinen Freunden in ein Café gegangen und wir haben über das Ergebnis gesprochen.",
+    "tr": "Sınavdan sonra arkadaşlarımla bir kafeye gittim ve sonuç hakkında konuştuk.",
+    "reading": "nahk dee prufung bin ih mit naynen froindn in ayn kafé gegangen unt veer habn üba das ergebnis geshpoken",
+    "chips": [
+     "Café",
+     "Ergebnis"
+    ]
+   },
+   {
+    "prompt": "Hast du schon Pläne für das nächste Semester?",
+    "promptTr": "Gelecek yarıyıl için planların var mı?",
+    "answer": "Ja, ich will im nächsten Semester ein Praktikum im Krankenhaus machen, weil ich dort viele neue Patienten kennenlernen will, und vielleicht über die Brücke der Fachbereiche hinweg sehen.",
+    "tr": "Evet, gelecek yarıyılda hastanede staj yapacağım, çünkü yeni hastaları tanıyacağım ve belki de bölümlerin köprüsü üzerinden bakacağım.",
+    "reading": "ja ih vil im nayksten semestar ayn praktikum im krankhaus machen veia ih dort feele noi patienten kennenlairn vil unt fischteb üba dee bridg",
+    "chips": [
+     "Praktikum",
+     "Krankenhaus"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "transport",
+  "topic": "Ulaşım",
+  "npcName": "Straßenverkäufer",
+  "npcEmoji": "🧑‍🍳",
+  "steps": [
+   {
+    "prompt": "Entschuldigen Sie, warum sind Sie heute zu spät?",
+    "promptTr": "Affedersiniz, bugün neden geç kaldınız?",
+    "answer": "Ich war im dichten Verkehr, deshalb kam ich zu spät. Ich hoffe, das ist kein Problem.",
+    "tr": "Yoğun trafikteydim, bu yüzden geç kaldım. Umarım bu bir sorun değil.",
+    "reading": "ih var im dichten ferkehr, deshalb kam ih zu ştat. ih hofe das ist kain problem.",
+    "chips": [
+     "Verkehr",
+     "spät"
+    ]
+   },
+   {
+    "prompt": "Haben Sie versucht, eine andere Strecke zu nehmen?",
+    "promptTr": "Başka bir yol denemeye çalıştınız mı?",
+    "answer": "Ja, ich habe versucht, mit meinem Kompass eine Abkürzung zu finden, aber der Verkehr war überall.",
+    "tr": "Evet, pusulamla bir kestirme bulmaya çalıştım ama trafik her yerdeydi.",
+    "reading": "ja, ih habe versucht, mit meinem kompas eine abkürzung zu finden, aba der ferkehr war überall.",
+    "chips": [
+     "Kompass",
+     "Abkürzung"
+    ]
+   },
+   {
+    "prompt": "Wie lange wird es noch dauern, bis Sie hier sind?",
+    "promptTr": "Buraya gelmeniz ne kadar sürecek?",
+    "answer": "Es wird wahrscheinlich noch fünf Minuten dauern, weil die Baustelle den Verkehr blockiert. Ich beeile mich.",
+    "tr": "Muhtemelen beş dakika daha sürecek, çünkü inşaat yeri trafiği engelliyor. Acele ediyorum.",
+    "reading": "es wird wahrscheinlich noch fuenf minute dauern, weil die baustelle den ferkehr blockiert. ih beyle mich.",
+    "chips": [
+     "Baustelle",
+     "Minute"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "money",
+  "topic": "Para",
+  "npcName": "Lukas",
+  "npcEmoji": "🧳",
+  "steps": [
+   {
+    "prompt": "Wie viel hat das Abendessen gekostet?",
+    "promptTr": "Akşam yemeği ne kadar tutmuş?",
+    "answer": "Die Gesamtsumme beträgt 48 Euro.",
+    "tr": "Toplam tutar 48 Euro.",
+    "reading": "dee gezoamsume betraegt fyoerts euro",
+    "chips": [
+     "Gesamtsumme",
+     "Euro"
+    ]
+   },
+   {
+    "prompt": "Wie möchtest du die Rechnung aufteilen?",
+    "promptTr": "Hesabı nasıl bölmek istiyorsun?",
+    "answer": "Ich schlage vor, dass wir jeweils 12 Euro zahlen und den Rest teilen.",
+    "tr": "Ben her birimiz 12 Euro ödeyelim ve kalan kısmı paylaşalım.",
+    "reading": "",
+    "chips": [
+     "zahlen",
+     "Rest"
+    ]
+   },
+   {
+    "prompt": "Klingt gut, möchtest du bar zahlen oder mit Karte?",
+    "promptTr": "İyi geliyor, nakit mi yoksa kartla mı ödeyeceksin?",
+    "answer": "Ich zahle bar, das ist für mich am einfachsten.",
+    "tr": "Ben nakit ödeyeceğim, bu benim için en kolay yol.",
+    "reading": "",
+    "chips": [
+     "bar",
+     "einfachsten"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "weather",
+  "topic": "Hava durumu",
+  "npcName": "Krankenschwester Anna",
+  "npcEmoji": "👩‍⚕️",
+  "steps": [
+   {
+    "prompt": "Wie ist das Wetter heute, wenn Sie Kleidung für den Winter kaufen?",
+    "promptTr": "Kış için kıyafet alırken hava bugün nasıl?",
+    "answer": "Heute ist es kalt und es schneit, deshalb brauche ich eine warme Jacke.",
+    "tr": "Bugün hava soğuk ve kar yağıyor, bu yüzden sıcak bir ceket ihtiyacım var.",
+    "reading": "hoite ist es kalt unt es shnayt, dehhalb brauh ih aynuh varme yakke.",
+    "chips": [
+     "kalt",
+     "schneit",
+     "Jacke"
+    ]
+   },
+   {
+    "prompt": "Haben Sie schon an einen warmen Schal gedacht, den Sie im Garten tragen können?",
+    "promptTr": "Bahçede giymek için sıcak bir atkı düşündünüz mü?",
+    "answer": "Ja, ich habe an einen dicken Schal gedacht, den ich im Garten tragen könnte, wenn es weiter schneit.",
+    "tr": "Evet, kalın bir atkı düşündüm, kar devam ederse bahçede giymek istiyorum.",
+    "reading": "ya, ih habuh aynen diken shal ge-dankt, den ih im garten tragen könnte, ven es vaytar shnayt.",
+    "chips": [
+     "dick",
+     "Schal",
+     "tragen"
+    ]
+   },
+   {
+    "prompt": "Welche Farben bevorzugen Sie für die Winterjacke?",
+    "promptTr": "Kış ceketi için hangi renkleri tercih ediyorsunuz?",
+    "answer": "Ich bevorzuge dunkle Farben wie Schwarz und Dunkelblau, weil sie gut zu meiner Wintergarderobe passen.",
+    "tr": "Koyu renkleri, özellikle siyah ve koyu mavi tercih ederim, çünkü kış gardırobumla iyi gider.",
+    "reading": "ih befowertsuge dunkle farben vi shvartz unt dunkelblau, vayl zee gut tsu mayner vintergarderobe passen.",
+    "chips": [
+     "dunkel",
+     "Schwarz",
+     "Wintergarderobe"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "phone",
+  "topic": "Telefon",
+  "npcName": "Chef",
+  "npcEmoji": "👔",
+  "steps": [
+   {
+    "prompt": "Können Sie bitte den Videoanruf für das Meeting um 15 Uhr vorbereiten?",
+    "promptTr": "15:00'deki toplantı için video aramasını hazırlayabilir misiniz?",
+    "answer": "Ja, ich richte den Videoanruf ein und sende Ihnen den Link rechtzeitig zu.",
+    "tr": "Evet, video aramayı ayarlıyorum ve linki zamanında size gönderiyorum.",
+    "reading": "",
+    "chips": [
+     "Videoanruf",
+     "einrichten",
+     "Link"
+    ]
+   },
+   {
+    "prompt": "Haben Sie die erforderlichen Unterlagen bereits hochgeladen?",
+    "promptTr": "Gerekli belgeleri zaten yüklediniz mi?",
+    "answer": "Ich habe die Präsentation auf den gemeinsamen Ordner hochgeladen und die Datei ist jetzt zugänglich.",
+    "tr": "Sunumu ortak klasöre yükledim ve dosya artık erişilebilir.",
+    "reading": "",
+    "chips": [
+     "Präsentation",
+     "hochladen",
+     "Zugriff"
+    ]
+   },
+   {
+    "prompt": "Stellen Sie sicher, dass die Internetverbindung stabil ist, damit wir nicht wie bei der Brücke über das Wasser schwanken.",
+    "promptTr": "İnternet bağlantısının stabil olduğundan emin olun, köprüde su üzerindeymiş gibi sallanmayalım.",
+    "answer": "Die Verbindung ist stabil, ich habe einen Testlauf gemacht und alles funktioniert einwandfrei.",
+    "tr": "Bağlantı stabil, bir test yaptım ve her şey sorunsuz çalışıyor.",
+    "reading": "",
+    "chips": [
+     "Verbindung",
+     "Testlauf",
+     "einwandfrei"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "food",
+  "topic": "Yemek yapım",
+  "npcName": "Lukas",
+  "npcEmoji": "🧳",
+  "steps": [
+   {
+    "prompt": "Welche Zutat fehlt dir noch für das Rezept?",
+    "promptTr": "Tarif için hangi malzeme eksik?",
+    "answer": "Ich brauche noch frische Petersilie.",
+    "tr": "Ben hâlâ taze maydanoz lazım.",
+    "reading": "",
+    "chips": [
+     "Petersilie"
+    ]
+   },
+   {
+    "prompt": "Wie lange sollst du die Suppe köcheln?",
+    "promptTr": "Çorbayı ne kadar kaynatmalısın?",
+    "answer": "Die Suppe soll etwa zwanzig Minuten köcheln.",
+    "tr": "Çorba yaklaşık yirmi dakika kaynamalı.",
+    "reading": "",
+    "chips": [
+     "zwanzig",
+     "Minuten"
+    ]
+   },
+   {
+    "prompt": "Hast du das Rezept aus dem Hafenmarkt bekommen?",
+    "promptTr": "Tarifi liman pazarından aldın mı?",
+    "answer": "Ja, ich habe das Rezept am Hafenmarkt entdeckt und gleich ausprobiert.",
+    "tr": "Evet, tarifi liman pazarında buldum ve hemen denedim.",
+    "reading": "",
+    "chips": [
+     "Hafenmarkt",
+     "entdeckt"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "music",
+  "topic": "Müzik",
+  "npcName": "Lustiger Taxifahrer",
+  "npcEmoji": "🚕",
+  "steps": [
+   {
+    "prompt": "Welches Konzert möchtest du besuchen und wann?",
+    "promptTr": "Hangi konseri ziyaret etmek istiyorsun ve ne zaman?",
+    "answer": "Ich möchte das Rockkonzert am Samstag besuchen.",
+    "tr": "Cumartesi günü rock konserine gitmek istiyorum.",
+    "reading": "ihç muhtuh deh rohk-kon-zer am zahm-tsag be-zoohn",
+    "chips": [
+     "Rockkonzert",
+     "Samstag"
+    ]
+   },
+   {
+    "prompt": "Übrigens habe ich eine Laterne im Handschuhfach, wie viele Karten brauchst du?",
+    "promptTr": "Bu arada takside bir lamba var, kaç bilet istiyorsun?",
+    "answer": "Ich brauche drei Karten, bitte.",
+    "tr": "Lütfen üç bilet istiyorum.",
+    "reading": "ihç brauh-he dry kah-rt-en bit-te",
+    "chips": [
+     "drei",
+     "Karten"
+    ]
+   },
+   {
+    "prompt": "Möchtest du Sitzplätze in der Nähe der Bühne?",
+    "promptTr": "Sahneye yakın oturma yerleri ister misin?",
+    "answer": "Ja, bitte, ich möchte Plätze in der ersten Reihe, wenn möglich.",
+    "tr": "Evet, mümkünse birinci sıradaki koltukları istiyorum.",
+    "reading": "ja bit-te ihç muhtuh pleh-tsuh in dehr er-sten ray-uh ven mö-gliç",
+    "chips": [
+     "erste Reihe",
+     "möglich"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "sport",
+  "topic": "Spor",
+  "npcName": "Straßenverkäufer",
+  "npcEmoji": "🛍️",
+  "steps": [
+   {
+    "prompt": "Entschuldigen Sie, ich suche neue Laufschuhe. Können Sie mir welche empfehlen?",
+    "promptTr": "Affedersiniz, yeni koşu ayakkabıları arıyorum. Bana bir kaç önerir misiniz?",
+    "answer": "Ja, diese Modelle haben gute Dämpfung und sind leicht. Sie sind besonders für lange Strecken geeignet.",
+    "tr": "Evet, bu modeller iyi darbe emişine sahip ve hafif. Uzun mesafeler için özellikle uygundur.",
+    "reading": "ya dee-ze mo-de-le ha-ben goode dem-pfung oont zint laykt. zi zint be-zoon-derts fyu lange shtre-ken ge-gee-gt.",
+    "chips": [
+     "Dämpfung",
+     "leicht",
+     "Strecken"
+    ]
+   },
+   {
+    "prompt": "Wie viel kosten die Schuhe und gibt es verschiedene Farben?",
+    "promptTr": "Ayakkabıların fiyatı ne kadar ve farklı renkleri var mı?",
+    "answer": "Die Schuhe kosten 120 Euro und sind in Schwarz, Blau und Grau erhältlich.",
+    "tr": "Ayakkabıların fiyatı 120 Euro ve siyah, mavi ve gri renklerinde bulunuyor.",
+    "reading": "",
+    "chips": [
+     "Euro",
+     "Schwarz",
+     "erhältlich"
+    ]
+   },
+   {
+    "prompt": "Können Sie mir die Schuhe zeigen? Ich habe nur noch eine kleine Laterne dabei.",
+    "promptTr": "Bana ayakkabıları gösterebilir misiniz? Yanımda sadece küçük bir fener var.",
+    "answer": "Natürlich, hier sind sie.",
+    "tr": "Tabii, işte burada. Onları çantanıza koyarım, böylece hemen deneyebilirsiniz.",
+    "reading": "",
+    "chips": [
+     "Natürlich",
+     "Tasche",
+     "ausprobieren"
+    ]
+   }
+  ]
+ },
+ {
+  "level": "B1",
+  "topicKey": "hobbies",
+  "topic": "Hobiler",
+  "npcName": "Mutter",
+  "npcEmoji": "👩‍🍼",
+  "steps": [
+   {
+    "prompt": "Möchtest du heute mit mir Schach spielen?",
+    "promptTr": "Bugün benimle satranç oynamak ister misin?",
+    "answer": "Ja, ich würde gern eine Partie spielen, aber zuerst muss ich meine Freundin anrufen.",
+    "tr": "Evet, bir oyun oynamak isterim, ama önce arkadaşımı aramam gerekiyor.",
+    "reading": "ja ich vürd gern aine partii shpil aber tserst mus ich meine froindin anrufen",
+    "chips": [
+     "spielen",
+     "freunde"
+    ]
+   },
+   {
+    "prompt": "Du hast gesagt, du rufst deine Freundin an. Wer ist das und warum willst du sie herausfordern?",
+    "promptTr": "Aradığını söylediğin arkadaşın kim ve neden onu meydan okumak istiyorsun?",
+    "answer": "Sie heißt Anna, wir treffen uns oft zum Schach, und ich will sie besiegen, damit ich das neue Schachbrett von der Laterne im Garten benutzen kann.",
+    "tr": "Adı Anna, sık sık satranç oynamak için buluşuruz ve onu yenmek istiyorum, böylece bahçedeki fenerin yeni satranç tahtasını kullanabilirim.",
+    "reading": "",
+    "chips": [
+     "herausfordern",
+     "Laterne"
+    ]
+   },
+   {
+    "prompt": "Wie wirst du dich vorbereiten, bevor ihr das Spiel beginnt?",
+    "promptTr": "Oyun başlamadan önce nasıl hazırlanacaksın?",
+    "answer": "Ich schaue mir ein paar Eröffnungen im Internet an, übe die Mittelspielstrategien und stelle sicher, dass ich genug Konzentration habe.",
+    "tr": "İnternette birkaç açılış izliyorum, orta oyun stratejilerini çalışıyorum ve yeterli konsantrasyona sahip olduğumdan emin oluyorum.",
+    "reading": "",
+    "chips": [
+     "vorbereiten",
+     "Konzentration"
+    ]
+   }
+  ]
+ }
+]
